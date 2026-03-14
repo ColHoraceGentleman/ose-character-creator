@@ -81,6 +81,12 @@ Added test suite: `tests/test_equipment.py`
 
 ---
 
+## 2026-03-14 — AAC Cleanup
+
+Removed dead descending `ac` keys from `ARMOUR` dict in `equipment.py` (they were unused but could cause confusion). Added inline comments noting descending values for reference. Confirmed all code, SPEC.md, and README.md are consistently using optional Ascending Armour Class (AAC) throughout.
+
+---
+
 ## Upcoming — Phase 2
 
 Planned work for next session:

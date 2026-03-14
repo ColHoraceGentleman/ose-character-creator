@@ -50,11 +50,14 @@ WEAPONS = {
 }
 
 ARMOUR = {
-    "Leather":   {"ac": 7, "aac": 12, "cost": 20},
-    "Chainmail": {"ac": 5, "aac": 14, "cost": 40},
-    "Plate mail": {"ac": 3, "aac": 16, "cost": 60},
-    "Shield":    {"aac_bonus": 1, "cost": 10},
+    "Leather":    {"aac": 12, "cost": 20},  # AAC 12 (descending AC 7, unused)
+    "Chainmail":  {"aac": 14, "cost": 40},  # AAC 14 (descending AC 5, unused)
+    "Plate mail": {"aac": 16, "cost": 60},  # AAC 16 (descending AC 3, unused)
+    "Shield":     {"aac_bonus": 1, "cost": 10},
 }
+# ⚠️ This project uses the OPTIONAL ASCENDING ARMOUR CLASS (AAC) system.
+# (OSE Classic p. 32) Higher AAC = better protection. Unarmoured base = 10.
+# Descending AC values are noted in comments for reference only and are NOT used.
 
 # Weapons allowed per class (by tag)
 CLASS_WEAPON_RULES = {
