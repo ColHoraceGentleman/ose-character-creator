@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSE Character Creator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>⚔️ OSE Character Creator</h1>
+      <p class="subtitle">Old School Essentials — Classic Fantasy</p>
+    </header>
+
+    <main>
+      <form id="gen-form">
+        <div class="options-grid">
+
+          <div class="option-group">
+            <label>Dice Method</label>
+            <select name="dice_method" id="dice_method">
+              <option value="3d6_order">3d6 in order</option>
+              <option value="3d6_arrange">3d6 arrange freely</option>
+              <option value="4d6_drop_lowest">4d6 drop lowest</option>
+            </select>
+          </div>
+
+          <div class="option-group">
+            <label>Class Selection</label>
+            <select name="class_selection" id="class_selection">
+              <option value="random">Random valid class</option>
+              <option value="choose_after">Choose after rolling</option>
+            </select>
+          </div>
+
+          <div class="option-group" id="class-picker-group" style="display:none">
+            <label>Choose Class</label>
+            <select name="chosen_class" id="chosen_class">
+              <option value="Cleric">Cleric</option>
+              <option value="Dwarf">Dwarf</option>
+              <option value="Elf">Elf</option>
+              <option value="Fighter">Fighter</option>
+              <option value="Halfling">Halfling</option>
+              <option value="Magic-User">Magic-User</option>
+              <option value="Thief">Thief</option>
+            </select>
+          </div>
+
+          <div class="option-group">
+            <label>Alignment</label>
+            <select name="alignment" id="alignment">
+              <option value="random">Random</option>
+              <option value="lawful">Lawful</option>
+              <option value="neutral">Neutral</option>
+              <option value="chaotic">Chaotic</option>
+            </select>
+          </div>
+
+          <div class="option-group">
+            <label>Equipment</label>
+            <select name="equipment_mode" id="equipment_mode">
+              <option value="auto">Auto (class kit)</option>
+            </select>
+          </div>
+
+          <div class="option-group toggles">
+            <label class="toggle">
+              <input type="checkbox" name="reroll_low_hp" id="reroll_low_hp">
+              <span>Re-roll 1s &amp; 2s on HP</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" name="reroll_subpar" id="reroll_subpar">
+              <span>Re-roll sub-par characters</span>
+            </label>
+          </div>
+
+        </div>
+
+        <button type="submit" id="generate-btn" class="btn-generate">
+          🎲 Generate Character
+        </button>
+      </form>
+
+      <div id="result" class="result hidden">
+        <div class="result-header">
+          <h2 id="result-title">Character Generated</h2>
+          <a id="download-link" class="btn-download" href="#" download>📄 Download PDF</a>
+        </div>
+
+        <div class="stat-block">
+          <div class="stat-row identity">
+            <span class="stat-label">Class</span><span id="r-class" class="stat-value big"></span>
+            <span class="stat-label">Title</span><span id="r-title" class="stat-value"></span>
+            <span class="stat-label">Alignment</span><span id="r-alignment" class="stat-value"></span>
+            <span class="stat-label">HP</span><span id="r-hp" class="stat-value big"></span>
+            <span class="stat-label">AC</span><span id="r-ac" class="stat-value big"></span>
+          </div>
+
+          <div class="abilities">
+            <div class="ability" id="r-str"><span class="ab-name">STR</span><span class="ab-score"></span><span class="ab-mod"></span></div>
+            <div class="ability" id="r-int"><span class="ab-name">INT</span><span class="ab-score"></span><span class="ab-mod"></span></div>
+            <div class="ability" id="r-wis"><span class="ab-name">WIS</span><span class="ab-score"></span><span class="ab-mod"></span></div>
+            <div class="ability" id="r-dex"><span class="ab-name">DEX</span><span class="ab-score"></span><span class="ab-mod"></span></div>
+            <div class="ability" id="r-con"><span class="ab-name">CON</span><span class="ab-score"></span><span class="ab-mod"></span></div>
+            <div class="ability" id="r-cha"><span class="ab-name">CHA</span><span class="ab-score"></span><span class="ab-mod"></span></div>
+          </div>
+
+          <div class="saves-block">
+            <h3>Saving Throws</h3>
+            <div class="saves">
+              <div><label>Death</label><span id="r-save-d"></span></div>
+              <div><label>Wands</label><span id="r-save-w"></span></div>
+              <div><label>Paralysis</label><span id="r-save-p"></span></div>
+              <div><label>Breath</label><span id="r-save-b"></span></div>
+              <div><label>Spells</label><span id="r-save-s"></span></div>
+            </div>
+          </div>
+
+          <div class="equipment-block">
+            <h3>Equipment</h3>
+            <div class="equip-cols">
+              <div>
+                <h4>Equipped</h4>
+                <ul id="r-equipped"></ul>
+              </div>
+              <div>
+                <h4>Packed</h4>
+                <ul id="r-packed"></ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="notes-block">
+            <h3>Notes &amp; Abilities</h3>
+            <p id="r-abilities"></p>
+            <p id="r-notes"></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="error-msg" class="error hidden"></div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
