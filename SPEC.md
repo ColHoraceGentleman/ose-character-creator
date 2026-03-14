@@ -1,9 +1,9 @@
 # OSE Character Creator — SPEC.md
 ## Phase 1: Character Sheet Generator
 
-**Version:** 0.1 (Phase 1)  
-**Last updated:** 2026-03-13  
-**Status:** Awaiting approval before coding begins
+**Version:** 0.2 (Phase 1 complete + AAC switch)  
+**Last updated:** 2026-03-14  
+**Status:** Phase 1 complete ✅
 
 ---
 
@@ -288,17 +288,27 @@ Class native languages:
 | Warhammer | 5 | 1d6 |
 
 **Armour:**
-| Armour | AC (descending) | AAC | Cost (gp) |
-|--------|----------------|-----|----------|
-| Leather | 7 | [12] | 20 |
-| Chainmail | 5 | [14] | 40 |
-| Plate mail | 3 | [16] | 60 |
-| Shield | +1 bonus | | 10 |
-| Unarmoured | 9 | [10] | — |
 
-### Step 11 — Armour Class
+> ⚠️ **This project uses the optional Ascending Armour Class (AAC) system** from OSE Classic (p. 32). Higher AAC = better protection. Descending AC values are kept in the data for reference only and are not used in generation or output.
 
-AC = Base armour AC + DEX modifier (bonus lowers AC, penalty raises it).
+| Armour | AAC (used) | AC (descending, unused) | Cost (gp) |
+|--------|-----------|------------------------|----------|
+| Unarmoured | 10 | 9 | — |
+| Leather | 12 | 7 | 20 |
+| Chainmail | 14 | 5 | 40 |
+| Plate mail | 16 | 3 | 60 |
+| Shield | +1 bonus | — | 10 |
+
+### Step 11 — Armour Class (AAC)
+
+> ⚠️ **Optional rule in use:** Ascending Armour Class (AAC). See OSE Classic p. 32.
+
+Final AAC = armour base AAC + DEX modifier + shield bonus (+1).
+
+- Unarmoured base AAC = 10
+- Higher AAC is better (AC 16 is plate mail; AC 10 is naked)
+- DEX modifier applies directly: positive DEX mod raises AAC, negative lowers it
+- Halflings add a further +2 AAC vs. large opponents
 
 ### Step 12 — Starting Level & XP
 
@@ -374,8 +384,8 @@ The output is a filled-in PDF character sheet matching the official OSE layout.
 | `CON HP Mod 2` | CON HP modifier |
 | `HP 2` | Rolled HP (current) |
 | `Max HP 2` | Rolled HP (max) |
-| `AC 2` | Final AC |
-| `Unarmoured AC 2` | 9 (or adjusted for DEX) |
+| `AC 2` | Final AAC (ascending; e.g. 16 for Plate mail) |
+| `Unarmoured AC 2` | Unarmoured AAC (10 + DEX mod) |
 | `Attack Bonus` | THAC0 attack bonus (e.g. [0] at 1st level) |
 | `Death Save 2` | Saving throw vs Death/Poison |
 | `Wands Save 2` | Saving throw vs Wands |
@@ -443,6 +453,7 @@ ose-character-creator/
 2. **Spell selection** — For MU/Elf at 1st level: **random** from the spell list.
 3. **Auto kit logic** — Strictly follow class restrictions. Always include class essentials (e.g. holy symbol for Cleric, thieves' tools for Thief, spell book notation for MU/Elf). Spend remaining gold on sensible gear within class limits.
 4. **Name field** — Leave blank on the character sheet. Name generation is a future phase feature.
+5. **Armour Class system** — **Using optional Ascending AAC** (OSE Classic p. 32). Descending AC is not used anywhere in generation or output. This is a permanent project decision.
 
 ## Future Phase Notes
 

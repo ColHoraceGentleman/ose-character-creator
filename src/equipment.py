@@ -53,7 +53,7 @@ ARMOUR = {
     "Leather":   {"ac": 7, "aac": 12, "cost": 20},
     "Chainmail": {"ac": 5, "aac": 14, "cost": 40},
     "Plate mail": {"ac": 3, "aac": 16, "cost": 60},
-    "Shield":    {"ac_bonus": 1, "cost": 10},
+    "Shield":    {"aac_bonus": 1, "cost": 10},
 }
 
 # Weapons allowed per class (by tag)
@@ -124,10 +124,11 @@ def best_affordable_shield(char_class: str, gold: int):
 def best_affordable_armour(char_class: str, gold: int) -> tuple:
     """Return (armour_name, cost) for best armour affordable, or (None, 0)."""
     allowed = CLASS_ARMOUR_RULES[char_class]["can_wear"]
-    # Sort by AC ascending (lower = better)
+    # Sort by AAC descending (higher = better)
     options = sorted(
         [(name, ARMOUR[name]) for name in allowed if ARMOUR[name]["cost"] <= gold],
-        key=lambda x: x[1]["ac"]
+        key=lambda x: x[1]["aac"],
+        reverse=True  # Higher AAC = better protection
     )
     if options:
         name, data = options[0]

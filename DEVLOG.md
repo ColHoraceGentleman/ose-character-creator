@@ -50,14 +50,34 @@ All 7 classes tested and passing:
 
 ### Known Issues to Fix in Phase 2
 
-1. **Cleric armour priority** — Currently may get Leather when it could afford Plate mail. The `best_affordable_armour()` function sorts by AC ascending but starting gold varies — needs a minimum budget check first.
+1. ~~Cleric armour priority~~ — Fixed 2026-03-14. The logic was correct; low rolls just can't afford better armour after buying essentials.
 2. **Name field blank** — intentional for Phase 1
-3. **Equipment mode is auto-only** — manual shopping UI is Phase 2
+3. **Equipment mode is auto-only** — manual shopping UI is Phase 2 (toggle added to UI, not wired up)
 4. **Spell selection** — random only for Phase 1; Phase 2 adds user choice
 
 ### Repo
 
 https://github.com/ColHoraceGentleman/ose-character-creator
+
+---
+
+## 2026-03-14 — AAC Switch + Preference Toggles
+
+Switched from descending AC to ascending AC (AAC) per OSE's optional rules:
+
+- `calculate_ac()` → `calculate_aac()` in generator.py
+- Base unarmoured AAC = 10 (was 9 descending)
+- Armour provides AAC directly: Leather=12, Chainmail=14, Plate=16
+- Shield adds +1 AAC
+- Final AAC = armour AAC + DEX mod + shield bonus
+- Fixed bug where AC wasn't accounting for equipped armour
+
+Added preference toggles to UI (disabled, for future functionality):
+- Include magic items
+- Generate party (4 characters)
+- Manual shopping (dropdown option)
+
+Added test suite: `tests/test_equipment.py`
 
 ---
 

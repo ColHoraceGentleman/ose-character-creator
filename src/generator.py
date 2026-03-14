@@ -52,8 +52,8 @@ def generate_character(options: dict) -> dict:
     # Step 6: Roll HP
     hp = roll_hp(char_class, mods["CON"]["hp"], options.get("reroll_low_hp", False))
     
-    # Step 7: Calculate AC
-    ac = calculate_ac(mods["DEX"]["ac"])
+    # Step 7: Calculate AC (AAC - Ascending Armour Class)
+    # Equipment is built in Step 16, so we'll calculate AAC after that
     
     # Step 8: Attack bonus (THAC0 is 19 [0] at 1st level)
     attack_bonus = 0
@@ -112,6 +112,18 @@ def generate_character(options: dict) -> dict:
     if kit["gold_remaining"] > 0:
         notes.append(f"Remaining gold: {kit['gold_remaining']} gp")
     
+    # Calculate AAC (Ascending Armour Class) with equipped armour
+    equipped_items = kit.get("equipped", [])
+    from src.equipment import ARMOUR
+    armour_name = None
+    for item in equipped_items:
+        if item in ARMOUR:  # It's armour or shield
+            if "Shield" not in item:  # Skip shield for now, handle separately
+                armour_name = item
+    has_shield = "Shield" in equipped_items
+    aac = calculate_aac(mods["DEX"]["ac"], armour_name, has_shield)
+    unarmoured_aac = calculate_aac(mods["DEX"]["ac"], None, False)
+    
     # Build final character dict with all PDF fields
     character = {
         # Identity
@@ -146,8 +158,8 @@ def generate_character(options: dict) -> dict:
         # Combat
         "hp": hp,
         "max_hp": hp,
-        "ac": ac,
-        "unarmoured_ac": 9 + mods["DEX"]["ac"],  # Base 9 adjusted for DEX
+        "ac": aac,  # AAC (Ascending Armour Class)
+        "unarmoured_ac": unarmoured_aac,
         "attack_bonus": attack_bonus,
         
         # Saves
@@ -308,9 +320,18 @@ def roll_hp(char_class: str, con_mod: int, reroll_low: bool) -> int:
     return max(1, hp)  # Always at least 1
 
 
-def calculate_ac(dex_mod: int) -> int:
-    """Calculate base AC (no armor). Default is 9, adjusted by DEX."""
-    return 9 - dex_mod  # Higher DEX = lower (better) AC
+def calculate_aac(dex_mod: int, armour_name: str = None, has_shield: bool = False) -> int:
+    """Calculate Ascending Armour Class (AAC).
+    Unarmoured base is 10. Armour replaces the base. DEX mod and shield add on top.
+    Higher AAC = better protection.
+    """
+    from src.equipment import ARMOUR
+    if armour_name and armour_name in ARMOUR:
+        base = ARMOUR[armour_name]["aac"]
+    else:
+        base = 10  # Unarmoured
+    shield_bonus = 1 if has_shield else 0
+    return base + dex_mod + shield_bonus
 
 
 def calculate_pr_xp_bonus(scores: dict, char_class: str) -> str:

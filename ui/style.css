@@ -79,7 +79,14 @@ select {
   cursor: pointer;
 }
 
-.toggle input { width: auto; }
+.toggle.coming-soon {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggle.coming-soon input {
+  cursor: not-allowed;
+}
 
 .btn-generate {
   width: 100%;

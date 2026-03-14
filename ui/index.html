@@ -61,6 +61,7 @@
             <label>Equipment</label>
             <select name="equipment_mode" id="equipment_mode">
               <option value="auto">Auto (class kit)</option>
+              <option value="manual" disabled title="Coming soon">Manual shopping (coming soon)</option>
             </select>
           </div>
 
@@ -72,6 +73,14 @@
             <label class="toggle">
               <input type="checkbox" name="reroll_subpar" id="reroll_subpar">
               <span>Re-roll sub-par characters</span>
+            </label>
+            <label class="toggle coming-soon">
+              <input type="checkbox" name="magic_items" id="magic_items" disabled>
+              <span title="Coming soon">Include magic items</span>
+            </label>
+            <label class="toggle coming-soon">
+              <input type="checkbox" name="multiple_characters" id="multiple_characters" disabled>
+              <span title="Coming soon">Generate party (4 characters)</span>
             </label>
           </div>
 

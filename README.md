@@ -90,9 +90,12 @@ Original PDF: `~/Downloads/OSE Classic Players Rules Tome v1-0.pdf`
 
 ---
 
+## Optional Rules in Use
+
+> ⚠️ **Ascending Armour Class (AAC)** — This project uses the optional AAC system from OSE Classic p. 32. Higher values are better (Plate mail = AAC 16, unarmoured = AAC 10). Descending AC is not used.
+
 ## Known Issues / Notes
 
-- Cleric currently gets Leather armour instead of best affordable — Phase 2 will fix armour priority for Clerics (should prefer Plate mail)
 - Name field is always blank (intentional for Phase 1)
 - Spell selection is random from 1st-level list (MU/Elf)
-- Equipment mode is auto-only in Phase 1 (manual shopping is Phase 2)
+- Equipment mode is auto-only in Phase 1 (manual shopping is Phase 2; toggle visible in UI)
