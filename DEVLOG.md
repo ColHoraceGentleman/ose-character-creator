@@ -2,6 +2,14 @@
 
 ---
 
+## ⚠️ Permanent Design Decision — Ascending Armour Class (AAC)
+
+> This project uses the **optional Ascending Armour Class (AAC)** system from OSE Classic p. 32.
+> Higher AAC = better. Unarmoured = 10, Plate mail = 16. Descending AC is NOT used.
+> **Do not revert to descending AC.** This decision is final.
+
+---
+
 ## 2026-03-13 — Phase 1 Complete ✅
 
 ### What Was Built

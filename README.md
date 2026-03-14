@@ -90,9 +90,19 @@ Original PDF: `~/Downloads/OSE Classic Players Rules Tome v1-0.pdf`
 
 ---
 
-## Optional Rules in Use
+## ⚠️ Critical Design Decision — Armour Class System
 
-> ⚠️ **Ascending Armour Class (AAC)** — This project uses the optional AAC system from OSE Classic p. 32. Higher values are better (Plate mail = AAC 16, unarmoured = AAC 10). Descending AC is not used.
+> **This project uses ASCENDING ARMOUR CLASS (AAC)** — the optional system from OSE Classic p. 32.
+>
+> | Armour | AAC |
+> |--------|-----|
+> | Unarmoured | 10 |
+> | Leather | 12 |
+> | Chainmail | 14 |
+> | Plate mail | 16 |
+> | Shield | +1 bonus |
+>
+> Higher AAC = better protection. **Descending AC is not used anywhere.** This is a permanent project decision.
 
 ## Known Issues / Notes
 

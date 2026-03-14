@@ -7,6 +7,21 @@
 
 ---
 
+## ⚠️ Critical Design Decision — Armour Class System
+
+> **This project uses the OPTIONAL ASCENDING ARMOUR CLASS (AAC) system** (OSE Classic p. 32).
+>
+> - Higher AAC = better protection (opposite of standard descending AC)
+> - Unarmoured base = **AAC 10**
+> - Plate mail = **AAC 16**
+> - Shield = **+1 AAC bonus**
+> - DEX modifier applies directly to AAC
+>
+> **Descending AC is NOT used anywhere in generation, output, or the PDF.**  
+> This is a permanent, non-negotiable project decision. Do not revert to descending AC.
+
+---
+
 ## Overview
 
 A web-based tool that generates completed Old School Essentials (Classic) player characters and outputs a filled-in PDF character sheet. Rules are sourced directly from the *OSE Classic Players Rules Tome v1.0*.
