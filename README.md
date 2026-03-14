@@ -90,7 +90,9 @@ Original PDF: `~/Downloads/OSE Classic Players Rules Tome v1-0.pdf`
 
 ---
 
-## ⚠️ Critical Design Decision — Armour Class System
+## ⚠️ Critical Design Decisions
+
+### Armour Class — Ascending (AAC)
 
 > **This project uses ASCENDING ARMOUR CLASS (AAC)** — the optional system from OSE Classic p. 32.
 >
@@ -102,7 +104,27 @@ Original PDF: `~/Downloads/OSE Classic Players Rules Tome v1-0.pdf`
 > | Plate mail | 16 |
 > | Shield | +1 bonus |
 >
-> Higher AAC = better protection. **Descending AC is not used anywhere.** This is a permanent project decision.
+> Higher AAC = better protection. **Descending AC is not used anywhere.**
+
+### Encumbrance — Item-Based (OSE CC2)
+
+> **This project uses ITEM-BASED ENCUMBRANCE** from OSE Carrion Crawler #2.
+>
+> - Characters carry a number of **items** (1 item = one-handed, 2 items = two-handed)
+> - Movement slows based on equipped and packed item counts separately
+> - STR melee modifier shifts the **packed** item thresholds up (stronger = carry more)
+> - Tiny items (garlic, holy symbols, rings) are **non-encumbering**
+> - Containers (backpacks, sacks) only count when **not in use**
+>
+> | Equipped | Packed | Movement |
+> |----------|--------|----------|
+> | 0–3 | 0–10 | 120' (40') |
+> | 4–5 | 11–12 | 90' (30') |
+> | 6–7 | 13–14 | 60' (20') |
+> | 8–9 | 15–16 | 30' (10') |
+> | 10+ | 17+ | Cannot move |
+>
+> Both equipped and packed are checked; the slower rate is used.
 
 ## Known Issues / Notes
 

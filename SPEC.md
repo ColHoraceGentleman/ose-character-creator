@@ -7,7 +7,9 @@
 
 ---
 
-## ⚠️ Critical Design Decision — Armour Class System
+## ⚠️ Critical Design Decisions
+
+### Armour Class — Ascending (AAC)
 
 > **This project uses the OPTIONAL ASCENDING ARMOUR CLASS (AAC) system** (OSE Classic p. 32).
 >
@@ -17,8 +19,27 @@
 > - Shield = **+1 AAC bonus**
 > - DEX modifier applies directly to AAC
 >
-> **Descending AC is NOT used anywhere in generation, output, or the PDF.**  
-> This is a permanent, non-negotiable project decision. Do not revert to descending AC.
+> **Descending AC is NOT used anywhere in generation, output, or the PDF.**
+
+### Encumbrance — Item-Based (OSE Carrion Crawler #2)
+
+> **This project uses ITEM-BASED ENCUMBRANCE** from OSE Carrion Crawler #2.
+>
+> - Characters carry a number of **items** (1 item = one-handed, 2 items = two-handed)
+> - Movement slows based on equipped and packed item counts separately
+> - STR melee modifier shifts the **packed** item thresholds up
+> - Tiny items (garlic, holy symbols, rings) are **non-encumbering**
+> - Containers (backpacks, sacks) only count when **not in use**
+>
+> | Equipped | Packed | Movement |
+> |----------|--------|----------|
+> | 0–3 | 0–10 | 120' / 40' |
+> | 4–5 | 11–12 | 90' / 30' |
+> | 6–7 | 13–14 | 60' / 20' |
+> | 8–9 | 15–16 | 30' / 10' |
+> | 10+ | 17+ | Cannot move |
+>
+> Both equipped and packed are checked; the slower rate is used.
 
 ---
 

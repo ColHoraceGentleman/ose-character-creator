@@ -1,63 +1,74 @@
-"""Equipment lists and auto-kit builder for OSE Character Creator."""
+"""Equipment lists and auto-kit builder for OSE Character Creator.
+Uses Item-Based Encumbrance (OSE Carrion Crawler #2).
+- Higher item count = slower movement
+- STR modifier shifts packed item thresholds
+- Unencumbering items (tiny items) don't count toward movement
+"""
+
+# Encumbrance item counts (OSE CC2 Item-Based Encumbrance)
+# 0 = not encumbering (tiny items like garlic, holy symbols, rings)
+# 1 = one-handed item
+# 2 = two-handed item
+# Special: "storage" = only counts when not in use (backpacks, sacks)
 
 ADVENTURING_GEAR = {
-    "Backpack": 5,
-    "Crowbar": 10,
-    "Garlic": 5,
-    "Grappling hook": 25,
-    "Hammer (small)": 2,
-    "Holy symbol": 25,
-    "Holy water (vial)": 25,
-    "Iron spikes (12)": 1,
-    "Lantern": 10,
-    "Mirror (hand-sized, steel)": 5,
-    "Oil (1 flask)": 2,
-    "Pole (10' long, wooden)": 1,
-    "Rations (iron, 7 days)": 15,
-    "Rations (standard, 7 days)": 5,
-    "Rope (50')": 1,
-    "Sack (small)": 1,
-    "Sack (large)": 2,
-    "Stakes (3) and mallet": 3,
-    "Thieves' tools": 25,
-    "Tinder box": 3,
-    "Torches (6)": 1,
-    "Waterskin": 1,
-    "Wine (2 pints)": 1,
-    "Wolfsbane (1 bunch)": 10,
+    "Backpack":        {"cost": 5,  "encumbrance": "storage"},  # Only counts when not in use
+    "Crowbar":         {"cost": 10, "encumbrance": 1},
+    "Garlic":          {"cost": 5,  "encumbrance": 0},  # Tiny
+    "Grappling hook":  {"cost": 25, "encumbrance": 1},
+    "Hammer (small)":  {"cost": 2,  "encumbrance": 1},
+    "Holy symbol":     {"cost": 25, "encumbrance": 0},  # Tiny
+    "Holy water (vial)": {"cost": 25, "encumbrance": 1},
+    "Iron spikes (12)": {"cost": 1, "encumbrance": 1},
+    "Lantern":         {"cost": 10, "encumbrance": 1},
+    "Mirror (hand-sized, steel)": {"cost": 5, "encumbrance": 1},
+    "Oil (1 flask)":   {"cost": 2,  "encumbrance": 1},
+    "Pole (10' long, wooden)": {"cost": 1, "encumbrance": 2},  # Two-handed
+    "Rations (iron, 7 days)": {"cost": 15, "encumbrance": 1},  # Bundle of 3 = 1 item
+    "Rations (standard, 7 days)": {"cost": 5, "encumbrance": 1},  # Bundle of 3 = 1 item
+    "Rope (50')":      {"cost": 1,  "encumbrance": 1},
+    "Sack (small)":    {"cost": 1,  "encumbrance": "storage"},
+    "Sack (large)":    {"cost": 2,  "encumbrance": "storage"},
+    "Stakes (3) and mallet": {"cost": 3, "encumbrance": 2},  # Bundle
+    "Thieves' tools":  {"cost": 25, "encumbrance": 1},
+    "Tinder box":      {"cost": 3,  "encumbrance": 1},
+    "Torches (6)":     {"cost": 1,  "encumbrance": 2},  # Bundle of 6 = 2 items
+    "Waterskin":       {"cost": 1,  "encumbrance": 1},
+    "Wine (2 pints)":  {"cost": 1,  "encumbrance": 1},
+    "Wolfsbane (1 bunch)": {"cost": 10, "encumbrance": 1},
 }
 
 WEAPONS = {
-    "Battle axe":       {"cost": 7,  "damage": "1d8", "qualities": ["Melee", "Slow", "Two-handed"]},
-    "Club":             {"cost": 3,  "damage": "1d4", "qualities": ["Blunt", "Melee"]},
-    "Crossbow":         {"cost": 30, "damage": "1d6", "qualities": ["Missile", "Reload", "Slow", "Two-handed"]},
-    "Dagger":           {"cost": 3,  "damage": "1d4", "qualities": ["Melee", "Missile"]},
-    "Hand axe":         {"cost": 4,  "damage": "1d6", "qualities": ["Melee", "Missile"]},
-    "Javelin":          {"cost": 1,  "damage": "1d4", "qualities": ["Missile"]},
-    "Lance":            {"cost": 5,  "damage": "1d6", "qualities": ["Charge", "Melee"]},
-    "Long bow":         {"cost": 40, "damage": "1d6", "qualities": ["Missile", "Two-handed"]},
-    "Mace":             {"cost": 5,  "damage": "1d6", "qualities": ["Blunt", "Melee"]},
-    "Polearm":          {"cost": 7,  "damage": "1d10","qualities": ["Brace", "Melee", "Slow", "Two-handed"]},
-    "Short bow":        {"cost": 25, "damage": "1d6", "qualities": ["Missile", "Two-handed"]},
-    "Short sword":      {"cost": 7,  "damage": "1d6", "qualities": ["Melee"]},
-    "Silver dagger":    {"cost": 30, "damage": "1d4", "qualities": ["Melee", "Missile"]},
-    "Sling":            {"cost": 2,  "damage": "1d4", "qualities": ["Blunt", "Missile"]},
-    "Spear":            {"cost": 4,  "damage": "1d6", "qualities": ["Brace", "Melee", "Missile"]},
-    "Staff":            {"cost": 2,  "damage": "1d4", "qualities": ["Blunt", "Melee", "Slow", "Two-handed"]},
-    "Sword":            {"cost": 10, "damage": "1d8", "qualities": ["Melee"]},
-    "Two-handed sword": {"cost": 15, "damage": "1d10","qualities": ["Melee", "Slow", "Two-handed"]},
-    "Warhammer":        {"cost": 5,  "damage": "1d6", "qualities": ["Blunt", "Melee"]},
+    "Battle axe":       {"cost": 7,  "damage": "1d8", "qualities": ["Melee", "Slow", "Two-handed"], "encumbrance": 2},
+    "Club":             {"cost": 3,  "damage": "1d4", "qualities": ["Blunt", "Melee"], "encumbrance": 1},
+    "Crossbow":         {"cost": 30, "damage": "1d6", "qualities": ["Missile", "Reload", "Slow", "Two-handed"], "encumbrance": 2},
+    "Dagger":           {"cost": 3,  "damage": "1d4", "qualities": ["Melee", "Missile"], "encumbrance": 1},
+    "Hand axe":         {"cost": 4,  "damage": "1d6", "qualities": ["Melee", "Missile"], "encumbrance": 1},
+    "Javelin":          {"cost": 1,  "damage": "1d4", "qualities": ["Missile"], "encumbrance": 1},
+    "Lance":            {"cost": 5,  "damage": "1d6", "qualities": ["Charge", "Melee"], "encumbrance": 2},
+    "Long bow":         {"cost": 40, "damage": "1d6", "qualities": ["Missile", "Two-handed"], "encumbrance": 2},
+    "Mace":             {"cost": 5,  "damage": "1d6", "qualities": ["Blunt", "Melee"], "encumbrance": 1},
+    "Polearm":          {"cost": 7,  "damage": "1d10","qualities": ["Brace", "Melee", "Slow", "Two-handed"], "encumbrance": 2},
+    "Short bow":        {"cost": 25, "damage": "1d6", "qualities": ["Missile", "Two-handed"], "encumbrance": 2},
+    "Short sword":      {"cost": 7,  "damage": "1d6", "qualities": ["Melee"], "encumbrance": 1},
+    "Silver dagger":    {"cost": 30, "damage": "1d4", "qualities": ["Melee", "Missile"], "encumbrance": 1},
+    "Sling":            {"cost": 2,  "damage": "1d4", "qualities": ["Blunt", "Missile"], "encumbrance": 1},
+    "Spear":            {"cost": 4,  "damage": "1d6", "qualities": ["Brace", "Melee", "Missile"], "encumbrance": 1},
+    "Staff":            {"cost": 2,  "damage": "1d4", "qualities": ["Blunt", "Melee", "Slow", "Two-handed"], "encumbrance": 2},
+    "Sword":            {"cost": 10, "damage": "1d8", "qualities": ["Melee"], "encumbrance": 1},
+    "Two-handed sword": {"cost": 15, "damage": "1d10","qualities": ["Melee", "Slow", "Two-handed"], "encumbrance": 2},
+    "Warhammer":        {"cost": 5,  "damage": "1d6", "qualities": ["Blunt", "Melee"], "encumbrance": 1},
 }
 
 ARMOUR = {
-    "Leather":    {"aac": 12, "cost": 20},  # AAC 12 (descending AC 7, unused)
-    "Chainmail":  {"aac": 14, "cost": 40},  # AAC 14 (descending AC 5, unused)
-    "Plate mail": {"aac": 16, "cost": 60},  # AAC 16 (descending AC 3, unused)
-    "Shield":     {"aac_bonus": 1, "cost": 10},
+    "Leather":    {"aac": 12, "cost": 20, "encumbrance": 1},  # Light armour = 1 item
+    "Chainmail":  {"aac": 14, "cost": 40, "encumbrance": 2},  # Heavy armour = 2 items
+    "Plate mail": {"aac": 16, "cost": 60, "encumbrance": 2},  # Heavy armour = 2 items
+    "Shield":     {"aac_bonus": 1, "cost": 10, "encumbrance": 1},
 }
 # ⚠️ This project uses the OPTIONAL ASCENDING ARMOUR CLASS (AAC) system.
 # (OSE Classic p. 32) Higher AAC = better protection. Unarmoured base = 10.
-# Descending AC values are noted in comments for reference only and are NOT used.
+# Descending AC values are NOT used anywhere.
 
 # Weapons allowed per class (by tag)
 CLASS_WEAPON_RULES = {
@@ -153,19 +164,116 @@ def best_affordable_weapon(char_class: str, gold: int) -> tuple:
     return None, 0
 
 
+def item_encumbrance(item_name: str, in_use: bool = True) -> int:
+    """
+    Return the encumbrance item count for a single item.
+    - in_use=True: containers (backpack, sacks) are being worn/carried with gear, so they don't add to count.
+    - in_use=False: containers not in use count as 1 item each.
+    - Returns 0 for tiny/non-encumbering items (garlic, holy symbol, etc.)
+    """
+    if item_name in WEAPONS:
+        return WEAPONS[item_name].get("encumbrance", 1)
+    if item_name in ARMOUR:
+        return ARMOUR[item_name].get("encumbrance", 1)
+    if item_name in ADVENTURING_GEAR:
+        enc = ADVENTURING_GEAR[item_name].get("encumbrance", 1)
+        if enc == "storage":
+            return 0 if in_use else 1
+        return enc
+    return 1  # Default: unknown items count as 1
+
+
+def count_encumbrance(items: list, containers_in_use: bool = True) -> int:
+    """Sum encumbrance item counts for a list of item names."""
+    return sum(item_encumbrance(i, in_use=containers_in_use) for i in items)
+
+
+# Item-Based Encumbrance movement rate table (OSE Carrion Crawler #2).
+# Equipped and packed counts are checked independently; the slower rate is used.
+# STR melee modifier shifts the packed thresholds.
+#
+# Equipped:   0-3 → 120', 4-5 → 90', 6-7 → 60', 8-9 → 30', 10+ → 0
+# Packed:    0-10 → 120', 11-12 → 90', 13-14 → 60', 15-16 → 30', 17+ → 0
+# (Packed thresholds each shift up by the character's STR melee modifier.)
+
+ENCUMBRANCE_TABLE = [
+    # (max_equipped, max_packed_base, movement_exploration, movement_encounter, movement_overland)
+    (3,  10, "120'", "40'",  "24"),
+    (5,  12, "90'",  "30'",  "18"),
+    (7,  14, "60'",  "20'",  "12"),
+    (9,  16, "30'",  "10'",  "6"),
+]
+# Beyond 9 equipped or 16 packed → cannot move
+
+
+def calculate_movement(equipped_items: list, packed_items: list, str_melee_mod: int = 0) -> dict:
+    """
+    Calculate movement rates from item-based encumbrance.
+    Returns dict with exploration, encounter, overland, base_mv, and item counts.
+
+    STR melee modifier shifts packed thresholds up (positive STR = carry more before slowing).
+    Both equipped and packed are checked; the slower rate is used.
+    """
+    eq_count = count_encumbrance(equipped_items, containers_in_use=True)
+    pk_count = count_encumbrance(packed_items, containers_in_use=True)
+
+    def rate_for_equipped(count):
+        for max_eq, _, mv_ex, mv_en, mv_ov in ENCUMBRANCE_TABLE:
+            if count <= max_eq:
+                return (mv_ex, mv_en, mv_ov)
+        return ("0'", "0'", "0")
+
+    def rate_for_packed(count, str_mod):
+        for _, max_pk_base, mv_ex, mv_en, mv_ov in ENCUMBRANCE_TABLE:
+            if count <= max_pk_base + str_mod:
+                return (mv_ex, mv_en, mv_ov)
+        return ("0'", "0'", "0")
+
+    eq_rate = rate_for_equipped(eq_count)
+    pk_rate = rate_for_packed(pk_count, str_melee_mod)
+
+    # Movement values in feet (strip the ')
+    def mv_val(s):
+        return int(s.replace("'", "")) if s != "0" else 0
+
+    # Use the slower of the two rates
+    if mv_val(eq_rate[0]) <= mv_val(pk_rate[0]):
+        chosen = eq_rate
+    else:
+        chosen = pk_rate
+
+    return {
+        "exploration_movement": chosen[0],
+        "encounter_movement": chosen[1],
+        "overland_movement": chosen[2],
+        "equipped_item_count": eq_count,
+        "packed_item_count": pk_count,
+    }
+
+
 def auto_kit(char_class: str, gold: int) -> dict:
     """
     Build an auto equipment kit for the given class and starting gold.
-    Returns dict with keys: equipped (list), packed (list), gold_spent (int), gold_remaining (int).
+
+    Returns dict with keys:
+      equipped (list), packed (list), unencumbering (list),
+      gold_spent (int), gold_remaining (int).
+
+    Tiny/non-encumbering items (holy symbol, garlic, etc.) are placed in
+    'unencumbering' so they can be listed in the PDF's Unencumbering Items field.
     """
     equipped = []
     packed = []
+    unencumbering = []
     spent = 0
 
     def buy(item_name, cost, location):
         nonlocal spent
         spent += cost
-        if location == "equipped":
+        enc = item_encumbrance(item_name, in_use=True)
+        if enc == 0:
+            unencumbering.append(item_name)
+        elif location == "equipped":
             equipped.append(item_name)
         else:
             packed.append(item_name)
@@ -175,7 +283,7 @@ def auto_kit(char_class: str, gold: int) -> dict:
 
     # Step 1: Class essentials
     for item in CLASS_ESSENTIALS[char_class]:
-        cost = ADVENTURING_GEAR.get(item, 0)
+        cost = ADVENTURING_GEAR[item]["cost"]
         if remaining >= cost:
             remaining = buy(item, cost, "packed")
 
@@ -194,13 +302,14 @@ def auto_kit(char_class: str, gold: int) -> dict:
 
     # Step 4: Standard kit items (packed), in priority order
     for item in STANDARD_KIT_ITEMS:
-        cost = ADVENTURING_GEAR.get(item, 0)
-        if remaining >= cost and item not in packed and item not in equipped:
+        cost = ADVENTURING_GEAR[item]["cost"]
+        if remaining >= cost and item not in packed and item not in equipped and item not in unencumbering:
             remaining = buy(item, cost, "packed")
 
     return {
         "equipped": equipped,
         "packed": packed,
+        "unencumbering": unencumbering,
         "gold_spent": spent,
         "gold_remaining": remaining,
     }

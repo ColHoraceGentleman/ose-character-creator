@@ -89,6 +89,28 @@ Added test suite: `tests/test_equipment.py`
 
 ---
 
+## 2026-03-14 — Item-Based Encumbrance (OSE CC2)
+
+Implemented the optional Item-Based Encumbrance system from OSE Carrion Crawler #2.
+
+**Changes:**
+- `equipment.py`: Added `encumbrance` key to all ADVENTURING_GEAR, WEAPONS, and ARMOUR entries. New functions: `item_encumbrance()`, `count_encumbrance()`, `calculate_movement()`, `ENCUMBRANCE_TABLE`. Updated `auto_kit()` to track unencumbering items separately. Storage containers (backpack, sacks) count as 0 items when in use.
+- `generator.py`: Now calls `calculate_movement()` after building the kit. Character dict gains `equipped_item_count`, `packed_item_count`, and `unencumbering` list. Movement fields are now calculated (not hardcoded to 120').
+- `pdf_output.py`: Populates `Unencumbering Items` field. `Packed STR 13+/16+/18+` fields now show correct item thresholds adjusted by STR melee modifier (e.g. STR 16 +2 → packed threshold shifts from 10/12/14 to 12/14/16).
+- `SPEC.md`, `README.md`: Added Item-Based Encumbrance rules table and explanation.
+
+**Rules implemented:**
+- 1 item = one-handed; 2 items = two-handed
+- Light armour = 1 item; Heavy armour (chainmail, plate) = 2 items; Shield = 1 item
+- Containers in use = 0 items
+- Tiny items (holy symbol, garlic) = 0 items → go to Unencumbering Items
+- Movement determined by the slower of equipped vs. packed checks
+- STR melee modifier shifts packed thresholds
+
+**All 7 classes tested and passing.**
+
+---
+
 ## 2026-03-14 — AAC Cleanup
 
 Removed dead descending `ac` keys from `ARMOUR` dict in `equipment.py` (they were unused but could cause confusion). Added inline comments noting descending values for reference. Confirmed all code, SPEC.md, and README.md are consistently using optional Ascending Armour Class (AAC) throughout.

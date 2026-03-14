@@ -52,9 +52,8 @@ def generate_character(options: dict) -> dict:
     # Step 6: Roll HP
     hp = roll_hp(char_class, mods["CON"]["hp"], options.get("reroll_low_hp", False))
     
-    # Step 7: Calculate AC (AAC - Ascending Armour Class)
-    # Equipment is built in Step 16, so we'll calculate AAC after that
-    
+    # Step 7: AC (AAC) and movement are calculated after equipment (Step 16)
+
     # Step 8: Attack bonus (THAC0 is 19 [0] at 1st level)
     attack_bonus = 0
     
@@ -91,6 +90,7 @@ def generate_character(options: dict) -> dict:
         kit = {
             "equipped": [],
             "packed": [],
+            "unencumbering": [],
             "gold_spent": 0,
             "gold_remaining": starting_gold,
         }
@@ -117,12 +117,18 @@ def generate_character(options: dict) -> dict:
     from src.equipment import ARMOUR
     armour_name = None
     for item in equipped_items:
-        if item in ARMOUR:  # It's armour or shield
-            if "Shield" not in item:  # Skip shield for now, handle separately
-                armour_name = item
+        if item in ARMOUR and "Shield" not in item:
+            armour_name = item
     has_shield = "Shield" in equipped_items
     aac = calculate_aac(mods["DEX"]["ac"], armour_name, has_shield)
     unarmoured_aac = calculate_aac(mods["DEX"]["ac"], None, False)
+
+    # Calculate movement rates from Item-Based Encumbrance (OSE CC2)
+    mv = equipment.calculate_movement(
+        equipped_items,
+        kit.get("packed", []),
+        str_melee_mod=mods["STR"]["melee"],
+    )
     
     # Build final character dict with all PDF fields
     character = {
@@ -169,10 +175,12 @@ def generate_character(options: dict) -> dict:
         "save_breath": saves["B"],
         "save_spells": saves["S"],
         
-        # Movement
-        "encounter_movement": "40'",
-        "exploration_movement": "120'",
-        "overland_movement": "24",
+        # Movement (calculated from Item-Based Encumbrance, OSE CC2)
+        "encounter_movement": mv["encounter_movement"],
+        "exploration_movement": mv["exploration_movement"],
+        "overland_movement": mv["overland_movement"],
+        "equipped_item_count": mv["equipped_item_count"],
+        "packed_item_count": mv["packed_item_count"],
         
         # Skills
         "find_room_trap": "—",
@@ -196,6 +204,7 @@ def generate_character(options: dict) -> dict:
         # Equipment
         "equipped": kit["equipped"],
         "packed": kit["packed"],
+        "unencumbering": kit.get("unencumbering", []),
         
         # Spells
         "spells_known": spells_known,

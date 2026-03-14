@@ -92,10 +92,16 @@ def fill_character_sheet(character: dict, output_path: str) -> str:
         "XP for Next Level 2": str(character.get("xp_next_level", "")),
         "PR XP Bonus 2":    character.get("pr_xp_bonus", "None"),
 
-        # Encumbrance (STR-based)
-        "Packed STR 13+": "60 cn",
-        "Packed STR 16+": "70 cn",
-        "Packed STR 18+": "80 cn",
+        # Item-Based Encumbrance (OSE Carrion Crawler #2)
+        # Packed STR threshold fields show how many packed items the character
+        # can carry before slowing, adjusted for their STR melee modifier.
+        # Base thresholds: 10/12/14/16 — STR mod shifts each up by that amount.
+        "Packed STR 13+": str(10 + character.get("str_melee_mod", 0)),
+        "Packed STR 16+": str(12 + character.get("str_melee_mod", 0)),
+        "Packed STR 18+": str(14 + character.get("str_melee_mod", 0)),
+
+        # Unencumbering items (tiny items: holy symbol, garlic, rings, etc.)
+        "Unencumbering Items": ", ".join(character.get("unencumbering", [])),
     }
 
     # Equipment — Equipped slots (up to 9)
