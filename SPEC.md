@@ -444,10 +444,10 @@ The output is a filled-in PDF character sheet matching the official OSE layout.
 | `XP for Next Level 2` | XP needed for 2nd level |
 | `Equipped 1`–`9` | Equipped items (armour, weapons, shield) |
 | `Packed 1`–`16` | Packed items (adventuring gear) |
-| `Unencumbering Items` | Items that don't count for encumbrance |
-| `Packed STR 13+` | Encumbrance limit at STR 13+ |
-| `Packed STR 16+` | Encumbrance limit at STR 16+ |
-| `Packed STR 18+` | Encumbrance limit at STR 18+ |
+| `Unencumbering Items` | Tiny/non-encumbering items (holy symbol, garlic, rings, etc.) |
+| `Packed STR 13+` | Max packed items at 120' mv for this STR (base 10 + STR melee mod) |
+| `Packed STR 16+` | Max packed items at 90' mv for this STR (base 12 + STR melee mod) |
+| `Packed STR 18+` | Max packed items at 60' mv for this STR (base 14 + STR melee mod) |
 
 ---
 
@@ -490,6 +490,7 @@ ose-character-creator/
 3. **Auto kit logic** — Strictly follow class restrictions. Always include class essentials (e.g. holy symbol for Cleric, thieves' tools for Thief, spell book notation for MU/Elf). Spend remaining gold on sensible gear within class limits.
 4. **Name field** — Leave blank on the character sheet. Name generation is a future phase feature.
 5. **Armour Class system** — **Using optional Ascending AAC** (OSE Classic p. 32). Descending AC is not used anywhere in generation or output. This is a permanent project decision.
+6. **Encumbrance system** — **Using optional Item-Based Encumbrance** (OSE Carrion Crawler #2). Movement is calculated from item counts (1 item = one-handed, 2 = two-handed). Equipped and packed counts are checked independently; slower rate is used. STR melee modifier shifts packed thresholds. This is a permanent project decision.
 
 ## Future Phase Notes
 
