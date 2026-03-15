@@ -13,12 +13,36 @@ SHEET_PATH = os.path.join(os.path.dirname(__file__), "..", "assets", "character-
 
 
 def fmt_mod(val: int) -> str:
-    """Format a modifier as +X or -X or blank for 0."""
+    """Format a modifier as +X or -X. Returns empty string for 0 (leave cell blank)."""
     if val > 0:
         return f"+{val}"
     elif val < 0:
         return str(val)
-    return "—"
+    return ""
+
+
+def fmt_xp(val) -> str:
+    """Format an XP value with comma thousands separators."""
+    try:
+        return f"{int(val):,}"
+    except (ValueError, TypeError):
+        return str(val)
+
+
+def fmt_skill(val: str) -> str:
+    """Strip '-in-6' suffix from skill values — the sheet already prints it.
+    E.g. '2-in-6' → '2', '1-in-6' → '1', '—' → '' (blank for no ability)."""
+    if val == "—" or not val:
+        return ""
+    return val.replace("-in-6", "").strip()
+
+
+def fmt_multiline(items) -> str:
+    """Join a list (or semicolon-separated string) as one entry per line."""
+    if isinstance(items, list):
+        return "\n".join(i for i in items if i)
+    # Split on semicolons if passed as a string
+    return "\n".join(p.strip() for p in str(items).split(";") if p.strip())
 
 
 def fill_character_sheet(character: dict, output_path: str) -> str:
@@ -48,7 +72,7 @@ def fill_character_sheet(character: dict, output_path: str) -> str:
         "CON 2":            str(character.get("con", "")),
         "CHA 2":            str(character.get("cha", "")),
 
-        # Ability Modifiers
+        # Ability Modifiers (blank if zero)
         "STR Melee Mod":        fmt_mod(character.get("str_melee_mod", 0)),
         "DEX Missile Mod":      fmt_mod(character.get("dex_missile_mod", 0)),
         "DEX AC Mod 2":         fmt_mod(character.get("dex_ac_mod", 0)),
@@ -60,8 +84,8 @@ def fill_character_sheet(character: dict, output_path: str) -> str:
         # Combat
         "HP 2":             str(character.get("hp", "")),
         "Max HP 2":         str(character.get("max_hp", "")),
-        "AC 2":             str(character.get("ac", 9)),
-        "Unarmoured AC 2":  str(character.get("unarmoured_ac", 9)),
+        "AC 2":             str(character.get("ac", "")),
+        "Unarmoured AC 2":  str(character.get("unarmoured_ac", "")),
         "Attack Bonus":     fmt_mod(character.get("attack_bonus", 0)),
 
         # Saving Throws
@@ -76,20 +100,20 @@ def fill_character_sheet(character: dict, output_path: str) -> str:
         "Exporation Movement 2":  character.get("exploration_movement", "120'"),
         "Overland Movement 2":    character.get("overland_movement", "24"),
 
-        # Class skills
-        "Find Room Trap 2":    character.get("find_room_trap", "—"),
-        "Find Secret Door 2":  character.get("find_secret_door", "—"),
-        "Open Stuck Door 2":   character.get("open_stuck_door", "2-in-6"),
-        "Listen at Door 2":    character.get("listen_at_door", "—"),
+        # Class skills — just the number; sheet already prints "-in-6". Blank if no ability.
+        "Find Room Trap 2":    fmt_skill(character.get("find_room_trap", "—")),
+        "Find Secret Door 2":  fmt_skill(character.get("find_secret_door", "—")),
+        "Open Stuck Door 2":   fmt_skill(character.get("open_stuck_door", "—")),
+        "Listen at Door 2":    fmt_skill(character.get("listen_at_door", "—")),
 
-        # Languages & Notes
+        # Languages & Notes — one entry per line
         "Languages 2":              character.get("languages", ""),
-        "Abilities, Skills, Weapons 2": character.get("abilities", ""),
-        "Notes 2":                  character.get("notes", ""),
+        "Abilities, Skills, Weapons 2": fmt_multiline(character.get("abilities", "")),
+        "Notes 2":                  fmt_multiline(character.get("notes", "")),
 
-        # XP
+        # XP — thousands separators on Next Level value
         "XP 2":             str(character.get("xp", 0)),
-        "XP for Next Level 2": str(character.get("xp_next_level", "")),
+        "XP for Next Level 2": fmt_xp(character.get("xp_next_level", "")),
         "PR XP Bonus 2":    character.get("pr_xp_bonus", "None"),
 
         # Item-Based Encumbrance (OSE Carrion Crawler #2)
