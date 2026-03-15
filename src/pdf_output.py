@@ -165,9 +165,20 @@ def fill_character_sheet(character: dict, output_path: str) -> str:
         fields[f"Equipped {i}"] = item
 
     # Equipment — Packed slots (up to 16)
+    # Slots 1-3 have STR requirements (9+, 6+, 4+). If STR doesn't qualify,
+    # mark the slot unavailable and shift items down to the next available slot.
+    PACKED_STR_REQUIREMENTS = {1: 9, 2: 6, 3: 4}
+    UNAVAILABLE = "Insufficient STR Score - Slot Unavailable"
+    str_score = character.get("str", 10)
+
     packed = character.get("packed", [])
-    for i, item in enumerate(packed[:16], start=1):
-        fields[f"Packed {i}"] = item
+    item_iter = iter(packed)
+    for slot in range(1, 17):
+        min_str = PACKED_STR_REQUIREMENTS.get(slot, 0)
+        if str_score < min_str:
+            fields[f"Packed {slot}"] = UNAVAILABLE
+        else:
+            fields[f"Packed {slot}"] = next(item_iter, "")
 
     # Literacy checkbox
     literate = character.get("literate", False)

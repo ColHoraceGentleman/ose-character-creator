@@ -218,8 +218,8 @@ def generate_character(options: dict) -> dict:
         "xp_next_level": xp_next,
         "pr_xp_bonus": pr_xp,
         
-        # Equipment
-        "equipped": kit["equipped"],
+        # Equipment — weapons in equipped list get damage notation added
+        "equipped": format_equipped_items(kit["equipped"], mods["STR"]["melee"]),
         "packed": kit["packed"],
         "unencumbering": kit.get("unencumbering", []),
         
@@ -237,6 +237,28 @@ def generate_character(options: dict) -> dict:
         character["dex_ac_mod"] = mods["DEX"]["ac"] + 2  # +2 vs large
     
     return character
+
+
+def format_equipped_items(equipped: list, str_melee_mod: int) -> list:
+    """
+    Return equipped list with damage notation appended to weapons.
+    E.g. "Dagger" → "Dagger (1d4 dmg)", "Sword" with +1 STR → "Sword (1d8+1 dmg)"
+    Armour and shields are left as-is.
+    """
+    result = []
+    for item in equipped:
+        if item in equipment.WEAPONS:
+            base_dmg = equipment.WEAPONS[item]["damage"]
+            if str_melee_mod > 0:
+                dmg_str = f"{base_dmg}+{str_melee_mod}"
+            elif str_melee_mod < 0:
+                dmg_str = f"{base_dmg}{str_melee_mod}"
+            else:
+                dmg_str = base_dmg
+            result.append(f"{item} ({dmg_str} dmg)")
+        else:
+            result.append(item)
+    return result
 
 
 def roll_ability_scores(method: str) -> dict:
