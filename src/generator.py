@@ -200,8 +200,8 @@ def generate_character(options: dict) -> dict:
         "open_stuck_door": f"{mods['STR']['open_doors']}-in-6",
         "listen_at_door": "—",
 
-        # Languages & Literacy — deduplicate, keep unique
-        "languages": ", ".join(sorted(set(languages))),
+        # Languages & Literacy — deduplicate, exclude Alignment language (implicit)
+        "languages": ", ".join(sorted(set(l for l in languages if l != "Alignment"))),
 
         "literate": literacy == "Literate",
 

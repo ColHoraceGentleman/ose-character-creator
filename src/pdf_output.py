@@ -6,10 +6,29 @@ Field names match exactly the 71 fillable fields in assets/character-sheet.pdf.
 
 import os
 from pypdf import PdfReader, PdfWriter
-from pypdf.generic import NameObject, TextStringObject
+from pypdf.generic import NameObject, TextStringObject, NumberObject
 
 
 SHEET_PATH = os.path.join(os.path.dirname(__file__), "..", "assets", "character-sheet.pdf")
+
+# Fields that should be center-aligned (numbers/short values in small cells)
+CENTERED_FIELDS = {
+    # Ability scores
+    "STR 2", "INT 2", "WIS 2", "DEX 2", "CON 2", "CHA 2",
+    # Ability modifiers
+    "STR Melee Mod", "DEX Missile Mod", "DEX AC Mod 2",
+    "Initiative DEX Mod 2", "Reactions CHA Mod 2", "Magic Save Mod 2", "CON HP Mod 2",
+    # Combat
+    "HP 2", "Max HP 2", "AC 2", "Unarmoured AC 2", "Attack Bonus",
+    # Saving throws
+    "Death Save 2", "Wands Save 2", "Paralysis Save 2", "Breath Save 2", "Spells Save 2",
+    # Exploration
+    "Find Room Trap 2", "Find Secret Door 2", "Open Stuck Door 2", "Listen at Door 2",
+    # Movement
+    "Encounter Movement 2", "Exporation Movement 2", "Overland Movement 2",
+    # Level
+    "Level 2",
+}
 
 
 def fmt_mod(val: int) -> str:
@@ -116,11 +135,25 @@ def fill_character_sheet(character: dict, output_path: str) -> str:
         "XP for Next Level 2": fmt_xp(character.get("xp_next_level", "")),
         "PR XP Bonus 2":    character.get("pr_xp_bonus", "None"),
 
-        # Item-Based Encumbrance (OSE Carrion Crawler #2)
-        # Packed STR thresholds (base + STR melee mod) — shown in the packed items header area
-        "Packed STR 13+": str(character.get("packed_str_threshold_13", 10)),
-        "Packed STR 16+": str(character.get("packed_str_threshold_16", 12)),
-        "Packed STR 18+": str(character.get("packed_str_threshold_18", 14)),
+        # Item-Based Encumbrance — Packed STR header slots
+        # These 3 slots are only available to high-STR characters.
+        # If STR meets the threshold, show the item count limit (base + STR melee mod).
+        # If STR does NOT meet the threshold, mark as unavailable.
+        "Packed STR 13+": (
+            str(character.get("packed_str_threshold_13", 10))
+            if character.get("str", 0) >= 13
+            else "Insufficient STR Score - Slot Unavailable"
+        ),
+        "Packed STR 16+": (
+            str(character.get("packed_str_threshold_16", 12))
+            if character.get("str", 0) >= 16
+            else "Insufficient STR Score - Slot Unavailable"
+        ),
+        "Packed STR 18+": (
+            str(character.get("packed_str_threshold_18", 14))
+            if character.get("str", 0) >= 18
+            else "Insufficient STR Score - Slot Unavailable"
+        ),
 
         # Unencumbering items (tiny items: holy symbol, garlic, rings, etc.)
         "Unencumbering Items": ", ".join(character.get("unencumbering", [])),
@@ -132,23 +165,9 @@ def fill_character_sheet(character: dict, output_path: str) -> str:
         fields[f"Equipped {i}"] = item
 
     # Equipment — Packed slots (up to 16)
-    # First 3 packed slots require STR 13+, 16+, 18+ respectively
-    # If character STR doesn't meet the threshold, label as unavailable
     packed = character.get("packed", [])
-    str_score = character.get("str", 10)
-    for i in range(1, 17):
-        if i <= len(packed):
-            fields[f"Packed {i}"] = packed[i - 1]
-        else:
-            # Empty slot — check if it should be marked unavailable due to STR
-            if i == 1 and str_score < 13:
-                fields[f"Packed {i}"] = "Insufficient STR Score - Slot Unavailable"
-            elif i == 2 and str_score < 16:
-                fields[f"Packed {i}"] = "Insufficient STR Score - Slot Unavailable"
-            elif i == 3 and str_score < 18:
-                fields[f"Packed {i}"] = "Insufficient STR Score - Slot Unavailable"
-            else:
-                fields[f"Packed {i}"] = ""
+    for i, item in enumerate(packed[:16], start=1):
+        fields[f"Packed {i}"] = item
 
     # Literacy checkbox
     literate = character.get("literate", False)
@@ -168,7 +187,9 @@ def fill_character_sheet(character: dict, output_path: str) -> str:
 
 
 def _fill_fields(writer: PdfWriter, fields: dict):
-    """Fill all text/select form fields by walking annotations."""
+    """Fill all text/select form fields by walking annotations.
+    Fields in CENTERED_FIELDS get /Q = 1 (center alignment).
+    """
     for page in writer.pages:
         if "/Annots" not in page:
             continue
@@ -177,10 +198,13 @@ def _fill_fields(writer: PdfWriter, fields: dict):
             field_name = annot.get("/T")
             if field_name and field_name in fields:
                 value = str(fields[field_name])
-                annot.update({
+                update = {
                     NameObject("/V"): TextStringObject(value),
                     NameObject("/DV"): TextStringObject(value),
-                })
+                }
+                if field_name in CENTERED_FIELDS:
+                    update[NameObject("/Q")] = NumberObject(1)  # 0=left, 1=center, 2=right
+                annot.update(update)
 
 
 def _set_checkbox(writer: PdfWriter, field_name: str, checked: bool):
