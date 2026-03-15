@@ -117,12 +117,10 @@ def fill_character_sheet(character: dict, output_path: str) -> str:
         "PR XP Bonus 2":    character.get("pr_xp_bonus", "None"),
 
         # Item-Based Encumbrance (OSE Carrion Crawler #2)
-        # Packed STR threshold fields show how many packed items the character
-        # can carry before slowing, adjusted for their STR melee modifier.
-        # Base thresholds: 10/12/14/16 — STR mod shifts each up by that amount.
-        "Packed STR 13+": str(10 + character.get("str_melee_mod", 0)),
-        "Packed STR 16+": str(12 + character.get("str_melee_mod", 0)),
-        "Packed STR 18+": str(14 + character.get("str_melee_mod", 0)),
+        # Packed STR thresholds (base + STR melee mod) — shown in the packed items header area
+        "Packed STR 13+": str(character.get("packed_str_threshold_13", 10)),
+        "Packed STR 16+": str(character.get("packed_str_threshold_16", 12)),
+        "Packed STR 18+": str(character.get("packed_str_threshold_18", 14)),
 
         # Unencumbering items (tiny items: holy symbol, garlic, rings, etc.)
         "Unencumbering Items": ", ".join(character.get("unencumbering", [])),
@@ -134,9 +132,23 @@ def fill_character_sheet(character: dict, output_path: str) -> str:
         fields[f"Equipped {i}"] = item
 
     # Equipment — Packed slots (up to 16)
+    # First 3 packed slots require STR 13+, 16+, 18+ respectively
+    # If character STR doesn't meet the threshold, label as unavailable
     packed = character.get("packed", [])
-    for i, item in enumerate(packed[:16], start=1):
-        fields[f"Packed {i}"] = item
+    str_score = character.get("str", 10)
+    for i in range(1, 17):
+        if i <= len(packed):
+            fields[f"Packed {i}"] = packed[i - 1]
+        else:
+            # Empty slot — check if it should be marked unavailable due to STR
+            if i == 1 and str_score < 13:
+                fields[f"Packed {i}"] = "Insufficient STR Score - Slot Unavailable"
+            elif i == 2 and str_score < 16:
+                fields[f"Packed {i}"] = "Insufficient STR Score - Slot Unavailable"
+            elif i == 3 and str_score < 18:
+                fields[f"Packed {i}"] = "Insufficient STR Score - Slot Unavailable"
+            else:
+                fields[f"Packed {i}"] = ""
 
     # Literacy checkbox
     literate = character.get("literate", False)

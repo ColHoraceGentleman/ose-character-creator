@@ -182,3 +182,28 @@ MU_ELF_SPELLS_L1 = [
     "Sleep",
     "Ventriloquism",
 ]
+
+# Page numbers in OSE Classic Players Rules Tome v1.0
+SPELL_PAGE_NUMBERS = {
+    "Charm Person":        65,
+    "Detect Magic":        64,
+    "Floating Disc":       65,
+    "Hold Portal":         65,
+    "Light":               50,
+    "Magic Missile":       65,
+    "Protection from Evil": 64,
+    "Read Languages":      36,
+    "Read Magic":          65,
+    "Shield":              46,
+    "Sleep":               65,
+    "Ventriloquism":       65,
+}
+
+# Abilities that are already shown elsewhere on the character sheet
+# (Exploration section shows LD/OD/SD/FT, so these need not appear in Abilities field)
+ABILITIES_SHOWN_ELSEWHERE = {
+    "Listen at doors 2-in-6",
+    "Detect construction tricks 2-in-6",
+    "Detect room traps 2-in-6",
+    "Detect secret doors 2-in-6 (when searching)",
+}

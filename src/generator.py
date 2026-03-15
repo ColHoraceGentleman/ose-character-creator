@@ -96,15 +96,22 @@ def generate_character(options: dict) -> dict:
         }
     
     # Step 17: Spells (for Magic-User or Elf)
-    spells_known = ""
-    if classes.CLASSES[char_class].get("spellcaster"):
-        spell_list = classes.MU_ELF_SPELLS_L1
-        spells_known = random.choice(spell_list)
-    
+    spells_known = []
+    if classes.CLASSES[char_class].get("spellcaster") and char_class != "Cleric":
+        spell_list = list(classes.MU_ELF_SPELLS_L1)
+        give_read_magic = options.get("give_read_magic", False)
+        if give_read_magic:
+            spells_known.append("Read Magic")
+            spell_list = [s for s in spell_list if s != "Read Magic"]
+        rand_spell = random.choice(spell_list)
+        spells_known.append(rand_spell)
+
     # Step 18: Notes
     notes = []
-    if spells_known:
-        notes.append(f"Spell: {spells_known}")
+    for spell in spells_known:
+        page = classes.SPELL_PAGE_NUMBERS.get(spell, "")
+        page_str = f" (p. {page})" if page else ""
+        notes.append(f"Spell: {spell}{page_str}")
     if char_class == "Thief":
         notes.append(f"Thief Skills: CS {thief_skills.get('CS', 'N/A')}, TR {thief_skills.get('TR', 'N/A')}, "
                     f"HN {thief_skills.get('HN', 'N/A')}, HS {thief_skills.get('HS', 'N/A')}, "
@@ -181,20 +188,30 @@ def generate_character(options: dict) -> dict:
         "overland_movement": mv["overland_movement"],
         "equipped_item_count": mv["equipped_item_count"],
         "packed_item_count": mv["packed_item_count"],
+
+        # Packed item STR thresholds for PDF (base + STR melee mod)
+        "packed_str_threshold_18": 14 + mods["STR"]["melee"],
+        "packed_str_threshold_16": 12 + mods["STR"]["melee"],
+        "packed_str_threshold_13": 10 + mods["STR"]["melee"],
         
         # Skills
         "find_room_trap": "—",
         "find_secret_door": "—",
         "open_stuck_door": f"{mods['STR']['open_doors']}-in-6",
         "listen_at_door": "—",
-        
-        # Languages & Literacy
-        "languages": ", ".join(languages),
+
+        # Languages & Literacy — deduplicate, keep unique
+        "languages": ", ".join(sorted(set(languages))),
+
         "literate": literacy == "Literate",
-        
-        # Special
-        "abilities": "; ".join(special_abilities) if special_abilities else "—",
-        "notes": "; ".join(notes) if notes else "—",
+
+        # Special abilities — filter out anything already shown in Exploration
+        # (e.g., Listen at doors appears under Exploration, no need to repeat)
+        "abilities": "\n".join(
+            a for a in special_abilities
+            if a not in classes.ABILITIES_SHOWN_ELSEWHERE
+        ),
+        "notes": "\n".join(notes) if notes else "",
         
         # XP
         "xp": xp,

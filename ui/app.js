@@ -101,6 +101,7 @@ form.addEventListener("submit", async function (e) {
     equipment_mode: formData.get("equipment_mode"),
     reroll_low_hp: formData.get("reroll_low_hp") === "on",
     reroll_subpar: formData.get("reroll_subpar") === "on",
+    give_read_magic: formData.get("give_read_magic") === "on",
   };
 
   generateBtn.disabled = true;
