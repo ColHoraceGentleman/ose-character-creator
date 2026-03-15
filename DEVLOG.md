@@ -117,23 +117,74 @@ Removed dead descending `ac` keys from `ARMOUR` dict in `equipment.py` (they wer
 
 ---
 
+## 2026-03-14 (Evening) — PDF Polish Pass
+
+Extensive PDF output fixes based on review of generated character sheets.
+
+### PDF Output Fixes
+
+**Zero modifiers:** `fmt_mod()` now returns `""` (blank) instead of `"—"` for zero values. All modifier cells are blank when the modifier is 0.
+
+**Exploration skills:** `fmt_skill()` strips the `-in-6` suffix — the sheet already prints it. `"2-in-6"` → `"2"`, blank if no ability.
+
+**Multiline fields:** Abilities/Skills/Weapons and Notes are now newline-separated (one entry per line) instead of semicolon-separated.
+
+**XP thousands separator:** `fmt_xp()` formats large numbers with commas (e.g. `2,000`, `4,000`).
+
+**Class/Title/AL spacing:** Leading space added to Class, Title, and Alignment fields so text isn't crammed against the label.
+
+**Center alignment:** `CENTERED_FIELDS` set added. All ability scores, modifiers, saving throws, combat stats, exploration skills, movement, level, and XP fields are now center-aligned via `/Q = 1` on PDF annotations.
+
+**Languages:** Alignment language removed from the Languages field (it's implicit). Duplicates deduplicated.
+
+**Abilities deduplication:** Abilities already shown in the Exploration section (Listen at doors, Detect secret doors, etc.) are filtered out of the Abilities/Skills/Weapons field. Blank if nothing remains.
+
+**Spell page numbers:** Spell entries in Notes now include the rulebook page: `"Spell: Sleep (p. 65)"`. All 12 L1 MU/Elf spells mapped in `classes.py → SPELL_PAGE_NUMBERS`.
+
+**Read Magic toggle:** New UI checkbox — "Give spellcasters Read Magic by default". If checked, Read Magic is granted automatically and excluded from the random spell roll. Both MU and Elf receive it. Option key: `give_read_magic`.
+
+**Weapon damage notation:** Melee weapons in the Equipped list now include damage: `"Sword (1d8 dmg)"`, `"Sword (1d8+2 dmg)"` with STR melee modifier applied. Missile-only weapons omit the STR mod. Implemented in `generator.py → format_equipped_items()`.
+
+### Packed Items STR Logic (Fixed Twice)
+
+The sheet has 6 STR-gated slots at the top of the Packed Items section:
+- `Packed STR 18+` — available only if STR ≥ 18
+- `Packed STR 16+` — available only if STR ≥ 16
+- `Packed STR 13+` — available only if STR ≥ 13
+- `Packed 1` (STR 9+) — available only if STR ≥ 9
+- `Packed 2` (STR 6+) — available only if STR ≥ 6
+- `Packed 3` (STR 4+) — available only if STR ≥ 4
+- `Packed 4`–`16` — available to all characters
+
+If a character's STR doesn't meet the threshold, the slot shows: `"Insufficient STR Score - Slot Unavailable"`. Items are shifted down to the first available slot. When STR qualifies for `Packed STR 13+/16+/18+`, those fields show the item count limit (10/12/14 + STR melee mod).
+
+### Movement Threshold Clarification
+
+Packed item thresholds are counted from the **top of the visible sheet** (including the 6 STR-gated header slots):
+- Sheet slots 1–13 → 120' (40') — corresponds to 0–10 actual items
+- Sheet slots 14–15 → 90' (30') — corresponds to 11–12 actual items
+- Sheet slots 16–17 → 60' (20') — corresponds to 13–14 actual items
+- Sheet slots 18–19 → 30' (10') — corresponds to 15–16 actual items
+
+Equipped thresholds unchanged: 0–3=120', 4–5=90', 6–7=60', 8–9=30'.
+
+---
+
 ## Upcoming — Phase 2
 
-Planned work for next session:
-
-- [ ] Fix Cleric armour priority bug
 - [ ] Magic item generation (toggle + options)
 - [ ] Multiple characters per run / party sheet
 - [ ] Preferences UI (dice method default, spell selection, auto-kit strictness)
 - [ ] Manual equipment shopping mode
-- [ ] QA agent review of Phase 1 code
+- [ ] QA agent review of full codebase
+- [ ] Name generation (random fantasy names per race/class)
 
 ---
 
-## Future Sessions — How to Pick Up
+## How to Pick Up Next Session
 
-1. Read this DEVLOG
-2. Read SPEC.md for full rules and field mappings
-3. Run `python3 server.py 8080` to test current state
-4. Check "Known Issues" section above for what needs fixing
-5. Check "Upcoming — Phase 2" for next tasks
+1. Read DEVLOG.md (this file) — start here
+2. Read SPEC.md — full rules, field mappings, design decisions
+3. Run `python3 server.py 8080` → http://localhost:8080
+4. Generate a character from each class and download the PDF to verify output
+5. Check "Upcoming — Phase 2" above for next tasks

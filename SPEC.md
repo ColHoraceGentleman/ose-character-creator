@@ -368,6 +368,7 @@ The generation UI presents the following choices before generating:
 | HP reroll | Allow reroll of 1s and 2s (toggle) |
 | Sub-par character reroll | Allow full reroll if all stats ≤ 8 (toggle) |
 | Equipment | Auto basic kit / Manual shopping |
+| Give Read Magic | If checked: spellcasters (MU/Elf) always receive Read Magic; random spell excludes it (toggle) |
 | Character name | Auto-generate / Enter manually |
 
 ---
@@ -428,26 +429,29 @@ The output is a filled-in PDF character sheet matching the official OSE layout.
 | `Paralysis Save 2` | Saving throw vs Paralysis/Petrify |
 | `Breath Save 2` | Saving throw vs Breath Attacks |
 | `Spells Save 2` | Saving throw vs Spells |
-| `Encounter Movement 2` | 40' (default) |
-| `Exporation Movement 2` | 120' (default) |
-| `Overland Movement 2` | 24 miles/day (default) |
-| `Find Room Trap 2` | Class ability value (Dwarf: 2-in-6, others: —) |
-| `Find Secret Door 2` | Class ability value (Elf: 2-in-6, others: —) |
-| `Open Stuck Door 2` | STR open doors value |
-| `Listen at Door 2` | Class ability value (Dwarf/Elf/Halfling: 2-in-6, others: 1-in-6) |
-| `Languages 2` | Known languages (comma-separated) |
-| `Literacy 2` | Checkbox — check if literate |
-| `Abilities, Skills, Weapons 2` | Class special abilities summary |
-| `Notes 2` | Spells known (MU/Elf), other notes |
-| `PR XP Bonus 2` | Prime requisite XP modifier |
-| `XP 2` | 0 |
-| `XP for Next Level 2` | XP needed for 2nd level |
-| `Equipped 1`–`9` | Equipped items (armour, weapons, shield) |
-| `Packed 1`–`16` | Packed items (adventuring gear) |
+| `Encounter Movement 2` | Calculated from item encumbrance (e.g. 30') — centered |
+| `Exporation Movement 2` | Calculated from item encumbrance (e.g. 90') — centered |
+| `Overland Movement 2` | Calculated from item encumbrance (e.g. 18) — centered |
+| `Find Room Trap 2` | Number only, no "-in-6" (sheet prints it). Blank if no ability. Centered. |
+| `Find Secret Door 2` | Number only. Blank if no ability. Centered. |
+| `Open Stuck Door 2` | Number only (e.g. "2"). Centered. |
+| `Listen at Door 2` | Number only. Blank if no ability. Centered. |
+| `Languages 2` | Known languages, comma-separated. Alignment language excluded. Deduplicated. |
+| `Literacy 2` | Checkbox — checked if literate |
+| `Abilities, Skills, Weapons 2` | Class special abilities, one per line. Abilities already shown in Exploration are excluded. Blank if nothing to add. Weapons listed in Equipped — not repeated here. |
+| `Notes 2` | Spells (with page number, e.g. "Spell: Sleep (p. 65)"), remaining gold, thief skills. One per line. |
+| `PR XP Bonus 2` | Prime requisite XP modifier. Centered. |
+| `XP 2` | 0. Centered. |
+| `XP for Next Level 2` | XP needed for 2nd level, with thousands comma (e.g. "2,000"). Centered. |
+| `Equipped 1`–`9` | Equipped items. Weapons include damage notation and STR mod (e.g. "Sword (1d8+1 dmg)"). |
+| `Packed 1` | STR 9+ slot — "Insufficient STR Score - Slot Unavailable" if STR < 9. Items shift to first available slot. |
+| `Packed 2` | STR 6+ slot — unavailable if STR < 6. |
+| `Packed 3` | STR 4+ slot — unavailable if STR < 4. |
+| `Packed 4`–`16` | Regular packed item slots — available to all characters. |
 | `Unencumbering Items` | Tiny/non-encumbering items (holy symbol, garlic, rings, etc.) |
-| `Packed STR 13+` | Max packed items at 120' mv for this STR (base 10 + STR melee mod) |
-| `Packed STR 16+` | Max packed items at 90' mv for this STR (base 12 + STR melee mod) |
-| `Packed STR 18+` | Max packed items at 60' mv for this STR (base 14 + STR melee mod) |
+| `Packed STR 13+` | If STR ≥ 13: shows item count limit (10 + STR melee mod). If STR < 13: "Insufficient STR Score - Slot Unavailable". |
+| `Packed STR 16+` | If STR ≥ 16: shows item count limit (12 + STR melee mod). If STR < 16: "Insufficient STR Score - Slot Unavailable". |
+| `Packed STR 18+` | If STR ≥ 18: shows item count limit (14 + STR melee mod). If STR < 18: "Insufficient STR Score - Slot Unavailable". |
 
 ---
 
@@ -485,12 +489,13 @@ ose-character-creator/
 
 ## Resolved Decisions
 
-1. **Character sheet PDF** — Using `assets/character-sheet.pdf` (OSE Character Sheet - Item Encumbrance). Field mapping to be done against this sheet.
-2. **Spell selection** — For MU/Elf at 1st level: **random** from the spell list.
-3. **Auto kit logic** — Strictly follow class restrictions. Always include class essentials (e.g. holy symbol for Cleric, thieves' tools for Thief, spell book notation for MU/Elf). Spend remaining gold on sensible gear within class limits.
+1. **Character sheet PDF** — Using `assets/character-sheet.pdf` (OSE Character Sheet - Item Encumbrance). Field mapping complete.
+2. **Spell selection** — For MU/Elf at 1st level: **random** from the spell list (default 12 spells). Page numbers from OSE Classic Rules Tome included in output. Read Magic option available via UI toggle.
+3. **Auto kit logic** — Strictly follow class restrictions. Always include class essentials (e.g. holy symbol for Cleric, thieves' tools for Thief). Spend remaining gold on sensible gear within class limits.
 4. **Name field** — Leave blank on the character sheet. Name generation is a future phase feature.
-5. **Armour Class system** — **Using optional Ascending AAC** (OSE Classic p. 32). Descending AC is not used anywhere in generation or output. This is a permanent project decision.
-6. **Encumbrance system** — **Using optional Item-Based Encumbrance** (OSE Carrion Crawler #2). Movement is calculated from item counts (1 item = one-handed, 2 = two-handed). Equipped and packed counts are checked independently; slower rate is used. STR melee modifier shifts packed thresholds. This is a permanent project decision.
+5. **Armour Class system** — **Using optional Ascending AAC** (OSE Classic p. 32). Descending AC is NOT used. This is a permanent project decision.
+6. **Encumbrance system** — **Using optional Item-Based Encumbrance** (OSE Carrion Crawler #2). Movement calculated from item counts. STR melee modifier shifts packed thresholds. Packed slots 1–3 gated by STR (9+, 6+, 4+). STR-gated header slots (13+, 16+, 18+) show item limits or "Insufficient STR Score". This is a permanent project decision.
+7. **Weapons** — Melee weapons listed in Equipped include damage die and STR melee modifier (e.g. "Sword (1d8+1 dmg)").
 
 ## Future Phase Notes
 
