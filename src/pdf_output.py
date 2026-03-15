@@ -28,6 +28,8 @@ CENTERED_FIELDS = {
     "Encounter Movement 2", "Exporation Movement 2", "Overland Movement 2",
     # Level
     "Level 2",
+    # XP section (bottom of page 2)
+    "XP 2", "XP for Next Level 2", "PR XP Bonus 2",
 }
 
 
@@ -64,6 +66,25 @@ def fmt_multiline(items) -> str:
     return "\n".join(p.strip() for p in str(items).split(";") if p.strip())
 
 
+def fmt_equipped_item(item_name: str, str_melee_mod: int = 0) -> str:
+    """Format an equipped item. Melee weapons include damage + STR mod.
+    E.g. 'Sword' → 'Sword (1d8+2 dmg)', 'Plate mail' → 'Plate mail'."""
+    from src.equipment import WEAPONS
+    if item_name not in WEAPONS:
+        return item_name  # Armour, shield, or unknown — no damage notation
+    weapon = WEAPONS[item_name]
+    qualities = weapon.get("qualities", [])
+    # Only apply STR mod to melee weapons, not missile-only weapons
+    is_melee = "Melee" in qualities
+    damage = weapon.get("damage", "")
+    if not damage:
+        return item_name
+    if is_melee and str_melee_mod != 0:
+        mod_str = f"+{str_melee_mod}" if str_melee_mod > 0 else str(str_melee_mod)
+        return f"{item_name} ({damage}{mod_str} dmg)"
+    return f"{item_name} ({damage} dmg)"
+
+
 def fill_character_sheet(character: dict, output_path: str) -> str:
     """
     Fill the OSE character sheet PDF with character data.
@@ -76,12 +97,12 @@ def fill_character_sheet(character: dict, output_path: str) -> str:
 
     # Map character dict → PDF field names
     fields = {
-        # Identity
+        # Identity — leading space to prevent text cramming against label
         "Name 2":           "",
-        "Character Class 2": character.get("character_class", ""),
-        "Title 2":          character.get("title", ""),
+        "Character Class 2": " " + character.get("character_class", ""),
+        "Title 2":          " " + character.get("title", ""),
         "Level 2":          str(character.get("level", 1)),
-        "Alignment 2":      character.get("alignment", ""),
+        "Alignment 2":      " " + character.get("alignment", ""),
 
         # Ability Scores
         "STR 2":            str(character.get("str", "")),
@@ -160,6 +181,7 @@ def fill_character_sheet(character: dict, output_path: str) -> str:
     }
 
     # Equipment — Equipped slots (up to 9)
+    # Damage notation is already included in item names by generator.py
     equipped = character.get("equipped", [])
     for i, item in enumerate(equipped[:9], start=1):
         fields[f"Equipped {i}"] = item

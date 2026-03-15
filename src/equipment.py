@@ -192,18 +192,36 @@ def count_encumbrance(items: list, containers_in_use: bool = True) -> int:
 # Equipped and packed counts are checked independently; the slower rate is used.
 # STR melee modifier shifts the packed thresholds.
 #
-# Equipped:   0-3 → 120', 4-5 → 90', 6-7 → 60', 8-9 → 30', 10+ → 0
-# Packed:    0-10 → 120', 11-12 → 90', 13-14 → 60', 15-16 → 30', 17+ → 0
-# (Packed thresholds each shift up by the character's STR melee modifier.)
+# Item-Based Encumbrance movement table (OSE CC2).
+# Packed item slots counted from TOP of the packed items section (including STR header slots).
+# Sheet layout: slots 1-3 = STR 18+/16+/13+ headers, slots 4-6 = STR 9+/6+/4+ slots,
+# slots 7+ = unlabeled regular slots. Items only start filling at slot 4 (when STR qualifies).
+#
+# Movement thresholds counting from sheet top:
+#   Packed slots 1-13 → 120'  (corresponds to 0-10 actual items)
+#   Packed slots 14-15 → 90'   (corresponds to 11-12 actual items)
+#   Packed slots 16-17 → 60'   (corresponds to 13-14 actual items)
+#   Packed slots 18-19 → 30'   (corresponds to 15-16 actual items)
+#   Packed slot 20+ → cannot move
+#
+# Equipped thresholds:
+#   0-3 equipped → 120', 4-5 → 90', 6-7 → 60', 8-9 → 30', 10+ → cannot move
+# (STR melee modifier shifts packed item thresholds up.)
 
 ENCUMBRANCE_TABLE = [
-    # (max_equipped, max_packed_base, movement_exploration, movement_encounter, movement_overland)
+    # (max_equipped, max_packed_items, exploration, encounter, overland)
+    # Sheet slot numbers = item count + 3 (for the 3 STR header slots 18+/16+/13+)
+    # Patrick's thresholds by sheet slot → converted to item count:
+    #   slots 1-13 = items 0-10 → 120'
+    #   slots 14-15 = items 11-12 → 90'
+    #   slots 16-17 = items 13-14 → 60'
+    #   slots 18-19 = items 15-16 → 30'
     (3,  10, "120'", "40'",  "24"),
     (5,  12, "90'",  "30'",  "18"),
     (7,  14, "60'",  "20'",  "12"),
     (9,  16, "30'",  "10'",  "6"),
 ]
-# Beyond 9 equipped or 16 packed → cannot move
+# Beyond 9 equipped or 16 packed items → cannot move
 
 
 def calculate_movement(equipped_items: list, packed_items: list, str_melee_mod: int = 0) -> dict:
