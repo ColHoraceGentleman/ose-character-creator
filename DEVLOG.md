@@ -7,37 +7,53 @@
 ### What Was Added
 
 1. **AC Mode toggle** — AAC (Ascending) or DAC (Descending/THAC0)
-   - AAC: AC 10-19, shows Attack Bonus field
-   - DAC: AC 9-(–6), fills THAC0-THAC9 attack matrix (THAC0 = 19 at 1st level)
+   - AAC: AC 10–19, shows Attack Bonus field
+   - DAC: AC 9 base (lower = better), fills THAC0–THAC9 attack matrix
+   - THAC0 = 19 at 1st level; roll to hit AC n = THAC0 - n - STR mod, clamped 1–20
+   - Lower AC (better armour) requires a higher roll to hit ✓
 
 2. **Encumbrance Mode toggle** — Item-based (existing) or Standard (weight-based)
-   - Item-based: uses packed/equipped item slots, STR thresholds
-   - Standard: calculates cn weights, fills encumbrance weight fields (TR/EQ/Total)
+   - Item-based: packed/equipped item slots, STR thresholds (unchanged)
+   - Standard: sums cn weights, fills TR/EQ/Total encumbrance fields
+   - Movement thresholds: 0–400=120', 401–800=90', 801–1200=60', 1201–1600=30'
 
-3. **Race/Class split** for the new PDF sheet:
-   - Demi-humans (Dwarf/Elf/Halfling): Race = class, Class = blank
+3. **Race/Class split** (new sheets have separate Race + Class fields):
+   - Demi-humans (Dwarf/Elf/Halfling): Race = class name, Class = blank
    - Humans: Race = "Human", Class = class name
+   - AAC/item sheet (no Race field): combined as "Human Fighter", "Dwarf", etc.
 
-4. **Old sheet** (AAC + item-based only): No Race field, so:
-   - Demi-humans: "Dwarf", "Elf", "Halfling" in Class field
-   - Humans: "Human Fighter", "Human Cleric", etc.
+4. **Four dedicated PDF sheets** (one per combo):
+   - `assets/sheet-aac-item.pdf`     — AAC + Item-based
+   - `assets/sheet-aac-standard.pdf` — AAC + Standard encumbrance
+   - `assets/sheet-dac-item.pdf`     — DAC + Item-based
+   - `assets/sheet-dac-standard.pdf` — DAC + Standard encumbrance
 
-5. **New character sheet PDF** (`assets/character-sheet-new.pdf`) — supports DAC + standard encumbrance
+5. **Gold in GP field** — remaining gold fills the GP coin field on standard sheets
+
+### Bugs Fixed
+- `chosen_class` was ignored when dice method was non-optimized (class randomised instead)
+- DAC attack matrix was reversed (AC 9 showed as hardest to hit instead of easiest)
+- STR melee modifier was not applied to the attack matrix
+- Sheet selection was mapping AAC→new sheet and DAC→old sheet (backwards)
+- Browser cached old `app.js` missing `ac_mode` — cache-busted version strings
 
 ### Files Changed
 - `src/equipment.py` — added ARMOUR_DAC_BONUS, STANDARD_ENCUMBRANCE_WEIGHTS, calculate_standard_encumbrance()
-- `src/generator.py` — added ac_mode, encumbrance_mode, race/class fields, fixed chosen_class bug
-- `src/pdf_output.py` — full rewrite to support 4 sheet combos (old/new, AAC/DAC, item/standard)
-- `ui/index.html` — added AC Mode dropdown, enabled Standard encumbrance option
+- `src/generator.py` — ac_mode/encumbrance_mode options, race/class fields, DAC matrix, gold_remaining, chosen_class fix
+- `src/pdf_output.py` — full rewrite: 4 sheet paths, separate p1/p2 field builders per sheet family
+- `ui/index.html` — AC Mode dropdown, Standard encumbrance enabled, cache-busted
 - `ui/app.js` — passes ac_mode to server
-- `assets/character-sheet-new.pdf` — copied from user's template
+- `assets/sheet-aac-item.pdf` — AAC + item-based sheet
+- `assets/sheet-aac-standard.pdf` — AAC + standard encumbrance sheet
+- `assets/sheet-dac-item.pdf`  — DAC + item-based sheet
+- `assets/sheet-dac-standard.pdf` — DAC + standard encumbrance sheet
 
 ### Testing
-All 4 combos verified:
-- AAC + item_based → old sheet (original)
-- AAC + standard → new sheet
-- DAC + item_based → new sheet
-- DAC + standard → new sheet
+All 4 combos verified (Fighter, Dwarf, Elf, Halfling, Cleric, MU, Thief):
+- AAC + item_based ✅
+- AAC + standard ✅
+- DAC + item_based ✅
+- DAC + standard ✅
 
 ---
 

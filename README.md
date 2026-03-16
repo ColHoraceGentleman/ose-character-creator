@@ -21,7 +21,8 @@ Click **Generate Character**, choose your options, and hit the download button t
 | Phase | Status | Description |
 |-------|--------|-------------|
 | Phase 1 | ✅ Complete | Character generator + PDF output + local UI |
-| Phase 2 | 🔜 Planned | Magic items, multiple characters, preferences UI |
+| Phase 1.5 | ✅ Complete | DAC mode, standard encumbrance, race/class fields, 4 sheet variants |
+| Phase 2 | 🔜 Planned | Magic items, multiple characters, manual equipment shopping |
 | Phase 3 | 🔜 Planned | Web hosting on www.muckdart.com |
 
 ---
@@ -45,7 +46,10 @@ ose-character-creator/
 ├── DEVLOG.md              # Dev log
 ├── README.md              # This file
 ├── assets/
-│   └── character-sheet.pdf   # Official OSE blank sheet (71 form fields)
+│   ├── sheet-aac-item.pdf     # AAC + Item-based encumbrance sheet
+│   ├── sheet-aac-standard.pdf # AAC + Standard encumbrance sheet
+│   ├── sheet-dac-item.pdf     # DAC + Item-based encumbrance sheet
+│   └── sheet-dac-standard.pdf # DAC + Standard encumbrance sheet
 ├── src/
 │   ├── dice.py            # Dice rolling functions
 │   ├── ability_scores.py  # All ability modifier tables
@@ -90,44 +94,22 @@ Original PDF: `~/Downloads/OSE Classic Players Rules Tome v1-0.pdf`
 
 ---
 
-## ⚠️ Critical Design Decisions
+## Options
 
-### Armour Class — Ascending (AAC)
-
-> **This project uses ASCENDING ARMOUR CLASS (AAC)** — the optional system from OSE Classic p. 32.
->
-> | Armour | AAC |
-> |--------|-----|
-> | Unarmoured | 10 |
-> | Leather | 12 |
-> | Chainmail | 14 |
-> | Plate mail | 16 |
-> | Shield | +1 bonus |
->
-> Higher AAC = better protection. **Descending AC is not used anywhere.**
-
-### Encumbrance — Item-Based (OSE CC2)
-
-> **This project uses ITEM-BASED ENCUMBRANCE** from OSE Carrion Crawler #2.
->
-> - Characters carry a number of **items** (1 item = one-handed, 2 items = two-handed)
-> - Movement slows based on equipped and packed item counts separately
-> - STR melee modifier shifts the **packed** item thresholds up (stronger = carry more)
-> - Tiny items (garlic, holy symbols, rings) are **non-encumbering**
-> - Containers (backpacks, sacks) only count when **not in use**
->
-> | Equipped | Packed | Movement |
-> |----------|--------|----------|
-> | 0–3 | 0–10 | 120' (40') |
-> | 4–5 | 11–12 | 90' (30') |
-> | 6–7 | 13–14 | 60' (20') |
-> | 8–9 | 15–16 | 30' (10') |
-> | 10+ | 17+ | Cannot move |
->
-> Both equipped and packed are checked; the slower rate is used.
+| Option | Values | Notes |
+|--------|--------|-------|
+| Armour Class | AAC (Ascending) / DAC (Descending) | DAC fills THAC0–9 matrix; AAC fills Attack Bonus |
+| Encumbrance | Item-based / Standard (weight) | Item-based uses OSE CC2 item counts; Standard uses cn weights |
+| Class | Random or specific | Optimized dice methods available for chosen class |
+| Alignment | Any combo of L/N/C, or blank | |
+| Dice Method | 3d6 or 4d6 drop lowest, in-order or optimized | |
+| HP Reroll | Toggle | Rerolls 1s and 2s on hit dice |
+| Discard sub-par | Toggle | Rerolls if all stats ≤ 8 |
+| Read Magic | Toggle | Gives MU/Elf Read Magic before random spell selection |
 
 ## Known Issues / Notes
 
-- Name field is always blank (intentional for Phase 1)
+- Name field is always blank (intentional — filled in by player)
 - Spell selection is random from 1st-level list (MU/Elf)
-- Equipment mode is auto-only in Phase 1 (manual shopping is Phase 2; toggle visible in UI)
+- Equipment mode is auto-only (manual shopping is Phase 2)
+- Coin denominations other than GP not generated (all starting wealth is in gp)

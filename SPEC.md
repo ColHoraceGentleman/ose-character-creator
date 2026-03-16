@@ -1,45 +1,75 @@
 # OSE Character Creator — SPEC.md
 ## Phase 1: Character Sheet Generator
 
-**Version:** 0.2 (Phase 1 complete + AAC switch)  
-**Last updated:** 2026-03-14  
-**Status:** Phase 1 complete ✅
+**Version:** 0.3 (Phase 1.5 — DAC + Standard Encumbrance)  
+**Last updated:** 2026-03-16  
+**Status:** Phase 1.5 complete ✅
 
 ---
 
 ## ⚠️ Critical Design Decisions
 
-### Armour Class — Ascending (AAC)
+### Armour Class — User-Selectable (AAC or DAC)
 
-> **This project uses the OPTIONAL ASCENDING ARMOUR CLASS (AAC) system** (OSE Classic p. 32).
->
-> - Higher AAC = better protection (opposite of standard descending AC)
-> - Unarmoured base = **AAC 10**
-> - Plate mail = **AAC 16**
-> - Shield = **+1 AAC bonus**
-> - DEX modifier applies directly to AAC
->
-> **Descending AC is NOT used anywhere in generation, output, or the PDF.**
+Both AC systems are now supported via the **Armour Class** dropdown in the UI.
 
-### Encumbrance — Item-Based (OSE Carrion Crawler #2)
+**AAC (Ascending)** — optional system from OSE Classic p. 32:
+- Higher = better. Unarmoured = 10, Plate mail = 16, Shield = +1
+- DEX modifier adds to AC
+- Fills the **Attack Bonus** field on the character sheet
 
-> **This project uses ITEM-BASED ENCUMBRANCE** from OSE Carrion Crawler #2.
->
-> - Characters carry a number of **items** (1 item = one-handed, 2 items = two-handed)
-> - Movement slows based on equipped and packed item counts separately
-> - STR melee modifier shifts the **packed** item thresholds up
-> - Tiny items (garlic, holy symbols, rings) are **non-encumbering**
-> - Containers (backpacks, sacks) only count when **not in use**
->
-> | Equipped | Packed | Movement |
-> |----------|--------|----------|
-> | 0–3 | 0–10 | 120' / 40' |
-> | 4–5 | 11–12 | 90' / 30' |
-> | 6–7 | 13–14 | 60' / 20' |
-> | 8–9 | 15–16 | 30' / 10' |
-> | 10+ | 17+ | Cannot move |
->
-> Both equipped and packed are checked; the slower rate is used.
+**DAC (Descending)** — traditional OSE system:
+- Lower = better. Unarmoured = 9, Plate mail = 3, Shield = -1
+- DEX modifier subtracts from AC
+- Fills the **THAC0–THAC9 attack matrix** on the character sheet
+- THAC0 = 19 at 1st level; roll to hit AC n = THAC0 - n - STR mod
+
+### Encumbrance — User-Selectable (Item-Based or Standard)
+
+Both encumbrance systems are supported via the **Encumbrance** dropdown.
+
+**Item-Based** (OSE Carrion Crawler #2):
+- Movement based on number of items carried (1-handed = 1 item, 2-handed = 2 items)
+- STR melee modifier shifts packed item thresholds upward
+- Tiny items (garlic, holy symbols) are non-encumbering
+- Containers only count when not in use
+
+| Equipped | Packed | Movement |
+|----------|--------|----------|
+| 0–3 | 0–10 | 120' / 40' |
+| 4–5 | 11–12 | 90' / 30' |
+| 6–7 | 13–14 | 60' / 20' |
+| 8–9 | 15–16 | 30' / 10' |
+| 10+ | 17+ | Cannot move |
+
+**Standard** (OSE Classic):
+- Movement based on total weight in coins (cn)
+- Fills TR/EQ/Total encumbrance fields on the sheet
+
+| Total cn | Movement |
+|----------|----------|
+| 0–400    | 120' / 40' |
+| 401–800  | 90' / 30' |
+| 801–1200 | 60' / 20' |
+| 1201–1600| 30' / 10' |
+
+### PDF Sheet Selection
+
+Four dedicated sheets, one per combo:
+
+| AC Mode | Encumbrance | Sheet |
+|---------|-------------|-------|
+| AAC | Item-based | `assets/sheet-aac-item.pdf` |
+| AAC | Standard   | `assets/sheet-aac-standard.pdf` |
+| DAC | Item-based | `assets/sheet-dac-item.pdf` |
+| DAC | Standard   | `assets/sheet-dac-standard.pdf` |
+
+### Race/Class Fields
+
+- **AAC sheet** (no Race field): Combined into Class — "Human Fighter", "Human Cleric", "Dwarf", etc.
+- **DAC sheets** (separate Race + Class fields):
+  - Demi-humans: Race = class name, Class = blank
+  - Humans: Race = "Human", Class = class name
 
 ---
 
