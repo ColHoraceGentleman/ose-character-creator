@@ -100,6 +100,7 @@ Phase 1 focuses purely on generating a valid, complete character and exporting i
 - Allow creation of characters above level 1
 - Multiple characters / party sheet
 - Carrion Crawler options
+- Max hit points at Level 1
 
 ---
 
