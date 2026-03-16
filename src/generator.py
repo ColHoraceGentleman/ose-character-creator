@@ -439,16 +439,22 @@ def _roll_optimized(num_rolls: int, roll_fn, chosen_class: str) -> dict:
 
 
 def _pick_random_class_by_xp(scores: dict) -> str:
-    """Helper: pick a random class from valid classes, preferring +5%/+10% XP bonus.
+    """Helper: pick a random class from valid classes by best available XP tier.
     
-    Never picks -10% classes. Falls back to 0% if no better option exists.
+    Priority order:
+    1. +5% or +10% classes (preferred)
+    2. 0% classes (None)
+    3. -10% classes (last resort — only when no better option exists)
+    -20% classes are never picked if any other option is available.
     """
     valid_classes = [c for c in classes.CLASSES if is_valid_class(c, scores)]
     if not valid_classes:
         return "Fighter"
     
-    bonus_plus = []   # +5% or +10%
-    bonus_none = []   # 0%
+    bonus_plus = []    # +5% or +10%
+    bonus_none = []    # 0% (None)
+    bonus_minus10 = [] # -10%
+    # -20% never picked unless literally no other option
     
     for c in valid_classes:
         bonus = calculate_pr_xp_bonus(scores, c)
@@ -456,14 +462,18 @@ def _pick_random_class_by_xp(scores: dict) -> str:
             bonus_plus.append(c)
         elif bonus == "None":
             bonus_none.append(c)
-        # -10% classes are ignored
+        elif bonus == "-10%":
+            bonus_minus10.append(c)
+        # -20% classes fall through and are never added
     
     if bonus_plus:
         return random.choice(bonus_plus)
     elif bonus_none:
         return random.choice(bonus_none)
+    elif bonus_minus10:
+        return random.choice(bonus_minus10)
     else:
-        return random.choice(valid_classes)
+        return random.choice(valid_classes)  # absolute last resort (-20% only)
 
 
 def determine_class_for_roll(options: dict) -> str:
