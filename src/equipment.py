@@ -66,6 +66,118 @@ ARMOUR = {
     "Plate mail": {"aac": 16, "cost": 60, "encumbrance": 2},  # Heavy armour = 2 items
     "Shield":     {"aac_bonus": 1, "cost": 10, "encumbrance": 1},
 }
+# DAC bonus = AAC - 10. For reference: Leather=+2, Chain=+4, Plate=+6, Shield=+1
+ARMOUR_DAC_BONUS = {
+    "Leather": 2,
+    "Chainmail": 4,
+    "Plate mail": 6,
+    "Shield": 1,
+}
+
+# Standard Encumbrance weights in coins (cn) - OSE Classic standard
+STANDARD_ENCUMBRANCE_WEIGHTS = {
+    # Armour (cn)
+    "Leather": 150,
+    "Chainmail": 400,
+    "Plate mail": 500,
+    "Shield": 100,
+    # Weapons (cn)
+    "Battle axe": 100,
+    "Club": 50,
+    "Crossbow": 100,
+    "Dagger": 10,
+    "Hand axe": 50,
+    "Javelin": 10,
+    "Lance": 100,
+    "Long bow": 30,
+    "Mace": 60,
+    "Polearm": 150,
+    "Short bow": 30,
+    "Short sword": 30,
+    "Silver dagger": 10,
+    "Sling": 20,
+    "Spear": 30,
+    "Staff": 40,
+    "Sword": 60,
+    "Two-handed sword": 150,
+    "Warhammer": 100,
+    # Adventuring Gear (cn)
+    "Backpack": 10,
+    "Crowbar": 50,
+    "Garlic": 10,
+    "Grappling hook": 80,
+    "Hammer (small)": 10,
+    "Holy symbol": 10,
+    "Holy water (vial)": 10,
+    "Iron spikes (12)": 100,
+    "Lantern": 30,
+    "Mirror (hand-sized, steel)": 5,
+    "Oil (1 flask)": 10,
+    "Pole (10' long, wooden)": 100,
+    "Rations (iron, 7 days)": 100,
+    "Rations (standard, 7 days)": 70,
+    "Rope (50')": 50,
+    "Sack (small)": 5,
+    "Sack (large)": 15,
+    "Stakes (3) and mallet": 30,
+    "Thieves' tools": 10,
+    "Tinder box": 10,
+    "Torches (6)": 60,
+    "Waterskin": 50,
+    "Wine (2 pints)": 50,
+    "Wolfsbane (1 bunch)": 10,
+}
+
+
+def calculate_standard_encumbrance(equipped: list, packed: list, unencumbering: list = None) -> dict:
+    """Calculate standard (weight-based) encumbrance and movement.
+    
+    Returns dict with equipment_cn, treasure_cn, total_cn, movement rates.
+    """
+    unencumbering = unencumbering or []
+    all_items = equipped + packed + unencumbering
+    
+    total_cn = 0
+    for item in all_items:
+        weight = STANDARD_ENCUMBRANCE_WEIGHTS.get(item, 0)
+        total_cn += weight
+    
+    equipment_cn = total_cn  # All gear counts as equipment weight at char gen
+    treasure_cn = 0
+    
+    # Movement thresholds (OSE Classic)
+    if total_cn <= 400:
+        exploration = "120'"
+        encounter = "40'"
+        overland = "24"
+    elif total_cn <= 800:
+        exploration = "90'"
+        encounter = "30'"
+        overland = "18"
+    elif total_cn <= 1200:
+        exploration = "60'"
+        encounter = "20'"
+        overland = "12"
+    elif total_cn <= 1600:
+        exploration = "30'"
+        encounter = "10'"
+        overland = "6"
+    else:
+        # Over encumbered - cannot move
+        exploration = "0'"
+        encounter = "0'"
+        overland = "0"
+    
+    return {
+        "equipment_cn": equipment_cn,
+        "treasure_cn": treasure_cn,
+        "total_cn": total_cn,
+        "exploration_movement": exploration,
+        "encounter_movement": encounter,
+        "overland_movement": overland,
+    }
+
+
 # ⚠️ This project uses the OPTIONAL ASCENDING ARMOUR CLASS (AAC) system.
 # (OSE Classic p. 32) Higher AAC = better protection. Unarmoured base = 10.
 # Descending AC values are NOT used anywhere.

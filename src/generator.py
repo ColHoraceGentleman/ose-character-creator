@@ -29,15 +29,24 @@ def generate_character(options: dict) -> dict:
     dice_method = options.get("dice_method", "3d6_order")
     uses_optimized = dice_method in ("3d6_optimized", "4d6_optimized_drop_lowest")
     
-    if uses_optimized and class_selection == "choose" and chosen_class:
-        # Class already selected, roll optimized for it
-        if options.get("reroll_subpar"):
-            while True:
+    if class_selection == "choose" and chosen_class:
+        # Explicitly chosen class - roll scores (optimized or not)
+        if uses_optimized:
+            if options.get("reroll_subpar"):
+                while True:
+                    scores = roll_ability_scores(dice_method, chosen_class)
+                    if any(s > 8 for s in scores.values()):
+                        break
+            else:
                 scores = roll_ability_scores(dice_method, chosen_class)
-                if any(s > 8 for s in scores.values()):
-                    break
         else:
-            scores = roll_ability_scores(dice_method, chosen_class)
+            if options.get("reroll_subpar"):
+                while True:
+                    scores = roll_ability_scores(dice_method)
+                    if any(s > 8 for s in scores.values()):
+                        break
+            else:
+                scores = roll_ability_scores(dice_method)
         char_class = chosen_class
     elif uses_optimized and class_selection == "random":
         # Roll scores with optimized method for a random class
@@ -147,30 +156,89 @@ def generate_character(options: dict) -> dict:
     
     # Calculate AAC (Ascending Armour Class) with equipped armour
     equipped_items = kit.get("equipped", [])
-    from src.equipment import ARMOUR
+    from src.equipment import ARMOUR, ARMOUR_DAC_BONUS
+    ac_mode = options.get("ac_mode", "aac")
+    encumbrance_mode = options.get("encumbrance_mode", "item_based")
+
     armour_name = None
     for item in equipped_items:
         if item in ARMOUR and "Shield" not in item:
             armour_name = item
     has_shield = "Shield" in equipped_items
+
+    # --- Armour Class ---
     aac = calculate_aac(mods["DEX"]["ac"], armour_name, has_shield)
     unarmoured_aac = calculate_aac(mods["DEX"]["ac"], None, False)
 
-    # Calculate movement rates from Item-Based Encumbrance (OSE CC2)
-    mv = equipment.calculate_movement(
-        equipped_items,
-        kit.get("packed", []),
-        str_melee_mod=mods["STR"]["melee"],
-    )
-    
+    if ac_mode == "dac":
+        dex_mod = mods["DEX"]["ac"]
+        armour_dac_bonus = ARMOUR_DAC_BONUS.get(armour_name, 0) if armour_name else 0
+        shield_bonus = ARMOUR_DAC_BONUS.get("Shield", 0) if has_shield else 0
+        ac = 9 - dex_mod - armour_dac_bonus - shield_bonus
+        unarmoured_ac = 9 - dex_mod
+        # THAC0 = 19 at 1st level; to hit DAC n = 19 - (9 - n) = 10 + n
+        thac = {f"thac{n}": 10 + n for n in range(10)}
+    else:
+        ac = aac
+        unarmoured_ac = unarmoured_aac
+        thac = {}
+
+    # --- Movement / Encumbrance ---
+    if encumbrance_mode == "standard":
+        mv = equipment.calculate_standard_encumbrance(
+            equipped_items,
+            kit.get("packed", []),
+            kit.get("unencumbering", []),
+        )
+        enc_fields = {
+            "equipment_cn": mv["equipment_cn"],
+            "treasure_cn": mv["treasure_cn"],
+            "total_cn": mv["total_cn"],
+        }
+    else:
+        mv = equipment.calculate_movement(
+            equipped_items,
+            kit.get("packed", []),
+            str_melee_mod=mods["STR"]["melee"],
+        )
+        enc_fields = {
+            "equipped_item_count": mv["equipped_item_count"],
+            "packed_item_count": mv["packed_item_count"],
+            "packed_str_threshold_18": 14 + mods["STR"]["melee"],
+            "packed_str_threshold_16": 12 + mods["STR"]["melee"],
+            "packed_str_threshold_13": 10 + mods["STR"]["melee"],
+        }
+
+    # --- Race / Class display ---
+    DEMI_HUMANS = {"Dwarf", "Elf", "Halfling"}
+    is_demi_human = char_class in DEMI_HUMANS
+    # New sheet (has separate Race + Class fields)
+    if is_demi_human:
+        race_field = char_class
+        class_field = ""
+    else:
+        race_field = "Human"
+        class_field = char_class
+    # Old sheet (no Race field — combine into Character Class field)
+    if is_demi_human:
+        old_sheet_class = char_class
+    else:
+        old_sheet_class = f"Human {char_class}"
+
     # Build final character dict with all PDF fields
     character = {
         # Identity
         "name": "",
-        "character_class": char_class,
+        "character_class": char_class,     # raw class for logic
+        "old_sheet_class": old_sheet_class, # "Human Fighter" / "Dwarf" for old sheet
+        "race_field": race_field,           # for new sheet Race field
+        "class_field": class_field,         # for new sheet Class field
         "title": title,
         "level": level,
         "alignment": alignment,
+        # Mode flags so pdf_output knows which sheet/fields to use
+        "ac_mode": ac_mode,
+        "encumbrance_mode": encumbrance_mode,
         
         # Abilities
         "str": scores["STR"],
@@ -197,28 +265,23 @@ def generate_character(options: dict) -> dict:
         # Combat
         "hp": hp,
         "max_hp": hp,
-        "ac": aac,  # AAC (Ascending Armour Class)
-        "unarmoured_ac": unarmoured_aac,
+        "ac": ac,
+        "unarmoured_ac": unarmoured_ac,
         "attack_bonus": attack_bonus,
-        
+        **thac,  # thac0-thac9, only populated in DAC mode
+
         # Saves
         "save_death": saves["D"],
         "save_wands": saves["W"],
         "save_paralysis": saves["P"],
         "save_breath": saves["B"],
         "save_spells": saves["S"],
-        
-        # Movement (calculated from Item-Based Encumbrance, OSE CC2)
+
+        # Movement
         "encounter_movement": mv["encounter_movement"],
         "exploration_movement": mv["exploration_movement"],
         "overland_movement": mv["overland_movement"],
-        "equipped_item_count": mv["equipped_item_count"],
-        "packed_item_count": mv["packed_item_count"],
-
-        # Packed item STR thresholds for PDF (base + STR melee mod)
-        "packed_str_threshold_18": 14 + mods["STR"]["melee"],
-        "packed_str_threshold_16": 12 + mods["STR"]["melee"],
-        "packed_str_threshold_13": 10 + mods["STR"]["melee"],
+        **enc_fields,  # encumbrance-mode-specific fields
         
         # Skills
         "find_room_trap": "—",

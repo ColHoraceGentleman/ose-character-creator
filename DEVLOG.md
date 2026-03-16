@@ -2,6 +2,45 @@
 
 ---
 
+## 2026-03-16 — Phase 1.5 Update: DAC Mode + Standard Encumbrance + Race/Class Fields
+
+### What Was Added
+
+1. **AC Mode toggle** — AAC (Ascending) or DAC (Descending/THAC0)
+   - AAC: AC 10-19, shows Attack Bonus field
+   - DAC: AC 9-(–6), fills THAC0-THAC9 attack matrix (THAC0 = 19 at 1st level)
+
+2. **Encumbrance Mode toggle** — Item-based (existing) or Standard (weight-based)
+   - Item-based: uses packed/equipped item slots, STR thresholds
+   - Standard: calculates cn weights, fills encumbrance weight fields (TR/EQ/Total)
+
+3. **Race/Class split** for the new PDF sheet:
+   - Demi-humans (Dwarf/Elf/Halfling): Race = class, Class = blank
+   - Humans: Race = "Human", Class = class name
+
+4. **Old sheet** (AAC + item-based only): No Race field, so:
+   - Demi-humans: "Dwarf", "Elf", "Halfling" in Class field
+   - Humans: "Human Fighter", "Human Cleric", etc.
+
+5. **New character sheet PDF** (`assets/character-sheet-new.pdf`) — supports DAC + standard encumbrance
+
+### Files Changed
+- `src/equipment.py` — added ARMOUR_DAC_BONUS, STANDARD_ENCUMBRANCE_WEIGHTS, calculate_standard_encumbrance()
+- `src/generator.py` — added ac_mode, encumbrance_mode, race/class fields, fixed chosen_class bug
+- `src/pdf_output.py` — full rewrite to support 4 sheet combos (old/new, AAC/DAC, item/standard)
+- `ui/index.html` — added AC Mode dropdown, enabled Standard encumbrance option
+- `ui/app.js` — passes ac_mode to server
+- `assets/character-sheet-new.pdf` — copied from user's template
+
+### Testing
+All 4 combos verified:
+- AAC + item_based → old sheet (original)
+- AAC + standard → new sheet
+- DAC + item_based → new sheet
+- DAC + standard → new sheet
+
+---
+
 ## ⚠️ Permanent Design Decision — Ascending Armour Class (AAC)
 
 > This project uses the **optional Ascending Armour Class (AAC)** system from OSE Classic p. 32.

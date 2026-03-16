@@ -47,10 +47,18 @@
           </div>
 
           <div class="option-group">
+            <label>Armour Class <span class="help" title="AAC (Ascending): higher is better, max 19. DAC (Descending): lower is better, starts at 9, uses THAC0.">?</span></label>
+            <select name="ac_mode" id="ac_mode">
+              <option value="aac" selected>Ascending (AAC)</option>
+              <option value="dac">Descending (DAC / THAC0)</option>
+            </select>
+          </div>
+
+          <div class="option-group">
             <label>Encumbrance <span class="help" title="Choose between: Standard encumbrance (movement based on total weight carried), or Item-based encumbrance (from Carrion Crawler 2, movement based on number of items carried).">?</span></label>
             <select name="encumbrance_mode" id="encumbrance_mode">
               <option value="item_based" selected>Item-based</option>
-              <option value="standard" disabled>Standard (coming soon)</option>
+              <option value="standard">Standard (weight-based)</option>
             </select>
           </div>
 

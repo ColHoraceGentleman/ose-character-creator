@@ -147,6 +147,7 @@ form.addEventListener("submit", async function (e) {
     chosen_class: chosenClass,
     alignment_blank: alignmentBlank,
     allowed_alignments: allowedAlignments,
+    ac_mode: formData.get("ac_mode") || "aac",
     encumbrance_mode: formData.get("encumbrance_mode") || "item_based",
     equipment_mode: formData.get("equipment_mode"),
     reroll_low_hp: formData.get("reroll_low_hp") === "on",
