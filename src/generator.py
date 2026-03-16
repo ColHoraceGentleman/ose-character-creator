@@ -89,6 +89,10 @@ def generate_character(options: dict) -> dict:
     
     # Step 7: AC (AAC) and movement are calculated after equipment (Step 16)
 
+    # Read mode options early (needed for notes and AC/encumbrance logic below)
+    ac_mode = options.get("ac_mode", "aac")
+    encumbrance_mode = options.get("encumbrance_mode", "item_based")
+
     # Step 8: Attack bonus (THAC0 is 19 [0] at 1st level)
     attack_bonus = 0
     
@@ -151,14 +155,14 @@ def generate_character(options: dict) -> dict:
         notes.append(f"Thief Skills: CS {thief_skills.get('CS', 'N/A')}, TR {thief_skills.get('TR', 'N/A')}, "
                     f"HN {thief_skills.get('HN', 'N/A')}, HS {thief_skills.get('HS', 'N/A')}, "
                     f"MS {thief_skills.get('MS', 'N/A')}, OL {thief_skills.get('OL', 'N/A')}, PP {thief_skills.get('PP', 'N/A')}")
-    if kit["gold_remaining"] > 0:
-        notes.append(f"Remaining gold: {kit['gold_remaining']} gp")
+    gold_remaining = kit["gold_remaining"]
+    if gold_remaining > 0 and encumbrance_mode == "item_based":
+        # Item-based sheet has no coin fields — put gold in Notes
+        notes.append(f"Remaining gold: {gold_remaining} gp")
     
     # Calculate AAC (Ascending Armour Class) with equipped armour
     equipped_items = kit.get("equipped", [])
     from src.equipment import ARMOUR, ARMOUR_DAC_BONUS
-    ac_mode = options.get("ac_mode", "aac")
-    encumbrance_mode = options.get("encumbrance_mode", "item_based")
 
     armour_name = None
     for item in equipped_items:
@@ -314,6 +318,9 @@ def generate_character(options: dict) -> dict:
         
         # Spells
         "spells_known": spells_known,
+
+        # Gold
+        "gold_remaining": gold_remaining,
     }
     
     # Class-specific overrides
