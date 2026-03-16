@@ -170,6 +170,43 @@ Equipped thresholds unchanged: 0–3=120', 4–5=90', 6–7=60', 8–9=30'.
 
 ---
 
+## 2026-03-15 — UI/UX Redesign + Weapon Display Overhaul
+
+### Class & Dice Method
+
+- **Class dropdown** simplified: single select showing "Random class" or a specific class by name. No separate "choose" step.
+- **Dice method** is now dynamic — swaps based on class selection:
+  - Random class: `3d6 in order` / `4d6 in order, drop lowest`
+  - Specific class: `3d6 optimized` / `4d6 optimized, drop lowest`
+- **Optimized mode**: rolls 6 values; top 1 (or 2) assigned randomly to prime requisite(s); remainder randomly distributed to other stats. No point trading.
+- **Random class selection** now prefers classes giving +5%/+10% XP bonus with rolled scores; falls back to 0% classes if none qualify. −10% classes never selected.
+- Removed `3d6 arrange freely` mode and `optimize_prime_requisite()` entirely.
+
+### Alignment
+
+- "Leave alignment blank" checkbox greys out all alignment options (`pointer-events: none`) and produces blank alignment on the sheet.
+- Default: Lawful ✅, Neutral ✅, Chaotic ☐.
+- If one alignment checked: assigned directly. If multiple: picked randomly among checked.
+
+### Weapon & Armor Display
+
+- **Melee weapons**: `Name: +X to hit; YdZ+X dmg` (STR melee mod applied to both)
+- **Ranged weapons**: `Name: +X to hit; YdZ dmg` (DEX missile mod to hit; no STR to damage)
+- **Dual-use weapons** (Dagger, Spear, etc.): `Name: melee info / +X to hit (thrown)`
+- **Armor**: `Name (AC)` e.g. `Leather (12 AC)`; `Shield (+1 AC)`
+- Magic bonus infrastructure in place (always 0 for now; ready for magic item phase)
+
+### Other
+
+- Ruleset selector added: Classic Fantasy (B/X) default; Advanced Fantasy placeholder (disabled)
+- Help ⓘ tooltips added to all major options
+- Subtitle removed from header
+- HP reroll label updated to "Reroll 1s & 2s at 1st level"
+- Sub-par reroll defaults to on; label updated to "Reroll if all stats ≤ 8"
+- Confirmed per RAW: demi-human racial languages are always known (no toggle needed)
+
+---
+
 ## Upcoming — Phase 2
 
 - [ ] Magic item generation (toggle + options)

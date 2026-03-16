@@ -438,6 +438,34 @@ def _roll_optimized(num_rolls: int, roll_fn, chosen_class: str) -> dict:
     return scores
 
 
+def _pick_random_class_by_xp(scores: dict) -> str:
+    """Helper: pick a random class from valid classes, preferring +5%/+10% XP bonus.
+    
+    Never picks -10% classes. Falls back to 0% if no better option exists.
+    """
+    valid_classes = [c for c in classes.CLASSES if is_valid_class(c, scores)]
+    if not valid_classes:
+        return "Fighter"
+    
+    bonus_plus = []   # +5% or +10%
+    bonus_none = []   # 0%
+    
+    for c in valid_classes:
+        bonus = calculate_pr_xp_bonus(scores, c)
+        if bonus in ("+5%", "+10%"):
+            bonus_plus.append(c)
+        elif bonus == "None":
+            bonus_none.append(c)
+        # -10% classes are ignored
+    
+    if bonus_plus:
+        return random.choice(bonus_plus)
+    elif bonus_none:
+        return random.choice(bonus_none)
+    else:
+        return random.choice(valid_classes)
+
+
 def determine_class_for_roll(options: dict) -> str:
     """For random class mode: determine which class to use for optimized rolls.
     
@@ -455,32 +483,15 @@ def determine_class_for_roll(options: dict) -> str:
     # Roll scores in basic order to evaluate XP potential
     test_scores = roll_ability_scores(dice_method)
     
-    valid_classes = [c for c in classes.CLASSES if is_valid_class(c, test_scores)]
-    if not valid_classes:
-        return "Fighter"
-    
-    # Categorize by XP bonus tier
-    bonus_plus = []   # +5% or +10%
-    bonus_none = []   # 0%
-    
-    for c in valid_classes:
-        bonus = calculate_pr_xp_bonus(test_scores, c)
-        if bonus in ("+5%", "+10%"):
-            bonus_plus.append(c)
-        elif bonus == "None":
-            bonus_none.append(c)
-        # -10% classes are ignored
-    
-    if bonus_plus:
-        return random.choice(bonus_plus)
-    elif bonus_none:
-        return random.choice(bonus_none)
-    else:
-        return random.choice(valid_classes)
+    return _pick_random_class_by_xp(test_scores)
 
 
 def determine_class(scores: dict, options: dict) -> str:
-    """Determine character class based on scores and options."""
+    """Determine character class based on scores and options.
+    
+    For random class selection: prefer classes giving +5% or +10% XP bonus,
+    then fall back to 0% classes. Never pick -10% classes.
+    """
     mode = options.get("class_selection", "random")
     
     if mode == "choose" and options.get("chosen_class"):
@@ -489,11 +500,8 @@ def determine_class(scores: dict, options: dict) -> str:
             return chosen
         # If chosen class isn't valid with these scores, fall through to random
     
-    # Random valid class (for non-optimized dice methods)
-    valid_classes = [c for c in classes.CLASSES if is_valid_class(c, scores)]
-    if not valid_classes:
-        return "Fighter"  # Fallback
-    return random.choice(valid_classes)
+    # Random class: use XP-aware selection (same logic as determine_class_for_roll)
+    return _pick_random_class_by_xp(scores)
 
 
 def is_valid_class(char_class: str, scores: dict) -> bool:
@@ -524,15 +532,20 @@ def determine_alignment(options: dict) -> str:
 
 
 def roll_hp(char_class: str, con_mod: int, reroll_low: bool) -> int:
-    """Roll hit points for the class."""
+    """Roll hit points for the class.
+    
+    If reroll_low is True, keep rerolling the hit die until the raw die result
+    is greater than 2 (i.e. no 1s or 2s on the die itself), then apply CON mod.
+    CON modifier can still push the total below 3; minimum HP is always 1.
+    """
     hd = classes.CLASSES[char_class]["hit_die"]
-    hp = dice.roll_hit_die(hd)
     
-    if reroll_low and hp <= 2:
-        hp = dice.roll_hit_die(hd)
+    roll = dice.roll_hit_die(hd)
+    if reroll_low:
+        while roll <= 2:
+            roll = dice.roll_hit_die(hd)
     
-    hp += con_mod
-    return max(1, hp)  # Always at least 1
+    return max(1, roll + con_mod)
 
 
 def calculate_aac(dex_mod: int, armour_name: str = None, has_shield: bool = False) -> int:

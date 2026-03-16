@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OSE Character Creator</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20260315-2">
 </head>
 <body>
   <div class="container">
@@ -17,15 +17,15 @@
         <div class="options-grid">
 
           <div class="option-group">
-            <label>Ruleset <span class="help" tabindex="0" aria-label="Classic Fantasy uses the standard B/X classes: Cleric, Dwarf, Elf, Fighter, Halfling, Magic-User, and Thief. Advanced Fantasy adds more classes and a separate Race selection (coming soon)." title="Classic Fantasy uses the standard B/X classes: Cleric, Dwarf, Elf, Fighter, Halfling, Magic-User, and Thief. Advanced Fantasy adds more classes and a separate Race selection (coming soon)."><span class="help" title="Classic Fantasy uses the standard B/X classes: Cleric, Dwarf, Elf, Fighter, Halfling, Magic-User, and Thief. Advanced Fantasy adds more classes and a separate Race selection (coming soon).">?</span>#9432;</span></label>
+            <label>Ruleset <span class="help" title="Choose between: OSE Classic Fantasy rules, or Advanced Fantasy rules (coming soon).">?</span></label>
             <select name="ruleset" id="ruleset">
               <option value="classic" selected>Classic Fantasy (B/X)</option>
-              <option value="advanced" disabled title="Coming soon">Advanced Fantasy (coming soon)</option>
+              <option value="advanced" disabled>Advanced Fantasy (coming soon)</option>
             </select>
           </div>
 
           <div class="option-group">
-            <label>Class <span class="help" tabindex="0" aria-label="Random class picks from classes where your ability scores give the best XP bonus. Choose class lets you pick a specific class and rolls ability scores optimized for it." title="Random class picks from classes where your ability scores give the best XP bonus. Choose class lets you pick a specific class and rolls ability scores optimized for it."><span class="help" title="Random class picks from classes where your ability scores give the best XP bonus. Choose class lets you pick a specific class and rolls ability scores optimized for it.">?</span>#9432;</span></label>
+            <label>Class <span class="help" title="Random class: class randomly selected from amongst classes offering an XP bonus. Selecting a specific class puts the best die results on the prime requisites for the class.">?</span></label>
             <select name="class_selection" id="class_selection">
               <option value="random">Random class</option>
               <option value="Cleric">Cleric</option>
@@ -39,15 +39,23 @@
           </div>
 
           <div class="option-group">
-            <label>Dice Method <span class="help" tabindex="0" aria-label="In order: rolls are assigned to stats in fixed sequence (STR→INT→WIS→DEX→CON→CHA). Optimized (choose class only): highest roll(s) go to the class prime requisite(s), rest assigned randomly. 4d6 drop lowest gives higher average scores than 3d6." title="In order: rolls are assigned to stats in fixed sequence (STR→INT→WIS→DEX→CON→CHA). Optimized (choose class only): highest roll(s) go to the class prime requisite(s), rest assigned randomly. 4d6 drop lowest gives higher average scores than 3d6."><span class="help" title="In order: rolls are assigned to stats in fixed sequence (STR→INT→WIS→DEX→CON→CHA). Optimized (choose class only): highest roll(s) go to the class prime requisite(s), rest assigned randomly. 4d6 drop lowest gives higher average scores than 3d6.">?</span>#9432;</span></label>
+            <label>Dice Method <span class="help" title="In order: dice results applied in fixed order: STR-INT-WIS-DEX-CON-CHA. Optimized: highest die results applied to the prime requisites for the chosen class.">?</span></label>
             <select name="dice_method" id="dice_method">
               <option value="3d6_order">3d6 in order</option>
               <option value="4d6_order_drop_lowest">4d6 in order, drop lowest</option>
             </select>
           </div>
 
+          <div class="option-group">
+            <label>Encumbrance <span class="help" title="Choose between: Standard encumbrance (movement based on total weight carried), or Item-based encumbrance (from Carrion Crawler 2, movement based on number of items carried).">?</span></label>
+            <select name="encumbrance_mode" id="encumbrance_mode">
+              <option value="item_based" selected>Item-based</option>
+              <option value="standard" disabled>Standard (coming soon)</option>
+            </select>
+          </div>
+
           <div class="option-group" id="alignment-group">
-            <label>Alignment <span class="help" tabindex="0" aria-label="Check which alignments are allowed. The generator picks randomly among checked options. Leave blank to omit alignment from the sheet entirely." title="Check which alignments are allowed. The generator picks randomly among checked options. Leave blank to omit alignment from the sheet entirely."><span class="help" title="Check which alignments are allowed. The generator picks randomly among checked options. Leave blank to omit alignment from the sheet entirely.">?</span>#9432;</span></label>
+            <label>Alignment <span class="help" title="Alignment randomly assigned from amongst selected alignments. Check 'Leave alignment blank' to omit alignment from the sheet entirely.">?</span></label>
             <div class="alignment-controls">
               <label class="toggle alignment-blank-toggle">
                 <input type="checkbox" name="alignment_blank" id="alignment_blank">
@@ -62,33 +70,33 @@
           </div>
 
           <div class="option-group">
-            <label>Equipment <span class="help" tabindex="0" aria-label="Auto kit selects appropriate starting gear for the class. Manual shopping (coming soon) will let you pick items yourself." title="Auto kit selects appropriate starting gear for the class. Manual shopping (coming soon) will let you pick items yourself."><span class="help" title="Auto kit selects appropriate starting gear for the class. Manual shopping (coming soon) will let you pick items yourself.">?</span>#9432;</span></label>
+            <label>Equipment <span class="help" title="Auto kit selects appropriate starting gear for the class. Manual shopping (coming soon) will let you pick items yourself.">?</span></label>
             <select name="equipment_mode" id="equipment_mode">
               <option value="auto">Auto (class kit)</option>
-              <option value="manual" disabled title="Coming soon">Manual shopping (coming soon)</option>
+              <option value="manual" disabled>Manual shopping (coming soon)</option>
             </select>
           </div>
 
           <div class="option-group toggles">
             <label class="toggle">
               <input type="checkbox" name="reroll_low_hp" id="reroll_low_hp">
-              <span>Reroll 1s &amp; 2s at 1st level <span class="help" tabindex="0" aria-label="If the HP die rolls a 1 or 2, roll again and take the higher result. Applies at 1st level only." title="If the HP die rolls a 1 or 2, roll again and take the higher result. Applies at 1st level only."><span class="help" title="If the HP die rolls a 1 or 2, roll again and take the higher result. Applies at 1st level only.">?</span>#9432;</span></span>
+              <span>Reroll 1s &amp; 2s at 1st level <span class="help" title="When determining HP at 1st level, all results of 1 or 2 are rerolled.">?</span></span>
             </label>
             <label class="toggle">
               <input type="checkbox" name="reroll_subpar" id="reroll_subpar" checked>
-              <span>Reroll if all stats ≤ 8 <span class="help" tabindex="0" aria-label="If every ability score is 8 or lower, the entire character is rerolled. Helps avoid unplayably weak characters." title="If every ability score is 8 or lower, the entire character is rerolled. Helps avoid unplayably weak characters."><span class="help" title="If every ability score is 8 or lower, the entire character is rerolled. Helps avoid unplayably weak characters.">?</span>#9432;</span></span>
+              <span>Discard sub-par characters <span class="help" title="If every ability score is less than 8, the character is discarded and a new character generated.">?</span></span>
             </label>
             <label class="toggle">
               <input type="checkbox" name="give_read_magic" id="give_read_magic">
-              <span>Give spellcasters Read Magic <span class="help" tabindex="0" aria-label="Magic-Users and Elves automatically receive Read Magic as their guaranteed known spell. Their random spell is drawn from the remaining 11 spells." title="Magic-Users and Elves automatically receive Read Magic as their guaranteed known spell. Their random spell is drawn from the remaining 11 spells."><span class="help" title="Magic-Users and Elves automatically receive Read Magic as their guaranteed known spell. Their random spell is drawn from the remaining 11 spells.">?</span>#9432;</span></span>
+              <span>Give spellcasters Read Magic <span class="help" title="At 1st level, Magic-Users and Elves receive the Read Magic spell prior to selecting spells.">?</span></span>
             </label>
             <label class="toggle coming-soon">
               <input type="checkbox" name="magic_items" id="magic_items" disabled>
-              <span title="Coming soon">Include magic items</span>
+              <span>Include magic items</span>
             </label>
             <label class="toggle coming-soon">
               <input type="checkbox" name="multiple_characters" id="multiple_characters" disabled>
-              <span title="Coming soon">Generate party (4 characters)</span>
+              <span>Generate party (4 characters)</span>
             </label>
           </div>
 
@@ -160,6 +168,6 @@
     </main>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=20260315-2"></script>
 </body>
 </html>

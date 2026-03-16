@@ -253,18 +253,20 @@ select {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   border: 1.5px solid var(--text-dim);
   color: var(--text-dim);
-  font-size: 0.65rem;
-  font-weight: 700;
+  font-size: 0.6rem;
+  font-weight: 900;
+  font-style: normal;
   cursor: help;
   vertical-align: middle;
   margin-left: 4px;
   line-height: 1;
   flex-shrink: 0;
+  text-decoration: none;
 }
 .help:hover {
   border-color: var(--accent);
