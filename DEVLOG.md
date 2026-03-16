@@ -207,6 +207,32 @@ Equipped thresholds unchanged: 0–3=120', 4–5=90', 6–7=60', 8–9=30'.
 
 ---
 
+## 2026-03-15 — Bug Fixes
+
+### HP Reroll Logic (Fixed)
+- Old code only rerolled once — a second low roll was kept as-is
+- Old code applied CON mod after the reroll check, so a 3 on a d4 with −2 CON gave 1 HP
+- Fix: loop `while roll <= 2` to guarantee die result > 2, then apply CON mod
+- Floor of 1 HP always enforced regardless of CON penalty
+
+### Random Class XP Selection (Fixed)
+- Bug: `3d6_order` + `Random class` used old `determine_class()` which picked any valid class, ignoring XP bonuses entirely — could produce −10% or −20% characters
+- Fix: all random-class paths now use `_pick_random_class_by_xp()` which picks by tier:
+  1. +5% or +10% (preferred)
+  2. 0% (fallback)
+  3. −10% (last resort — only when all valid classes have negative prime requisites)
+  4. −20% (absolute last resort — virtually impossible with reroll_subpar on)
+- Extracted `_pick_random_class_by_xp()` helper used by both `determine_class()` and `determine_class_for_roll()`
+
+### UI Fixes
+- Help markers were rendering as `?#9432;` — fixed by rewriting HTML cleanly
+- Alignment "Leave blank" checkbox was not greying out options — fixed with CSS `pointer-events: none` + `user-select: none`
+- Encumbrance dropdown labels updated to "Item-based" / "Standard (coming soon)"
+- All tooltip text updated to plain English per spec
+- Toggle renamed: "Discard sub-par characters"
+
+---
+
 ## Upcoming — Phase 2
 
 - [ ] Magic item generation (toggle + options)
