@@ -247,3 +247,42 @@ select {
 }
 
 .error.hidden { display: none; }
+
+/* Help tooltip circles */
+.help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-dim);
+  color: var(--text-dim);
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: help;
+  vertical-align: middle;
+  margin-left: 4px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.help:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Alignment options disabled state */
+.alignment-checkboxes.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  user-select: none;
+}
+
+.alignment-checkboxes {
+  margin-top: 8px;
+}
+
+/* Alignment blank toggle spacing */
+.alignment-blank-toggle {
+  margin-bottom: 6px;
+}

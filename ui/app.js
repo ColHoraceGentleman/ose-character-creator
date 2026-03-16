@@ -5,10 +5,42 @@ const resultDiv = document.getElementById("result");
 const errorDiv = document.getElementById("error-msg");
 const generateBtn = document.getElementById("generate-btn");
 
-// Show/hide class picker based on selection
-document.getElementById("class_selection").addEventListener("change", function () {
-  const pickerGroup = document.getElementById("class-picker-group");
-  pickerGroup.style.display = this.value === "choose_after" ? "block" : "none";
+// Class selection: dropdown where "Random class" = random, any other = choose that class
+const CLASS_SELECTION = document.getElementById("class_selection");
+const DICE_METHOD = document.getElementById("dice_method");
+
+const DICE_OPTIONS_RANDOM = [
+  { value: "3d6_order",             label: "3d6 in order" },
+  { value: "4d6_order_drop_lowest", label: "4d6 in order, drop lowest" },
+];
+const DICE_OPTIONS_CHOOSE = [
+  { value: "3d6_optimized",             label: "3d6 optimized" },
+  { value: "4d6_optimized_drop_lowest", label: "4d6 optimized, drop lowest" },
+];
+
+function updateDiceOptions() {
+  const isRandom = CLASS_SELECTION.value === "random";
+  const opts = isRandom ? DICE_OPTIONS_RANDOM : DICE_OPTIONS_CHOOSE;
+  DICE_METHOD.innerHTML = "";
+  opts.forEach(o => {
+    const el = document.createElement("option");
+    el.value = o.value;
+    el.textContent = o.label;
+    DICE_METHOD.appendChild(el);
+  });
+}
+
+CLASS_SELECTION.addEventListener("change", updateDiceOptions);
+updateDiceOptions(); // run on load
+
+// Grey out alignment options when "Leave blank" is checked
+const ALIGNMENT_BLANK = document.getElementById("alignment_blank");
+const ALIGNMENT_OPTIONS = document.getElementById("alignment-options");
+
+ALIGNMENT_BLANK.addEventListener("change", function () {
+  const disabled = this.checked;
+  ALIGNMENT_OPTIONS.querySelectorAll("input[type=checkbox]").forEach(cb => cb.disabled = disabled);
+  ALIGNMENT_OPTIONS.classList.toggle("disabled", disabled);
 });
 
 function fmtMod(val) {
@@ -93,11 +125,28 @@ form.addEventListener("submit", async function (e) {
 
   // Gather form data
   const formData = new FormData(form);
+
+  // Class: if "Random class", mode = random, else mode = choose with chosen_class
+  const classValue = formData.get("class_selection");
+  const classSelection = classValue === "random" ? "random" : "choose";
+  const chosenClass = classValue === "random" ? null : classValue;
+
+  // Build allowed alignments list
+  const alignmentBlank = formData.get("alignment_blank") === "on";
+  const allowedAlignments = [];
+  if (!alignmentBlank) {
+    if (formData.get("align_lawful") === "on") allowedAlignments.push("Lawful");
+    if (formData.get("align_neutral") === "on") allowedAlignments.push("Neutral");
+    if (formData.get("align_chaotic") === "on") allowedAlignments.push("Chaotic");
+  }
+
   const options = {
+    ruleset: formData.get("ruleset") || "classic",
     dice_method: formData.get("dice_method"),
-    class_selection: formData.get("class_selection"),
-    chosen_class: formData.get("chosen_class") || null,
-    alignment: formData.get("alignment"),
+    class_selection: classSelection,
+    chosen_class: chosenClass,
+    alignment_blank: alignmentBlank,
+    allowed_alignments: allowedAlignments,
     equipment_mode: formData.get("equipment_mode"),
     reroll_low_hp: formData.get("reroll_low_hp") === "on",
     reroll_subpar: formData.get("reroll_subpar") === "on",

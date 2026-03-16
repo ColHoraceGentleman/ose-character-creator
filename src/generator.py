@@ -9,9 +9,9 @@ def generate_character(options: dict) -> dict:
     Generate a complete OSE Classic character.
     
     Options:
-        dice_method: "3d6_order" | "3d6_arrange" | "4d6_drop_lowest"
-        class_selection: "random" | "choose_first" | "choose_after"
-        chosen_class: str (if class_selection is "choose_first" or "choose_after")
+        dice_method: "3d6_order" | "4d6_order_drop_lowest" | "3d6_optimized" | "4d6_optimized_drop_lowest"
+        class_selection: "random" | "choose"
+        chosen_class: str (if class_selection is "choose")
         alignment: "random" | "lawful" | "neutral" | "chaotic"
         reroll_low_hp: bool (allow reroll of 1s and 2s on hit dice)
         reroll_subpar: bool (allow full reroll if all stats <= 8)
@@ -20,21 +20,47 @@ def generate_character(options: dict) -> dict:
     Returns: dict with all character fields for PDF filling.
     """
     
+    # Determine chosen_class early for optimized dice methods
+    class_selection = options.get("class_selection", "random")
+    chosen_class = options.get("chosen_class")
+    
     # Step 1: Roll ability scores
-    if options.get("reroll_subpar"):
-        while True:
-            scores = roll_ability_scores(options["dice_method"])
-            if any(s > 8 for s in scores.values()):
-                break
+    # For optimized methods, we need to know the class first
+    dice_method = options.get("dice_method", "3d6_order")
+    uses_optimized = dice_method in ("3d6_optimized", "4d6_optimized_drop_lowest")
+    
+    if uses_optimized and class_selection == "choose" and chosen_class:
+        # Class already selected, roll optimized for it
+        if options.get("reroll_subpar"):
+            while True:
+                scores = roll_ability_scores(dice_method, chosen_class)
+                if any(s > 8 for s in scores.values()):
+                    break
+        else:
+            scores = roll_ability_scores(dice_method, chosen_class)
+        char_class = chosen_class
+    elif uses_optimized and class_selection == "random":
+        # Roll scores with optimized method for a random class
+        # Need to determine class first to know prime requisite(s)
+        char_class = determine_class_for_roll(options)
+        if options.get("reroll_subpar"):
+            while True:
+                scores = roll_ability_scores(dice_method, char_class)
+                if any(s > 8 for s in scores.values()):
+                    break
+        else:
+            scores = roll_ability_scores(dice_method, char_class)
     else:
-        scores = roll_ability_scores(options["dice_method"])
-    
-    # Step 2: Determine class
-    char_class = determine_class(scores, options)
-    
-    # Step 3: Apply prime requisite optimization (auto-optimize for random class)
-    if options.get("class_selection") == "random":
-        scores = optimize_prime_requisite(scores, char_class)
+        # Non-optimized method or choose-without-optimized
+        if options.get("reroll_subpar"):
+            while True:
+                scores = roll_ability_scores(dice_method)
+                if any(s > 8 for s in scores.values()):
+                    break
+        else:
+            scores = roll_ability_scores(dice_method)
+        # Step 2: Determine class
+        char_class = determine_class(scores, options)
     
     # Step 4: Calculate modifiers
     mods = {
@@ -47,7 +73,7 @@ def generate_character(options: dict) -> dict:
     }
     
     # Step 5: Determine alignment
-    alignment = determine_alignment(options.get("alignment", "random"))
+    alignment = determine_alignment(options)
     
     # Step 6: Roll HP
     hp = roll_hp(char_class, mods["CON"]["hp"], options.get("reroll_low_hp", False))
@@ -219,7 +245,7 @@ def generate_character(options: dict) -> dict:
         "pr_xp_bonus": pr_xp,
         
         # Equipment — weapons in equipped list get damage notation added
-        "equipped": format_equipped_items(kit["equipped"], mods["STR"]["melee"]),
+        "equipped": format_equipped_items(kit["equipped"], mods["STR"]["melee"], mods["DEX"]["missile"]),
         "packed": kit["packed"],
         "unencumbering": kit.get("unencumbering", []),
         
@@ -239,30 +265,118 @@ def generate_character(options: dict) -> dict:
     return character
 
 
-def format_equipped_items(equipped: list, str_melee_mod: int) -> list:
+def format_equipped_items(equipped: list, str_melee_mod: int, dex_missile_mod: int) -> list:
     """
-    Return equipped list with damage notation appended to weapons.
-    E.g. "Dagger" → "Dagger (1d4 dmg)", "Sword" with +1 STR → "Sword (1d8+1 dmg)"
-    Armour and shields are left as-is.
+    Format equipped items with full to-hit and damage info.
+
+    Weapons:
+      Melee:  "Sword: +1 to hit; 1d8+1 dmg"   (STR mod applied to both)
+              "Club: 1d4 dmg"                   (no bonuses)
+      Ranged: "Short Bow: +1 to hit"            (DEX mod to hit only, no damage bonus)
+              "Javelin: 1d4 dmg"                (no bonuses)
+      Dual (melee+missile, e.g. Dagger, Spear):
+              "Dagger: +1 to hit; 1d4+1 dmg (melee) / +1 to hit (thrown)"
+
+    Armour:
+      "Leather Armor (12 AC)"
+      "Shield (+1 AC)"
+
+    Magic bonus is 0 for all items at this stage; infrastructure is in place for future use.
     """
+    from src.equipment import WEAPONS, ARMOUR
+
     result = []
     for item in equipped:
-        if item in equipment.WEAPONS:
-            base_dmg = equipment.WEAPONS[item]["damage"]
-            if str_melee_mod > 0:
-                dmg_str = f"{base_dmg}+{str_melee_mod}"
-            elif str_melee_mod < 0:
-                dmg_str = f"{base_dmg}{str_melee_mod}"
+        magic_bonus = 0  # Placeholder — magic item generation comes later
+
+        if item in WEAPONS:
+            weapon = WEAPONS[item]
+            qualities = weapon.get("qualities", [])
+            base_dmg = weapon["damage"]
+            is_melee = "Melee" in qualities
+            is_missile = "Missile" in qualities
+
+            display_name = item if magic_bonus == 0 else f"{item} +{magic_bonus}"
+
+            if is_melee and is_missile:
+                # Dual-use weapon (e.g. Dagger, Spear, Hand axe)
+                melee_hit = str_melee_mod + magic_bonus
+                melee_dmg_bonus = str_melee_mod + magic_bonus
+                ranged_hit = dex_missile_mod + magic_bonus
+
+                melee_parts = []
+                if melee_hit != 0:
+                    melee_parts.append(f"{_fmt_bonus(melee_hit)} to hit")
+                dmg_str = _fmt_damage(base_dmg, melee_dmg_bonus)
+                melee_parts.append(f"{dmg_str} dmg")
+
+                ranged_parts = []
+                if ranged_hit != 0:
+                    ranged_parts.append(f"{_fmt_bonus(ranged_hit)} to hit")
+
+                melee_str = "; ".join(melee_parts)
+                if ranged_parts:
+                    ranged_str = "; ".join(ranged_parts) + " (thrown)"
+                    result.append(f"{display_name}: {melee_str} / {ranged_str}")
+                else:
+                    result.append(f"{display_name}: {melee_str}")
+
+            elif is_melee:
+                hit_bonus = str_melee_mod + magic_bonus
+                dmg_bonus = str_melee_mod + magic_bonus
+                parts = []
+                if hit_bonus != 0:
+                    parts.append(f"{_fmt_bonus(hit_bonus)} to hit")
+                parts.append(f"{_fmt_damage(base_dmg, dmg_bonus)} dmg")
+                result.append(f"{display_name}: {'; '.join(parts)}")
+
+            elif is_missile:
+                hit_bonus = dex_missile_mod + magic_bonus
+                parts = []
+                if hit_bonus != 0:
+                    parts.append(f"{_fmt_bonus(hit_bonus)} to hit")
+                dmg_str = _fmt_damage(base_dmg, 0)  # No STR bonus to ranged damage
+                parts.append(f"{dmg_str} dmg")
+                result.append(f"{display_name}: {'; '.join(parts)}")
+
             else:
-                dmg_str = base_dmg
-            result.append(f"{item} ({dmg_str} dmg)")
+                result.append(display_name)
+
+        elif item in ARMOUR:
+            armour = ARMOUR[item]
+            if "aac_bonus" in armour:
+                result.append(f"{item} (+{armour['aac_bonus']} AC)")
+            else:
+                result.append(f"{item} ({armour['aac']} AC)")
         else:
             result.append(item)
+
     return result
 
 
-def roll_ability_scores(method: str) -> dict:
-    """Roll all 6 ability scores."""
+def _fmt_bonus(val: int) -> str:
+    """Format a numeric bonus/penalty as a signed string: +1, -1, +0 → omit caller handles."""
+    return f"+{val}" if val >= 0 else str(val)
+
+
+def _fmt_damage(die: str, bonus: int) -> str:
+    """Format damage string: '1d8' + 1 → '1d8+1', bonus 0 → '1d8'."""
+    if bonus > 0:
+        return f"{die}+{bonus}"
+    elif bonus < 0:
+        return f"{die}{bonus}"
+    return die
+
+
+def roll_ability_scores(method: str, chosen_class: str = None) -> dict:
+    """Roll all 6 ability scores.
+    
+    Methods:
+    - 3d6_order: 3d6 assigned in fixed STR→INT→WIS→DEX→CON→CHA order
+    - 4d6_order_drop_lowest: 4d6-drop-lowest assigned in fixed order
+    - 3d6_optimized: 3d6 rolled 6 times, best roll(s) to prime requisite(s)
+    - 4d6_optimized_drop_lowest: 4d6-drop-lowest 6 times, best to prime requisite(s)
+    """
     if method == "3d6_order":
         return {
             "STR": dice.roll_3d6(),
@@ -272,44 +386,110 @@ def roll_ability_scores(method: str) -> dict:
             "CON": dice.roll_3d6(),
             "CHA": dice.roll_3d6(),
         }
-    elif method == "3d6_arrange":
-        rolls = [dice.roll_3d6() for _ in range(6)]
+    elif method == "4d6_order_drop_lowest":
         return {
-            "STR": rolls[0],
-            "INT": rolls[1],
-            "WIS": rolls[2],
-            "DEX": rolls[3],
-            "CON": rolls[4],
-            "CHA": rolls[5],
+            "STR": dice.roll_4d6_drop_lowest(),
+            "INT": dice.roll_4d6_drop_lowest(),
+            "WIS": dice.roll_4d6_drop_lowest(),
+            "DEX": dice.roll_4d6_drop_lowest(),
+            "CON": dice.roll_4d6_drop_lowest(),
+            "CHA": dice.roll_4d6_drop_lowest(),
         }
-    elif method == "4d6_drop_lowest":
-        rolls = [dice.roll_4d6_drop_lowest() for _ in range(6)]
-        return {
-            "STR": rolls[0],
-            "INT": rolls[1],
-            "WIS": rolls[2],
-            "DEX": rolls[3],
-            "CON": rolls[4],
-            "CHA": rolls[5],
-        }
+    elif method == "3d6_optimized":
+        return _roll_optimized(6, dice.roll_3d6, chosen_class)
+    elif method == "4d6_optimized_drop_lowest":
+        return _roll_optimized(6, dice.roll_4d6_drop_lowest, chosen_class)
     else:
         raise ValueError(f"Unknown dice method: {method}")
+
+
+def _roll_optimized(num_rolls: int, roll_fn, chosen_class: str) -> dict:
+    """Roll ability scores optimized for the chosen class's prime requisite(s)."""
+    # Roll num_rolls values
+    rolls = [roll_fn() for _ in range(num_rolls)]
+    rolls.sort(reverse=True)  # Highest first
+    
+    # Get prime requisite(s) for this class
+    prs = classes.CLASSES[chosen_class]["prime_requisites"]
+    
+    # Stats in fixed order (excluding prime requisites, which we'll fill first)
+    all_stats = ["STR", "INT", "WIS", "DEX", "CON", "CHA"]
+    non_pr_stats = [s for s in all_stats if s not in prs]
+    pr_stats = list(prs)  # Keep order from class definition
+    
+    scores = {}
+    
+    # Assign top rolls to prime requisites (randomly if 2)
+    if len(pr_stats) == 1:
+        scores[pr_stats[0]] = rolls[0]
+    else:
+        # Two prime requisites - assign top 2 randomly between them
+        top_two = rolls[:2]
+        random.shuffle(top_two)
+        scores[pr_stats[0]] = top_two[0]
+        scores[pr_stats[1]] = top_two[1]
+    
+    # Assign remaining rolls to non-prime stats randomly
+    remaining = rolls[len(pr_stats):]
+    random.shuffle(non_pr_stats)
+    for i, stat in enumerate(non_pr_stats):
+        scores[stat] = remaining[i]
+    
+    return scores
+
+
+def determine_class_for_roll(options: dict) -> str:
+    """For random class mode: determine which class to use for optimized rolls.
+    
+    Algorithm:
+    1. Get all valid classes (meet minimum requirements)
+    2. For each, calculate the XP bonus they'd give with the rolled scores
+    3. Filter to classes with +5% or +10% bonus
+    4. If any exist, pick randomly among those
+    5. Otherwise pick randomly among classes with 0% bonus
+    6. Classes with -10% are never picked
+    """
+    # We'll roll a set of scores first to evaluate classes
+    dice_method = options.get("dice_method", "3d6_order")
+    
+    # Roll scores in basic order to evaluate XP potential
+    test_scores = roll_ability_scores(dice_method)
+    
+    valid_classes = [c for c in classes.CLASSES if is_valid_class(c, test_scores)]
+    if not valid_classes:
+        return "Fighter"
+    
+    # Categorize by XP bonus tier
+    bonus_plus = []   # +5% or +10%
+    bonus_none = []   # 0%
+    
+    for c in valid_classes:
+        bonus = calculate_pr_xp_bonus(test_scores, c)
+        if bonus in ("+5%", "+10%"):
+            bonus_plus.append(c)
+        elif bonus == "None":
+            bonus_none.append(c)
+        # -10% classes are ignored
+    
+    if bonus_plus:
+        return random.choice(bonus_plus)
+    elif bonus_none:
+        return random.choice(bonus_none)
+    else:
+        return random.choice(valid_classes)
 
 
 def determine_class(scores: dict, options: dict) -> str:
     """Determine character class based on scores and options."""
     mode = options.get("class_selection", "random")
     
-    if mode == "choose_first" and options.get("chosen_class"):
-        return options["chosen_class"]
-    
-    if mode == "choose_after":
-        # Return chosen class if valid, otherwise pick random valid
-        chosen = options.get("chosen_class")
-        if chosen and is_valid_class(chosen, scores):
+    if mode == "choose" and options.get("chosen_class"):
+        chosen = options["chosen_class"]
+        if is_valid_class(chosen, scores):
             return chosen
+        # If chosen class isn't valid with these scores, fall through to random
     
-    # Random valid class
+    # Random valid class (for non-optimized dice methods)
     valid_classes = [c for c in classes.CLASSES if is_valid_class(c, scores)]
     if not valid_classes:
         return "Fighter"  # Fallback
@@ -325,35 +505,22 @@ def is_valid_class(char_class: str, scores: dict) -> bool:
     return True
 
 
-def optimize_prime_requisite(scores: dict, char_class: str) -> dict:
-    """
-    Apply prime requisite optimization: for every 2 points lowered from 
-    non-prime stats, add 1 to a prime requisite (STR/INT/WIS only).
-    """
-    prs = classes.CLASSES[char_class]["prime_requisites"]
-    donors = [s for s in ["STR", "INT", "WIS"] if s not in prs]
+def determine_alignment(options: dict) -> str:
+    """Determine alignment from options.
     
-    # Simple greedy: lower donor stats to boost lowest prime requisite
-    scores = scores.copy()
-    for donor in donors:
-        while scores[donor] > 9 and any(scores[pr] < 13 for pr in prs):
-            # Can we lower this donor?
-            if scores[donor] >= 11:
-                scores[donor] -= 2
-                # Boost lowest prime requisite
-                lowest_pr = min(prs, key=lambda pr: scores[pr])
-                scores[lowest_pr] += 1
-            else:
-                break
+    - alignment_blank: True → return empty string
+    - allowed_alignments: list of allowed values → pick randomly (or single value)
+    - Falls back to Neutral if nothing is allowed
+    """
+    if options.get("alignment_blank"):
+        return ""
     
-    return scores
-
-
-def determine_alignment(mode: str) -> str:
-    """Determine alignment."""
-    if mode == "random":
-        return random.choice(["Lawful", "Neutral", "Chaotic"])
-    return mode.capitalize()
+    allowed = options.get("allowed_alignments", [])
+    if not allowed:
+        return "Neutral"  # Edge case: nothing checked
+    if len(allowed) == 1:
+        return allowed[0]
+    return random.choice(allowed)
 
 
 def roll_hp(char_class: str, con_mod: int, reroll_low: bool) -> int:
