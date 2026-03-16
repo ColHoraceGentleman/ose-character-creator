@@ -92,10 +92,14 @@ Phase 1 focuses purely on generating a valid, complete character and exporting i
 - Basic UI for generation options
 
 **Out of scope (future phases):**
-- Web deployment / muckdart.com integration
-- Magic item generation
-- Multiple characters / party sheets
-- Advanced OSE classes
+- Web deployment / muckdart.com integration (Phase 3)
+
+**Phase 2 backlog:**
+- Advanced Fantasy rules
+- Other rules for starting equipment
+- Allow creation of characters above level 1
+- Multiple characters / party sheet
+- Carrion Crawler options
 
 ---
 
