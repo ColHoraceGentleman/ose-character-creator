@@ -22,7 +22,8 @@ Click **Generate Character**, choose your options, and hit the download button t
 |-------|--------|-------------|
 | Phase 1 | ✅ Complete | Character generator + PDF output + local UI |
 | Phase 1.5 | ✅ Complete | DAC mode, standard encumbrance, race/class fields, 4 sheet variants |
-| Phase 2 | 🔜 Planned | Magic items, multiple characters, manual equipment shopping |
+| Phase 2 (part 1) | ✅ Complete | Level selection (1–14), max HP at level 1, multiple characters, bulk ZIP |
+| Phase 2 (remaining) | 🔜 Planned | Advanced Fantasy, equipment rules, Carrion Crawler options |
 | Phase 3 | 🔜 Planned | Web hosting on www.muckdart.com |
 
 ---
@@ -101,9 +102,12 @@ Original PDF: `~/Downloads/OSE Classic Players Rules Tome v1-0.pdf`
 | Armour Class | AAC (Ascending) / DAC (Descending) | DAC fills THAC0–9 matrix; AAC fills Attack Bonus |
 | Encumbrance | Item-based / Standard (weight) | Item-based uses OSE CC2 item counts; Standard uses cn weights |
 | Class | Random or specific | Optimized dice methods available for chosen class |
+| Level | 1–14 | Clamped to class max (Halfling 8, Elf 10, Dwarf 12) |
+| Number of Characters | 1–10 | 2+ generates ZIP of all PDFs |
 | Alignment | Any combo of L/N/C, or blank | |
 | Dice Method | 3d6 or 4d6 drop lowest, in-order or optimized | |
-| HP Reroll | Toggle | Rerolls 1s and 2s on hit dice |
+| Max HP at level 1 | Toggle | Takes max die result at 1st level; CON mod still applies |
+| HP Reroll | Toggle | Rerolls 1s and 2s on hit dice at any level |
 | Discard sub-par | Toggle | Rerolls if all stats ≤ 8 |
 | Read Magic | Toggle | Gives MU/Elf Read Magic before random spell selection |
 

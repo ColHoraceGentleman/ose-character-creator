@@ -2,6 +2,49 @@
 
 ---
 
+## 2026-03-16 — Phase 2 (Part 1): Level Selection, Max HP, Multiple Characters
+
+### What Was Added
+
+1. **Level selector** — dropdown 1–14; demi-human classes auto-clamped to their max (Elf 10, Dwarf 12, Halfling 8)
+
+2. **Full level progression data** — complete tables in `classes.py` for all 7 classes:
+   - XP thresholds, THAC0, AAC attack bonus, saving throws at every level
+   - HD cap per class (level at which dice stop and flat HP bonus begins)
+   - Flat HP per level after HD cap (Cleric +1, MU +1, Elf/Fighter/Thief +2, Dwarf +3)
+   - CON modifier does NOT apply after HD cap
+
+3. **Level titles** — correct title at every level for all 7 classes (e.g. Fighter: Veteran → Lord)
+
+4. **Max HP at level 1** — toggle; gives max die result at 1st level (CON mod still applied, floor 1)
+
+5. **Reroll 1s & 2s** — now applies at ALL levels during HD phase (not just level 1)
+
+6. **Multiple characters** — dropdown 1–10; generates each independently with same options
+   - Single character: shows PDF download as before
+   - 2+ characters: shows both single PDF (first character preview) and ZIP download of all
+
+7. **Bulk ZIP download** — zip contains all PDFs named `character_N_ClassName.pdf`
+
+### Files Changed
+- `src/classes.py` — added HD_CAP, FLAT_HP_PER_LEVEL, LEVEL_PROGRESSION, LEVEL_TITLES tables
+- `src/generator.py` — level/max_level/prog lookup, multi-level HP rolling, title by level, THAC0 from table
+- `server.py` — num_characters loop, zip generation, zip download route
+- `ui/index.html` — Level dropdown, Number of Characters dropdown, Max HP toggle, ZIP download button, cache-busted
+- `ui/app.js` — passes level/num_characters/max_hp_at_level1, handles zip_url in response
+
+### Testing
+- Fighter Lv1 max HP (d8+CON): correct ✅
+- Fighter Lv5 (AB=2, saves, title=Swashbuckler): correct ✅
+- MU Lv9 (last HD level): correct ✅
+- MU Lv12 (post-cap flat +1 × 3): correct ✅
+- Halfling Lv14 → clamped to 8: correct ✅
+- Elf Lv10 DAC+Standard: correct ✅
+- Thief Lv14, Dwarf Lv12: correct ✅
+- 4-character party ZIP generation: correct ✅
+
+---
+
 ## 2026-03-16 — Phase 1.5 Update: DAC Mode + Standard Encumbrance + Race/Class Fields
 
 ### What Was Added

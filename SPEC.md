@@ -1,9 +1,9 @@
 # OSE Character Creator — SPEC.md
 ## Phase 1: Character Sheet Generator
 
-**Version:** 0.3 (Phase 1.5 — DAC + Standard Encumbrance)  
+**Version:** 0.4 (Phase 2 Part 1 — Level Selection + Multiple Characters)  
 **Last updated:** 2026-03-16  
-**Status:** Phase 1.5 complete ✅
+**Status:** Phase 2 (part 1) complete ✅
 
 ---
 
@@ -97,10 +97,28 @@ Phase 1 focuses purely on generating a valid, complete character and exporting i
 **Phase 2 backlog:**
 - Advanced Fantasy rules
 - Other rules for starting equipment
-- Allow creation of characters above level 1
-- Multiple characters / party sheet
+- ~~Allow creation of characters above level 1~~ ✅ Done (2026-03-16)
+- ~~Multiple characters / party sheet~~ ✅ Done (2026-03-16)
 - Carrion Crawler options
-- Max hit points at Level 1
+- ~~Max hit points at Level 1~~ ✅ Done (2026-03-16)
+
+### Level Progression Rules (implemented)
+
+**HD cap per class** — last level using hit dice:
+
+| Class | Hit Die | HD Cap | Flat HP/level after | Max Level |
+|-------|---------|--------|---------------------|-----------|
+| Cleric | d6 | 9 | +1 | 14 |
+| Dwarf | d8 | 9 | +3 | 12 |
+| Elf | d6 | 9 | +2 | 10 |
+| Fighter | d8 | 9 | +2 | 14 |
+| Halfling | d6 | 8 (= max) | n/a | 8 |
+| Magic-User | d4 | 9 | +1 | 14 |
+| Thief | d4 | 9 | +2 | 14 |
+
+- CON modifier applies at each level during HD phase, does NOT apply after cap
+- Each level rolls 1 hit die (not cumulative), min 1 per level during HD phase
+- Max HP at level 1 option: take die max instead of rolling (CON mod still applies)
 
 ---
 
