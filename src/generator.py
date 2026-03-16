@@ -180,8 +180,14 @@ def generate_character(options: dict) -> dict:
         shield_bonus = ARMOUR_DAC_BONUS.get("Shield", 0) if has_shield else 0
         ac = 9 - dex_mod - armour_dac_bonus - shield_bonus
         unarmoured_ac = 9 - dex_mod
-        # THAC0 = 19 at 1st level; to hit DAC n = 19 - (9 - n) = 10 + n
-        thac = {f"thac{n}": 10 + n for n in range(10)}
+        # THAC0 = 19 at 1st level.
+        # Roll needed to hit DAC n = THAC0 - n - str_melee_mod, clamped 1-20.
+        # Lower DAC (better armour) = higher roll needed.
+        # e.g. STR mod 0: hit AC9=10, AC5=14, AC0=19
+        #      STR mod+2: hit AC9=8,  AC5=12, AC0=17
+        thac0_val = 19
+        str_mod = mods["STR"]["melee"]
+        thac = {f"thac{n}": max(1, min(20, thac0_val - n - str_mod)) for n in range(10)}
     else:
         ac = aac
         unarmoured_ac = unarmoured_aac
