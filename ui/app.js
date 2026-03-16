@@ -54,7 +54,7 @@ function displayCharacter(data) {
 
   // Identity
   document.getElementById("r-class").textContent = c.character_class;
-  document.getElementById("r-title").textContent = c.title;
+  document.getElementById("r-title").textContent = c.title + " (Lv " + c.level + ")";
   document.getElementById("r-alignment").textContent = c.alignment;
   document.getElementById("r-hp").textContent = c.hp;
   document.getElementById("r-ac").textContent = c.ac;
@@ -105,9 +105,18 @@ function displayCharacter(data) {
   document.getElementById("r-abilities").textContent = c.abilities || "—";
   document.getElementById("r-notes").textContent = c.notes || "—";
 
-  // Download link
+  // Download link(s)
   const downloadLink = document.getElementById("download-link");
+  const downloadZip = document.getElementById("download-zip");
   downloadLink.href = data.pdf_url;
+
+  if (data.num_characters > 1) {
+    downloadZip.href = data.zip_url;
+    downloadZip.classList.remove("hidden");
+    document.getElementById("result-title").textContent = `${data.num_characters} Characters Generated`;
+  } else {
+    downloadZip.classList.add("hidden");
+  }
 
   // Show result
   resultDiv.classList.remove("hidden");
@@ -150,6 +159,9 @@ form.addEventListener("submit", async function (e) {
     ac_mode: formData.get("ac_mode") || "aac",
     encumbrance_mode: formData.get("encumbrance_mode") || "item_based",
     equipment_mode: formData.get("equipment_mode"),
+    level: parseInt(formData.get("level") || "1"),
+    num_characters: parseInt(formData.get("num_characters") || "1"),
+    max_hp_at_level1: formData.get("max_hp_at_level1") === "on",
     reroll_low_hp: formData.get("reroll_low_hp") === "on",
     reroll_subpar: formData.get("reroll_subpar") === "on",
     give_read_magic: formData.get("give_read_magic") === "on",

@@ -81,23 +81,30 @@ def generate_character(options: dict) -> dict:
         "CHA": ability_scores.cha_modifier(scores["CHA"]),
     }
     
-    # Step 5: Determine alignment
-    alignment = determine_alignment(options)
-    
-    # Step 6: Roll HP
-    hp = roll_hp(char_class, mods["CON"]["hp"], options.get("reroll_low_hp", False))
-    
-    # Step 7: AC (AAC) and movement are calculated after equipment (Step 16)
-
-    # Read mode options early (needed for notes and AC/encumbrance logic below)
+    # Read mode options — needed throughout (must be before HP roll)
     ac_mode = options.get("ac_mode", "aac")
     encumbrance_mode = options.get("encumbrance_mode", "item_based")
+    max_level = classes.CLASSES[char_class]["max_level"]
+    target_level = max(1, min(int(options.get("level", 1)), max_level))
+    prog = classes.LEVEL_PROGRESSION[char_class][target_level]
 
-    # Step 8: Attack bonus (THAC0 is 19 [0] at 1st level)
-    attack_bonus = 0
-    
-    # Step 9: Saving throws (1st level)
-    saves = classes.CLASSES[char_class]["saving_throws_lvl1"]
+    # Step 5: Determine alignment
+    alignment = determine_alignment(options)
+
+    # Step 6: Roll HP (from level 1 up to target_level)
+    hp = roll_hp(
+        char_class,
+        mods["CON"]["hp"],
+        options.get("reroll_low_hp", False),
+        max_hp_at_1=options.get("max_hp_at_level1", False),
+        target_level=target_level
+    )
+
+    # Step 7: AC and movement calculated after equipment (Step 16)
+
+    # Step 8: Attack bonus and saves at target level
+    attack_bonus = prog["aac_ab"]
+    saves = prog["saves"]
     
     # Step 10: Languages
     languages = determine_languages(char_class, scores["INT"], mods["INT"]["languages"])
@@ -112,14 +119,22 @@ def generate_character(options: dict) -> dict:
     thief_skills = classes.CLASSES[char_class].get("thief_skills_lvl1", {})
     
     # Step 14: Level and XP
-    level = 1
-    xp = 0
-    xp_next = classes.CLASSES[char_class]["xp_next_level"]
-    title = classes.CLASSES[char_class]["title_lvl1"]
-    
+    # Title at target level — get from LEVEL_PROGRESSION (XP for current level)
+    # XP for next level = the XP threshold of level+1 (or same if max level)
+    xp_current = prog["xp"]
+    if target_level < max_level:
+        xp_next = classes.LEVEL_PROGRESSION[char_class][target_level + 1]["xp"]
+    else:
+        xp_next = xp_current  # at max level
+
+    # Title at target level — we need a title_lvlN mapping.
+    # For now, use a simple heuristic: "Title LvL{N}" format, or fetch from somewhere.
+    # Let's add titles per level to classes.py later. For now, just use lvl1 title + level.
+    title = classes.LEVEL_TITLES[char_class][target_level - 1]
+
     # Step 15: PR XP bonus
     pr_xp = calculate_pr_xp_bonus(scores, char_class)
-    
+
     # Step 16: Equipment
     starting_gold = dice.roll_starting_gold()
     if options.get("equipment_mode") == "auto":
@@ -180,12 +195,10 @@ def generate_character(options: dict) -> dict:
         shield_bonus = ARMOUR_DAC_BONUS.get("Shield", 0) if has_shield else 0
         ac = 9 - dex_mod - armour_dac_bonus - shield_bonus
         unarmoured_ac = 9 - dex_mod
-        # THAC0 = 19 at 1st level.
+        # THAC0 from level progression table
         # Roll needed to hit DAC n = THAC0 - n - str_melee_mod, clamped 1-20.
         # Lower DAC (better armour) = higher roll needed.
-        # e.g. STR mod 0: hit AC9=10, AC5=14, AC0=19
-        #      STR mod+2: hit AC9=8,  AC5=12, AC0=17
-        thac0_val = 19
+        thac0_val = prog["thac0"]
         str_mod = mods["STR"]["melee"]
         thac = {f"thac{n}": max(1, min(20, thac0_val - n - str_mod)) for n in range(10)}
     else:
@@ -244,7 +257,7 @@ def generate_character(options: dict) -> dict:
         "race_field": race_field,           # for new sheet Race field
         "class_field": class_field,         # for new sheet Class field
         "title": title,
-        "level": level,
+        "level": target_level,
         "alignment": alignment,
         # Mode flags so pdf_output knows which sheet/fields to use
         "ac_mode": ac_mode,
@@ -313,7 +326,7 @@ def generate_character(options: dict) -> dict:
         "notes": "\n".join(notes) if notes else "",
         
         # XP
-        "xp": xp,
+        "xp": xp_current,
         "xp_next_level": xp_next,
         "pr_xp_bonus": pr_xp,
         
@@ -617,21 +630,40 @@ def determine_alignment(options: dict) -> str:
     return random.choice(allowed)
 
 
-def roll_hp(char_class: str, con_mod: int, reroll_low: bool) -> int:
-    """Roll hit points for the class.
-    
-    If reroll_low is True, keep rerolling the hit die until the raw die result
-    is greater than 2 (i.e. no 1s or 2s on the die itself), then apply CON mod.
-    CON modifier can still push the total below 3; minimum HP is always 1.
+def roll_hp(char_class: str, con_mod: int, reroll_low: bool,
+            max_hp_at_1: bool = False, target_level: int = 1) -> int:
+    """Roll total hit points for a character from level 1 to target_level.
+
+    Level 1:
+      - max_hp_at_1=True  → take max die value (CON mod still applied, floor 1)
+      - reroll_low=True   → reroll 1s and 2s on the die (CON mod applied, floor 1)
+      - otherwise         → normal roll (CON mod applied, floor 1)
+
+    Levels 2 through HD cap: roll 1 hit die per level, add CON mod, floor 1 per level.
+    Levels above HD cap: add flat_hp_per_level, no die, no CON mod.
     """
-    hd = classes.CLASSES[char_class]["hit_die"]
-    
-    roll = dice.roll_hit_die(hd)
-    if reroll_low:
-        while roll <= 2:
-            roll = dice.roll_hit_die(hd)
-    
-    return max(1, roll + con_mod)
+    hd          = classes.CLASSES[char_class]["hit_die"]
+    hd_cap      = classes.HD_CAP[char_class]
+    flat_bonus  = classes.FLAT_HP_PER_LEVEL[char_class]
+
+    total = 0
+
+    for lvl in range(1, target_level + 1):
+        if lvl > hd_cap:
+            # Post-cap: flat bonus, no CON mod
+            total += flat_bonus
+        else:
+            # Roll hit die
+            if lvl == 1 and max_hp_at_1:
+                roll = hd  # max possible
+            else:
+                roll = dice.roll_hit_die(hd)
+                if reroll_low:
+                    while roll <= 2:
+                        roll = dice.roll_hit_die(hd)
+            total += max(1, roll + con_mod)
+
+    return total
 
 
 def calculate_aac(dex_mod: int, armour_name: str = None, has_shield: bool = False) -> int:

@@ -39,6 +39,42 @@
           </div>
 
           <div class="option-group">
+            <label>Level <span class="help" title="Starting level for the character. Demi-human classes have lower level limits (Elf max 10, Dwarf max 12, Halfling max 8). If the selected level exceeds the class maximum, it will be clamped automatically.">?</span></label>
+            <select name="level" id="level">
+              <option value="1" selected>1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+            </select>
+          </div>
+
+          <div class="option-group">
+            <label>Number of Characters <span class="help" title="Generate multiple characters at once. If more than 1, a bulk ZIP download will be available.">?</span></label>
+            <select name="num_characters" id="num_characters">
+              <option value="1" selected>1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+
+          <div class="option-group">
             <label>Dice Method <span class="help" title="In order: dice results applied in fixed order: STR-INT-WIS-DEX-CON-CHA. Optimized: highest die results applied to the prime requisites for the chosen class.">?</span></label>
             <select name="dice_method" id="dice_method">
               <option value="3d6_order">3d6 in order</option>
@@ -87,8 +123,12 @@
 
           <div class="option-group toggles">
             <label class="toggle">
+              <input type="checkbox" name="max_hp_at_level1" id="max_hp_at_level1">
+              <span>Max HP at 1st level <span class="help" title="Character receives maximum possible hit points at 1st level (e.g. a d8 class gets 8). CON modifier still applies. Does not affect HP gained at higher levels.">?</span></span>
+            </label>
+            <label class="toggle">
               <input type="checkbox" name="reroll_low_hp" id="reroll_low_hp">
-              <span>Reroll 1s &amp; 2s at 1st level <span class="help" title="When determining HP at 1st level, all results of 1 or 2 are rerolled.">?</span></span>
+              <span>Reroll 1s &amp; 2s on hit dice <span class="help" title="When rolling HP at any level, results of 1 or 2 are rerolled. Does not apply at levels where flat HP bonus is used instead of a die.">?</span></span>
             </label>
             <label class="toggle">
               <input type="checkbox" name="reroll_subpar" id="reroll_subpar" checked>
@@ -102,10 +142,7 @@
               <input type="checkbox" name="magic_items" id="magic_items" disabled>
               <span>Include magic items</span>
             </label>
-            <label class="toggle coming-soon">
-              <input type="checkbox" name="multiple_characters" id="multiple_characters" disabled>
-              <span>Generate party (4 characters)</span>
-            </label>
+
           </div>
 
         </div>
@@ -119,6 +156,7 @@
         <div class="result-header">
           <h2 id="result-title">Character Generated</h2>
           <a id="download-link" class="btn-download" href="#" download>📄 Download PDF</a>
+          <a id="download-zip" class="btn-download hidden" href="#" download>📦 Download All (ZIP)</a>
         </div>
 
         <div class="stat-block">
@@ -176,6 +214,6 @@
     </main>
   </div>
 
-  <script src="app.js?v=20260316-1"></script>
+  <script src="app.js?v=20260316-2"></script>
 </body>
 </html>

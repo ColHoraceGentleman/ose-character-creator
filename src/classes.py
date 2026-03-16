@@ -3,6 +3,135 @@
 This module contains only data / static rules needed for Phase 1.
 """
 
+# HD cap: the last level at which you roll a new hit die.
+# After this level, add flat_hp_per_level instead (no CON mod).
+# Halfling caps at level 8 = max level, so flat bonus never applies.
+HD_CAP = {
+    "Cleric":     9,
+    "Dwarf":      9,
+    "Elf":        9,
+    "Fighter":    9,
+    "Halfling":   8,   # = max level, never reaches flat bonus stage
+    "Magic-User": 9,
+    "Thief":      9,
+}
+
+FLAT_HP_PER_LEVEL = {
+    "Cleric":     1,
+    "Dwarf":      3,
+    "Elf":        2,
+    "Fighter":    2,
+    "Halfling":   0,   # never used
+    "Magic-User": 1,
+    "Thief":      2,
+}
+
+# Full level progression: XP threshold, THAC0 (AAC attack bonus in brackets),
+# and saving throws at each level.
+# Format: { level: {"xp": int, "thac0": int, "aac_ab": int, "saves": {D,W,P,B,S}} }
+LEVEL_PROGRESSION = {
+    "Cleric": {
+        1:  {"xp": 0,       "thac0": 19, "aac_ab": 0,  "saves": {"D": 11, "W": 12, "P": 14, "B": 16, "S": 15}},
+        2:  {"xp": 1500,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 11, "W": 12, "P": 14, "B": 16, "S": 15}},
+        3:  {"xp": 3000,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 11, "W": 12, "P": 14, "B": 16, "S": 15}},
+        4:  {"xp": 6000,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 11, "W": 12, "P": 14, "B": 16, "S": 15}},
+        5:  {"xp": 12000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 9,  "W": 10, "P": 12, "B": 14, "S": 12}},
+        6:  {"xp": 25000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 9,  "W": 10, "P": 12, "B": 14, "S": 12}},
+        7:  {"xp": 50000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 9,  "W": 10, "P": 12, "B": 14, "S": 12}},
+        8:  {"xp": 100000,  "thac0": 17, "aac_ab": 2,  "saves": {"D": 9,  "W": 10, "P": 12, "B": 14, "S": 12}},
+        9:  {"xp": 200000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 6,  "W": 7,  "P": 9,  "B": 11, "S": 9}},
+        10: {"xp": 300000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 6,  "W": 7,  "P": 9,  "B": 11, "S": 9}},
+        11: {"xp": 400000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 6,  "W": 7,  "P": 9,  "B": 11, "S": 9}},
+        12: {"xp": 500000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 6,  "W": 7,  "P": 9,  "B": 11, "S": 9}},
+        13: {"xp": 600000,  "thac0": 12, "aac_ab": 7,  "saves": {"D": 3,  "W": 5,  "P": 7,  "B": 8,  "S": 7}},
+        14: {"xp": 700000,  "thac0": 12, "aac_ab": 7,  "saves": {"D": 3,  "W": 5,  "P": 7,  "B": 8,  "S": 7}},
+    },
+    "Dwarf": {
+        1:  {"xp": 0,       "thac0": 19, "aac_ab": 0,  "saves": {"D": 8,  "W": 9,  "P": 10, "B": 13, "S": 12}},
+        2:  {"xp": 2200,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 8,  "W": 9,  "P": 10, "B": 13, "S": 12}},
+        3:  {"xp": 4400,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 8,  "W": 9,  "P": 10, "B": 13, "S": 12}},
+        4:  {"xp": 8800,    "thac0": 17, "aac_ab": 2,  "saves": {"D": 6,  "W": 7,  "P": 8,  "B": 10, "S": 10}},
+        5:  {"xp": 17000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 6,  "W": 7,  "P": 8,  "B": 10, "S": 10}},
+        6:  {"xp": 35000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 6,  "W": 7,  "P": 8,  "B": 10, "S": 10}},
+        7:  {"xp": 70000,   "thac0": 14, "aac_ab": 5,  "saves": {"D": 4,  "W": 5,  "P": 6,  "B": 7,  "S": 8}},
+        8:  {"xp": 140000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 4,  "W": 5,  "P": 6,  "B": 7,  "S": 8}},
+        9:  {"xp": 270000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 4,  "W": 5,  "P": 6,  "B": 7,  "S": 8}},
+        10: {"xp": 400000,  "thac0": 12, "aac_ab": 7,  "saves": {"D": 2,  "W": 3,  "P": 4,  "B": 4,  "S": 6}},
+        11: {"xp": 530000,  "thac0": 12, "aac_ab": 7,  "saves": {"D": 2,  "W": 3,  "P": 4,  "B": 4,  "S": 6}},
+        12: {"xp": 660000,  "thac0": 12, "aac_ab": 7,  "saves": {"D": 2,  "W": 3,  "P": 4,  "B": 4,  "S": 6}},
+    },
+    "Elf": {
+        1:  {"xp": 0,       "thac0": 19, "aac_ab": 0,  "saves": {"D": 12, "W": 13, "P": 13, "B": 15, "S": 15}},
+        2:  {"xp": 4000,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 12, "W": 13, "P": 13, "B": 15, "S": 15}},
+        3:  {"xp": 8000,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 12, "W": 13, "P": 13, "B": 15, "S": 15}},
+        4:  {"xp": 16000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 10, "W": 11, "P": 11, "B": 13, "S": 12}},
+        5:  {"xp": 32000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 10, "W": 11, "P": 11, "B": 13, "S": 12}},
+        6:  {"xp": 64000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 10, "W": 11, "P": 11, "B": 13, "S": 12}},
+        7:  {"xp": 120000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 8,  "W": 9,  "P": 9,  "B": 10, "S": 10}},
+        8:  {"xp": 250000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 8,  "W": 9,  "P": 9,  "B": 10, "S": 10}},
+        9:  {"xp": 400000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 8,  "W": 9,  "P": 9,  "B": 10, "S": 10}},
+        10: {"xp": 600000,  "thac0": 12, "aac_ab": 7,  "saves": {"D": 6,  "W": 7,  "P": 8,  "B": 8,  "S": 8}},
+    },
+    "Fighter": {
+        1:  {"xp": 0,       "thac0": 19, "aac_ab": 0,  "saves": {"D": 12, "W": 13, "P": 14, "B": 15, "S": 16}},
+        2:  {"xp": 2000,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 12, "W": 13, "P": 14, "B": 15, "S": 16}},
+        3:  {"xp": 4000,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 12, "W": 13, "P": 14, "B": 15, "S": 16}},
+        4:  {"xp": 8000,    "thac0": 17, "aac_ab": 2,  "saves": {"D": 10, "W": 11, "P": 12, "B": 13, "S": 14}},
+        5:  {"xp": 16000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 10, "W": 11, "P": 12, "B": 13, "S": 14}},
+        6:  {"xp": 32000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 10, "W": 11, "P": 12, "B": 13, "S": 14}},
+        7:  {"xp": 64000,   "thac0": 14, "aac_ab": 5,  "saves": {"D": 8,  "W": 9,  "P": 10, "B": 10, "S": 12}},
+        8:  {"xp": 120000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 8,  "W": 9,  "P": 10, "B": 10, "S": 12}},
+        9:  {"xp": 240000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 8,  "W": 9,  "P": 10, "B": 10, "S": 12}},
+        10: {"xp": 360000,  "thac0": 12, "aac_ab": 7,  "saves": {"D": 6,  "W": 7,  "P": 8,  "B": 8,  "S": 10}},
+        11: {"xp": 480000,  "thac0": 12, "aac_ab": 7,  "saves": {"D": 6,  "W": 7,  "P": 8,  "B": 8,  "S": 10}},
+        12: {"xp": 600000,  "thac0": 12, "aac_ab": 7,  "saves": {"D": 6,  "W": 7,  "P": 8,  "B": 8,  "S": 10}},
+        13: {"xp": 720000,  "thac0": 10, "aac_ab": 9,  "saves": {"D": 4,  "W": 5,  "P": 6,  "B": 5,  "S": 8}},
+        14: {"xp": 840000,  "thac0": 10, "aac_ab": 9,  "saves": {"D": 4,  "W": 5,  "P": 6,  "B": 5,  "S": 8}},
+    },
+    "Halfling": {
+        1:  {"xp": 0,       "thac0": 19, "aac_ab": 0,  "saves": {"D": 8,  "W": 9,  "P": 10, "B": 13, "S": 12}},
+        2:  {"xp": 2000,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 8,  "W": 9,  "P": 10, "B": 13, "S": 12}},
+        3:  {"xp": 4000,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 8,  "W": 9,  "P": 10, "B": 13, "S": 12}},
+        4:  {"xp": 8000,    "thac0": 17, "aac_ab": 2,  "saves": {"D": 6,  "W": 7,  "P": 8,  "B": 10, "S": 10}},
+        5:  {"xp": 16000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 6,  "W": 7,  "P": 8,  "B": 10, "S": 10}},
+        6:  {"xp": 32000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 6,  "W": 7,  "P": 8,  "B": 10, "S": 10}},
+        7:  {"xp": 64000,   "thac0": 14, "aac_ab": 5,  "saves": {"D": 4,  "W": 5,  "P": 6,  "B": 7,  "S": 8}},
+        8:  {"xp": 120000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 4,  "W": 5,  "P": 6,  "B": 7,  "S": 8}},
+    },
+    "Magic-User": {
+        1:  {"xp": 0,       "thac0": 19, "aac_ab": 0,  "saves": {"D": 13, "W": 14, "P": 13, "B": 16, "S": 15}},
+        2:  {"xp": 2500,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 13, "W": 14, "P": 13, "B": 16, "S": 15}},
+        3:  {"xp": 5000,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 13, "W": 14, "P": 13, "B": 16, "S": 15}},
+        4:  {"xp": 10000,   "thac0": 19, "aac_ab": 0,  "saves": {"D": 13, "W": 14, "P": 13, "B": 16, "S": 15}},
+        5:  {"xp": 20000,   "thac0": 19, "aac_ab": 0,  "saves": {"D": 13, "W": 14, "P": 13, "B": 16, "S": 15}},
+        6:  {"xp": 40000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 11, "W": 12, "P": 11, "B": 14, "S": 12}},
+        7:  {"xp": 80000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 11, "W": 12, "P": 11, "B": 14, "S": 12}},
+        8:  {"xp": 150000,  "thac0": 17, "aac_ab": 2,  "saves": {"D": 11, "W": 12, "P": 11, "B": 14, "S": 12}},
+        9:  {"xp": 300000,  "thac0": 17, "aac_ab": 2,  "saves": {"D": 11, "W": 12, "P": 11, "B": 14, "S": 12}},
+        10: {"xp": 450000,  "thac0": 17, "aac_ab": 2,  "saves": {"D": 11, "W": 12, "P": 11, "B": 14, "S": 12}},
+        11: {"xp": 600000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 8,  "W": 9,  "P": 8,  "B": 11, "S": 8}},
+        12: {"xp": 750000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 8,  "W": 9,  "P": 8,  "B": 11, "S": 8}},
+        13: {"xp": 900000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 8,  "W": 9,  "P": 8,  "B": 11, "S": 8}},
+        14: {"xp": 1050000, "thac0": 14, "aac_ab": 5,  "saves": {"D": 8,  "W": 9,  "P": 8,  "B": 11, "S": 8}},
+    },
+    "Thief": {
+        1:  {"xp": 0,       "thac0": 19, "aac_ab": 0,  "saves": {"D": 13, "W": 14, "P": 13, "B": 16, "S": 15}},
+        2:  {"xp": 1200,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 13, "W": 14, "P": 13, "B": 16, "S": 15}},
+        3:  {"xp": 2400,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 13, "W": 14, "P": 13, "B": 16, "S": 15}},
+        4:  {"xp": 4800,    "thac0": 19, "aac_ab": 0,  "saves": {"D": 13, "W": 14, "P": 13, "B": 16, "S": 15}},
+        5:  {"xp": 9600,    "thac0": 17, "aac_ab": 2,  "saves": {"D": 12, "W": 13, "P": 11, "B": 14, "S": 13}},
+        6:  {"xp": 20000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 12, "W": 13, "P": 11, "B": 14, "S": 13}},
+        7:  {"xp": 40000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 12, "W": 13, "P": 11, "B": 14, "S": 13}},
+        8:  {"xp": 80000,   "thac0": 17, "aac_ab": 2,  "saves": {"D": 12, "W": 13, "P": 11, "B": 14, "S": 13}},
+        9:  {"xp": 160000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 10, "W": 11, "P": 9,  "B": 12, "S": 10}},
+        10: {"xp": 280000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 10, "W": 11, "P": 9,  "B": 12, "S": 10}},
+        11: {"xp": 400000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 10, "W": 11, "P": 9,  "B": 12, "S": 10}},
+        12: {"xp": 520000,  "thac0": 14, "aac_ab": 5,  "saves": {"D": 10, "W": 11, "P": 9,  "B": 12, "S": 10}},
+        13: {"xp": 640000,  "thac0": 12, "aac_ab": 7,  "saves": {"D": 8,  "W": 9,  "P": 7,  "B": 10, "S": 8}},
+        14: {"xp": 760000,  "thac0": 12, "aac_ab": 7,  "saves": {"D": 8,  "W": 9,  "P": 7,  "B": 10, "S": 8}},
+    },
+}
+
 CLASSES = {
     "Cleric": {
         "requirements": {},
@@ -143,6 +272,17 @@ CLASSES = {
     },
 }
 
+
+# Level titles per class. Last title repeats for levels beyond the list length.
+LEVEL_TITLES = {
+    "Cleric":     ["Acolyte", "Adept", "Priest", "Vicar", "Curate", "Elder", "Bishop", "Lama", "Patriarch", "Patriarch", "Patriarch", "Patriarch", "Patriarch", "Patriarch"],
+    "Dwarf":      ["Dwarven Veteran", "Dwarven Warrior", "Dwarven Swordmaster", "Dwarven Hero", "Dwarven Swashbuckler", "Dwarven Myrmidon", "Dwarven Champion", "Dwarven Superhero", "Dwarven Lord", "Dwarven Lord", "Dwarven Lord", "Dwarven Lord"],
+    "Elf":        ["Medium/Veteran", "Seer/Warrior", "Conjurer/Swordmaster", "Magician/Hero", "Enchanter/Swashbuckler", "Warlock/Myrmidon", "Sorcerer/Champion", "Necromancer/Superhero", "Wizard/Lord", "Wizard/Lord"],
+    "Fighter":    ["Veteran", "Warrior", "Swordmaster", "Hero", "Swashbuckler", "Myrmidon", "Champion", "Superhero", "Lord", "Lord", "Lord", "Lord", "Lord", "Lord"],
+    "Halfling":   ["Halfling Veteran", "Halfling Warrior", "Halfling Swordmaster", "Halfling Hero", "Halfling Swashbuckler", "Halfling Myrmidon", "Halfling Champion", "Sheriff"],
+    "Magic-User": ["Medium", "Seer", "Conjurer", "Magician", "Enchanter", "Warlock", "Sorcerer", "Necromancer", "Wizard", "Wizard", "Wizard", "Wizard", "Wizard", "Wizard"],
+    "Thief":      ["Apprentice", "Footpad", "Robber", "Burglar", "Cutpurse", "Sharper", "Pilferer", "Thief", "Master Thief", "Master Thief", "Master Thief", "Master Thief", "Master Thief", "Master Thief"],
+}
 
 LANGUAGE_PICK_LIST = [
     "Bugbear",

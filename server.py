@@ -1,9 +1,11 @@
 """Simple HTTP server for OSE Character Creator."""
 
+import io
 import json
 import os
 import sys
 import uuid
+import zipfile
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlparse
 
@@ -59,21 +61,47 @@ class OSEHandler(SimpleHTTPRequestHandler):
                 return
 
             try:
-                character = generate_character(options)
-
-                # Generate PDF
                 from src.pdf_output import fill_character_sheet
-                filename = f"character_{uuid.uuid4().hex[:8]}.pdf"
-                output_path = os.path.join(OUTPUT_DIR, filename)
-                fill_character_sheet(character, output_path)
+                num_characters = max(1, min(10, int(options.get("num_characters", 1))))
 
-                response = {
-                    "success": True,
-                    "character": character,
-                    "pdf_url": f"/download/{filename}",
-                }
+                characters = []
+                pdf_filenames = []
+
+                for i in range(num_characters):
+                    character = generate_character(options)
+                    filename = f"character_{uuid.uuid4().hex[:8]}.pdf"
+                    output_path = os.path.join(OUTPUT_DIR, filename)
+                    fill_character_sheet(character, output_path)
+                    characters.append(character)
+                    pdf_filenames.append(filename)
+
+                if num_characters == 1:
+                    response = {
+                        "success": True,
+                        "character": characters[0],
+                        "pdf_url": f"/download/{pdf_filenames[0]}",
+                        "num_characters": 1,
+                    }
+                else:
+                    # Build a zip of all PDFs
+                    zip_filename = f"party_{uuid.uuid4().hex[:8]}.zip"
+                    zip_path = os.path.join(OUTPUT_DIR, zip_filename)
+                    with zipfile.ZipFile(zip_path, "w") as zf:
+                        for i, fname in enumerate(pdf_filenames, start=1):
+                            fpath = os.path.join(OUTPUT_DIR, fname)
+                            char_class = characters[i-1].get("character_class", "character")
+                            zf.write(fpath, f"character_{i}_{char_class}.pdf")
+                    response = {
+                        "success": True,
+                        "character": characters[0],  # show first for preview
+                        "characters": characters,
+                        "pdf_url": f"/download/{pdf_filenames[0]}",
+                        "zip_url": f"/download/{zip_filename}",
+                        "num_characters": num_characters,
+                    }
             except Exception as e:
-                response = {"success": False, "error": str(e)}
+                import traceback
+                response = {"success": False, "error": str(e), "trace": traceback.format_exc()}
 
             body = json.dumps(response).encode("utf-8")
             self.send_response(200)
