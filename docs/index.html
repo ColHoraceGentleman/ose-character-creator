@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSE Character Creator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>⚔️ OSE Character Creator</h1>
+      <p class="subtitle">Old School Essentials Classic Fantasy — Browser Edition</p>
+    </header>
+
+    <main>
+      <form id="gen-form">
+        <div class="options-grid">
+
+          <div class="option-group">
+            <label>Ruleset <span class="help" title="Classic Fantasy (B/X) is fully supported. Advanced Fantasy coming soon.">?</span></label>
+            <select name="ruleset" id="ruleset">
+              <option value="classic" selected>Classic Fantasy (B/X)</option>
+              <option value="advanced" disabled>Advanced Fantasy (coming soon)</option>
+            </select>
+          </div>
+
+          <div class="option-group">
+            <label>Class <span class="help" title="Random: picks a class that earns an XP bonus from your rolled stats. Specific: assigns best die results to the class's prime requisites.">?</span></label>
+            <select name="class_selection" id="class_selection">
+              <option value="random">Random class</option>
+              <option value="Cleric">Cleric</option>
+              <option value="Dwarf">Dwarf</option>
+              <option value="Elf">Elf</option>
+              <option value="Fighter">Fighter</option>
+              <option value="Halfling">Halfling</option>
+              <option value="Magic-User">Magic-User</option>
+              <option value="Thief">Thief</option>
+            </select>
+          </div>
+
+          <div class="option-group">
+            <label>Level <span class="help" title="Starting level (1–14, clamped to class maximum).">?</span></label>
+            <select name="level" id="level">
+              <option value="1" selected>1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+            </select>
+          </div>
+
+          <div class="option-group">
+            <label>Number of Characters <span class="help" title="Generate 1–10 characters. Multiple characters download as a ZIP.">?</span></label>
+            <select name="num_characters" id="num_characters">
+              <option value="1" selected>1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+
+          <div class="option-group">
+            <label>Dice Method <span class="help" title="How ability scores are rolled. Optimised methods assign your best rolls to prime requisites.">?</span></label>
+            <select name="dice_method" id="dice_method">
+              <option value="3d6_order">3d6 in order</option>
+              <option value="4d6_order_drop_lowest">4d6 in order, drop lowest</option>
+            </select>
+          </div>
+
+          <div class="option-group">
+            <label>Armour Class <span class="help" title="AAC (Ascending): higher = better, uses Attack Bonus. DAC (Descending): lower = better, uses THAC0 matrix.">?</span></label>
+            <select name="ac_mode" id="ac_mode">
+              <option value="aac" selected>AAC (Ascending)</option>
+              <option value="dac">DAC (Descending)</option>
+            </select>
+          </div>
+
+          <div class="option-group">
+            <label>Encumbrance <span class="help" title="Item-Based (Carrion Crawler #2): movement from item count. Standard: movement from total coin weight.">?</span></label>
+            <select name="encumbrance_mode" id="encumbrance_mode">
+              <option value="item_based" selected>Item-Based (CC#2)</option>
+              <option value="standard">Standard (coin weight)</option>
+            </select>
+          </div>
+
+          <div class="option-group">
+            <label>Alignment <span class="help" title="Check all alignments allowed. Leave Blank fills no alignment on the sheet.">?</span></label>
+            <div class="alignment-blank-toggle">
+              <label class="toggle">
+                <input type="checkbox" id="alignment_blank" name="alignment_blank">
+                <span>Leave blank</span>
+              </label>
+            </div>
+            <div class="alignment-checkboxes" id="alignment-options">
+              <label class="toggle"><input type="checkbox" name="align_lawful" checked> <span>Lawful</span></label>
+              <label class="toggle"><input type="checkbox" name="align_neutral" checked> <span>Neutral</span></label>
+              <label class="toggle"><input type="checkbox" name="align_chaotic" checked> <span>Chaotic</span></label>
+            </div>
+          </div>
+
+          <div class="option-group">
+            <label>Equipment <span class="help" title="Auto kit: automatically purchases sensible starting gear within class restrictions.">?</span></label>
+            <select name="equipment_mode" id="equipment_mode">
+              <option value="auto" selected>Auto kit</option>
+              <option value="manual" disabled>Manual (coming soon)</option>
+            </select>
+          </div>
+
+          <div class="option-group" style="grid-column: span 2;">
+            <label>Options</label>
+            <div class="toggles">
+              <label class="toggle">
+                <input type="checkbox" name="max_hp_at_level1" id="max_hp_at_level1">
+                <span>Max HP at 1st level <span class="help" title="Roll maximum die value for 1st level HP (CON modifier still applied).">?</span></span>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" name="reroll_low_hp" id="reroll_low_hp">
+                <span>Reroll 1s &amp; 2s on hit dice <span class="help" title="Reroll any hit die that shows 1 or 2 until it shows 3+.">?</span></span>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" name="reroll_subpar" id="reroll_subpar">
+                <span>Discard sub-par arrays <span class="help" title="Reroll entire stat array if no score exceeds 8.">?</span></span>
+              </label>
+              <label class="toggle" id="read_magic_toggle">
+                <input type="checkbox" name="give_read_magic" id="give_read_magic">
+                <span>Give Read Magic to spellcasters <span class="help" title="Guarantees Read Magic in the starting spell (Magic-Users and Elves).">?</span></span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <button type="submit" class="btn-generate" id="generate-btn">🎲 Generate Character</button>
+      </form>
+
+      <!-- Result panel -->
+      <div id="result" class="result hidden">
+        <div class="result-header">
+          <div>
+            <strong id="r-class-level"></strong>
+            <span id="r-title" style="color:var(--text-dim); margin-left:10px;"></span>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <a id="dl-btn" class="btn-download" href="#" download>⬇ Download PDF</a>
+            <a id="zip-btn" class="btn-download hidden" href="#" download>⬇ Download ZIP</a>
+          </div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-row">
+            <div><span class="stat-label">Alignment</span><span class="stat-value" id="r-alignment"></span></div>
+            <div><span class="stat-label">HP</span><span class="stat-value big" id="r-hp"></span></div>
+            <div><span class="stat-label">AC</span><span class="stat-value big" id="r-ac"></span></div>
+            <div><span class="stat-label">Attack Bonus</span><span class="stat-value" id="r-ab"></span></div>
+            <div><span class="stat-label">XP Bonus</span><span class="stat-value" id="r-xp-bonus"></span></div>
+            <div><span class="stat-label">Movement</span><span class="stat-value" id="r-movement"></span></div>
+          </div>
+
+          <div class="abilities">
+            <div class="ability" id="r-str"><span class="ab-name">STR</span><span class="ab-score"></span><span class="ab-mod"></span></div>
+            <div class="ability" id="r-int"><span class="ab-name">INT</span><span class="ab-score"></span><span class="ab-mod"></span></div>
+            <div class="ability" id="r-wis"><span class="ab-name">WIS</span><span class="ab-score"></span><span class="ab-mod"></span></div>
+            <div class="ability" id="r-dex"><span class="ab-name">DEX</span><span class="ab-score"></span><span class="ab-mod"></span></div>
+            <div class="ability" id="r-con"><span class="ab-name">CON</span><span class="ab-score"></span><span class="ab-mod"></span></div>
+            <div class="ability" id="r-cha"><span class="ab-name">CHA</span><span class="ab-score"></span><span class="ab-mod"></span></div>
+          </div>
+
+          <div class="saves-block">
+            <h3>Saving Throws</h3>
+            <div class="saves">
+              <div><label>Death</label><span id="r-save-d"></span></div>
+              <div><label>Wands</label><span id="r-save-w"></span></div>
+              <div><label>Paralysis</label><span id="r-save-p"></span></div>
+              <div><label>Breath</label><span id="r-save-b"></span></div>
+              <div><label>Spells</label><span id="r-save-s"></span></div>
+            </div>
+          </div>
+
+          <div class="equipment-block">
+            <h3>Equipment</h3>
+            <div class="equip-cols">
+              <div>
+                <h4>Equipped</h4>
+                <ul id="r-equipped"></ul>
+              </div>
+              <div>
+                <h4>Packed</h4>
+                <ul id="r-packed"></ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="notes-block">
+            <h3>Notes &amp; Abilities</h3>
+            <p id="r-abilities" style="white-space:pre-wrap;margin-bottom:8px;font-size:0.9rem;"></p>
+            <p id="r-notes" style="white-space:pre-wrap;font-size:0.9rem;color:var(--text-dim);"></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="error-msg" class="error hidden"></div>
+
+      <!-- Previous characters -->
+      <div id="previous-section" class="previous hidden">
+        <div class="previous-header">
+          <h2>Previously Generated</h2>
+          <button id="clear-btn" class="btn-clear">Clear All</button>
+        </div>
+        <div class="prev-list" id="prev-list"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Dependencies -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
+
+  <!-- Data -->
+  <script src="data/classes.js"></script>
+  <script src="data/spells.js"></script>
+  <script src="data/equipment.js"></script>
+
+  <!-- Engine -->
+  <script src="engine/dice.js"></script>
+  <script src="engine/ability_scores.js"></script>
+  <script src="engine/generator.js"></script>
+  <script src="engine/pdf.js"></script>
+  <script src="engine/storage.js"></script>
+
+  <!-- App -->
+  <script src="app.js"></script>
+</body>
+</html>
