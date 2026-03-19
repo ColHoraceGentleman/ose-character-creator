@@ -234,7 +234,9 @@ async function fillPdf(character, pdfPath) {
 async function generatePdfBlob(character) {
   const acMode = character.ac_mode || "aac";
   const encMode = character.encumbrance_mode || "item_based";
-  const key = `${acMode}-${encMode}`;
+  // Normalise encMode: "item_based" → "item", "standard" → "standard"
+  const encKey = encMode === "item_based" ? "item" : "standard";
+  const key = `${acMode}-${encKey}`;
   const pdfPath = SHEET_MAP[key];
   if (!pdfPath) throw new Error("Unknown AC/encumbrance combo: " + key);
   const pdfBytes = await fillPdf(character, pdfPath);

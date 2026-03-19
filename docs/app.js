@@ -36,7 +36,8 @@ function displayCharacter(char, options) {
   document.getElementById("r-alignment").textContent = char.alignment || "—";
   document.getElementById("r-hp").textContent = char.hp;
   document.getElementById("r-ac").textContent = char.ac;
-  document.getElementById("r-ab").textContent = (char.ac_mode === "dac") ? "—" : fmtMod(char.attack_bonus);
+  // Show AB for AAC (always show), "—" for DAC (uses THAC0 matrix instead)
+  document.getElementById("r-ab").textContent = (char.ac_mode === "dac") ? "—" : (char.attack_bonus === 0 ? "+0" : fmtMod(char.attack_bonus));
   document.getElementById("r-xp-bonus").textContent = char.pr_xp_bonus;
   document.getElementById("r-movement").textContent = char.exploration_movement;
 
