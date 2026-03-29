@@ -331,10 +331,27 @@ Equipped thresholds unchanged: 0–3=120', 4–5=90', 6–7=60', 8–9=30'.
 
 ---
 
+## ⚠️ Two Versions Exist — Use docs/ Only
+
+There are two versions of this project:
+
+- **`docs/`** — Browser-only version (JS engine). This is the **active, long-term version**. Runs entirely in the browser with no server needed. Hosted via GitHub Pages. **All future work goes here.**
+- **`ui/` + `src/` + `server.py`** — Python server version. This is **legacy/archived**. Do not continue development here.
+
+When picking up this project, always work in `docs/`.
+
+---
+
+## Known Bugs (docs/ browser version)
+
+- **Level dropdown doesn't filter by class max** — dropdown always shows 1–14 regardless of class selected. Demi-humans have lower caps (Dwarf 12, Elf 10, Halfling 8). Generator correctly clamps at runtime, but the UI should dynamically update the dropdown options when a specific class is chosen. When "Random" is selected, show 1–14. Fix: add JS to watch the class `<select>` and rebuild the level `<option>` list based on `CLASSES[selectedClass].max_level`.
+
+---
+
 ## Upcoming — Phase 2
 
 - [ ] Magic item generation (toggle + options)
-- [ ] Multiple characters per run / party sheet
+- [x] Multiple characters per run / bulk ZIP download (done in docs/ browser version)
 - [ ] Preferences UI (dice method default, spell selection, auto-kit strictness)
 - [ ] Manual equipment shopping mode
 - [ ] QA agent review of full codebase

@@ -96,6 +96,23 @@ const generateBtn = document.getElementById("generate-btn");
 // Update dice method options based on class selection
 const classSelect = document.getElementById("class_selection");
 const diceSelect = document.getElementById("dice_method");
+const levelSelect = document.getElementById("level");
+
+function updateLevelDropdown() {
+  const val = classSelect.value;
+  const maxLevel = (val === "random" || !CLASSES[val])
+    ? 14
+    : CLASSES[val].max_level;
+  const current = parseInt(levelSelect.value) || 1;
+  levelSelect.innerHTML = "";
+  for (let i = 1; i <= maxLevel; i++) {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = i;
+    if (i === Math.min(current, maxLevel)) opt.selected = true;
+    levelSelect.appendChild(opt);
+  }
+}
 
 classSelect.addEventListener("change", function() {
   const isRandom = this.value === "random";
@@ -111,7 +128,11 @@ classSelect.addEventListener("change", function() {
       <option value="4d6_optimized_drop_lowest">4d6 optimised, drop lowest</option>
     `;
   }
+  updateLevelDropdown();
 });
+
+// Init level dropdown on page load
+updateLevelDropdown();
 
 // Alignment blank toggle
 const alignBlank = document.getElementById("alignment_blank");
