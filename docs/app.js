@@ -103,20 +103,23 @@ const rulesetSelect = document.getElementById("ruleset");
 function updateClassDropdownForRuleset() {
   const ruleset = rulesetSelect.value;
   const classicGroup = classSelect.querySelector('optgroup[label="Classic Fantasy"]');
-  const afGroup = classSelect.querySelector('optgroup[label="Advanced Fantasy — Race as Class"]');
+  const afHumanGroup = classSelect.querySelector('optgroup[label="Advanced Fantasy — Human"]');
+  const afDemiGroup = classSelect.querySelector('optgroup[label="Advanced Fantasy — Demihuman"]');
+  const afGroups = [afHumanGroup, afDemiGroup].filter(Boolean);
+
   if (ruleset === "advanced") {
     if (classicGroup) classicGroup.style.display = "none";
-    if (afGroup) afGroup.style.display = "";
+    afGroups.forEach(g => g.style.display = "");
     // Reset to random if current selection is a Classic class
     const currentVal = classSelect.value;
     const isClassicClass = classicGroup && Array.from(classicGroup.options).some(o => o.value === currentVal);
     if (isClassicClass) classSelect.value = "random";
   } else {
     if (classicGroup) classicGroup.style.display = "";
-    if (afGroup) afGroup.style.display = "none";
+    afGroups.forEach(g => g.style.display = "none");
     // Reset to random if current selection is an AF class
     const currentVal = classSelect.value;
-    const isAFClass = afGroup && Array.from(afGroup.options).some(o => o.value === currentVal);
+    const isAFClass = afGroups.some(g => Array.from(g.options).some(o => o.value === currentVal));
     if (isAFClass) classSelect.value = "random";
   }
   // Trigger downstream updates

@@ -154,6 +154,48 @@ const AF_SPELL_SLOTS = {
     [2,2,1],        // 13
     [3,2,1],        // 14
   ],
+  // Drow: cleric spell list, up to 5th level (light/darkness only at L1)
+  "AF_Drow": [
+    null,
+    [1],            // 1 — only light (darkness) available
+    [2],            // 2
+    [2,1],          // 3
+    [2,2],          // 4
+    [2,2,1],        // 5
+    [2,2,2,1],      // 6
+    [3,3,2,2,1],    // 7
+    [3,3,3,2,2],    // 8
+    [4,4,3,3,2],    // 9
+    [4,4,4,3,3],    // 10
+  ],
+  // Gnome: illusionist spell list, up to 4th level
+  "AF_Gnome": [
+    null,
+    [1],            // 1
+    [2],            // 2
+    [2,1],          // 3
+    [2,2],          // 4
+    [2,2,1],        // 5
+    [2,2,2],        // 6
+    [3,2,2,1],      // 7
+    [3,3,2,2],      // 8
+  ],
+  // Half-Elf: MU spell list, up to 4th level, starts at 2nd level
+  "AF_HalfElf": [
+    null,
+    [],             // 1: no spells
+    [1],            // 2
+    [2],            // 3
+    [2],            // 4
+    [2,1],          // 5
+    [2,2],          // 6
+    [2,2],          // 7
+    [2,2,1],        // 8
+    [3,2,1],        // 9
+    [3,2,2],        // 10
+    [3,2,2,1],      // 11
+    [3,3,2,1],      // 12
+  ],
   // Ranger: druid spell list, up to 3rd level, starts at 8th level
   "AF_Ranger": [
     null,

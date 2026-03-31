@@ -4,20 +4,26 @@ const HD_CAP = {
   // Classic
   "Cleric": 9, "Dwarf": 9, "Elf": 9, "Fighter": 9,
   "Halfling": 8, "Magic-User": 9, "Thief": 9,
-  // Advanced Fantasy — Race as Class
+  // Advanced Fantasy — Race as Class (human)
   "AF_Acrobat": 9, "AF_Assassin": 9, "AF_Barbarian": 9,
   "AF_Bard": 9, "AF_Druid": 9, "AF_Illusionist": 9,
   "AF_Knight": 9, "AF_Paladin": 9, "AF_Ranger": 9,
+  // Advanced Fantasy — Race as Class (demihuman)
+  "AF_Drow": 9, "AF_Duergar": 9, "AF_Gnome": 8,
+  "AF_HalfElf": 9, "AF_HalfOrc": 8,
 };
 
 const FLAT_HP_PER_LEVEL = {
   // Classic
   "Cleric": 1, "Dwarf": 3, "Elf": 2, "Fighter": 2,
   "Halfling": 0, "Magic-User": 1, "Thief": 2,
-  // Advanced Fantasy — Race as Class
+  // Advanced Fantasy — Race as Class (human)
   "AF_Acrobat": 2, "AF_Assassin": 2, "AF_Barbarian": 3,
   "AF_Bard": 2, "AF_Druid": 1, "AF_Illusionist": 1,
   "AF_Knight": 2, "AF_Paladin": 2, "AF_Ranger": 2,
+  // Advanced Fantasy — Race as Class (demihuman)
+  "AF_Drow": 2, "AF_Duergar": 3, "AF_Gnome": 1,
+  "AF_HalfElf": 2, "AF_HalfOrc": 2,
 };
 
 const LEVEL_PROGRESSION = {
@@ -268,6 +274,67 @@ const LEVEL_PROGRESSION = {
     13: {xp:800000,  thac0:10, aac_ab:9, saves:{D:4, W:5, P:6, B:5, S:8}},
     14: {xp:925000,  thac0:10, aac_ab:9, saves:{D:4, W:5, P:6, B:5, S:8}},
   },
+
+  // ── Advanced Fantasy — Demihuman (Race as Class) ─────────────────────────
+
+  "AF_Drow": {
+    1:  {xp:0,       thac0:19, aac_ab:0, saves:{D:12,W:13,P:13,B:15,S:12}},
+    2:  {xp:4000,    thac0:19, aac_ab:0, saves:{D:12,W:13,P:13,B:15,S:12}},
+    3:  {xp:8000,    thac0:19, aac_ab:0, saves:{D:12,W:13,P:13,B:15,S:12}},
+    4:  {xp:16000,   thac0:17, aac_ab:2, saves:{D:10,W:11,P:11,B:13,S:10}},
+    5:  {xp:32000,   thac0:17, aac_ab:2, saves:{D:10,W:11,P:11,B:13,S:10}},
+    6:  {xp:64000,   thac0:17, aac_ab:2, saves:{D:10,W:11,P:11,B:13,S:10}},
+    7:  {xp:120000,  thac0:14, aac_ab:5, saves:{D:8, W:9, P:9, B:10,S:8}},
+    8:  {xp:250000,  thac0:14, aac_ab:5, saves:{D:8, W:9, P:9, B:10,S:8}},
+    9:  {xp:400000,  thac0:14, aac_ab:5, saves:{D:8, W:9, P:9, B:10,S:8}},
+    10: {xp:600000,  thac0:12, aac_ab:7, saves:{D:6, W:7, P:8, B:8, S:6}},
+  },
+  "AF_Duergar": {
+    1:  {xp:0,       thac0:19, aac_ab:0, saves:{D:8, W:9, P:10,B:13,S:12}},
+    2:  {xp:2800,    thac0:19, aac_ab:0, saves:{D:8, W:9, P:10,B:13,S:12}},
+    3:  {xp:5600,    thac0:19, aac_ab:0, saves:{D:8, W:9, P:10,B:13,S:12}},
+    4:  {xp:11200,   thac0:17, aac_ab:2, saves:{D:6, W:7, P:8, B:10,S:10}},
+    5:  {xp:23000,   thac0:17, aac_ab:2, saves:{D:6, W:7, P:8, B:10,S:10}},
+    6:  {xp:46000,   thac0:17, aac_ab:2, saves:{D:6, W:7, P:8, B:10,S:10}},
+    7:  {xp:100000,  thac0:14, aac_ab:5, saves:{D:4, W:5, P:6, B:7, S:8}},
+    8:  {xp:200000,  thac0:14, aac_ab:5, saves:{D:4, W:5, P:6, B:7, S:8}},
+    9:  {xp:300000,  thac0:14, aac_ab:5, saves:{D:4, W:5, P:6, B:7, S:8}},
+    10: {xp:400000,  thac0:12, aac_ab:7, saves:{D:2, W:3, P:4, B:4, S:6}},
+  },
+  "AF_Gnome": {
+    1:  {xp:0,       thac0:19, aac_ab:0, saves:{D:8, W:9, P:10,B:14,S:11}},
+    2:  {xp:3000,    thac0:19, aac_ab:0, saves:{D:8, W:9, P:10,B:14,S:11}},
+    3:  {xp:6000,    thac0:19, aac_ab:0, saves:{D:8, W:9, P:10,B:14,S:11}},
+    4:  {xp:12000,   thac0:19, aac_ab:0, saves:{D:8, W:9, P:10,B:14,S:11}},
+    5:  {xp:30000,   thac0:19, aac_ab:0, saves:{D:8, W:9, P:10,B:14,S:11}},
+    6:  {xp:60000,   thac0:17, aac_ab:2, saves:{D:6, W:7, P:8, B:11,S:9}},
+    7:  {xp:120000,  thac0:17, aac_ab:2, saves:{D:6, W:7, P:8, B:11,S:9}},
+    8:  {xp:240000,  thac0:17, aac_ab:2, saves:{D:6, W:7, P:8, B:11,S:9}},
+  },
+  "AF_HalfElf": {
+    1:  {xp:0,       thac0:19, aac_ab:0, saves:{D:12,W:13,P:13,B:15,S:15}},
+    2:  {xp:2500,    thac0:19, aac_ab:0, saves:{D:12,W:13,P:13,B:15,S:15}},
+    3:  {xp:5000,    thac0:19, aac_ab:0, saves:{D:12,W:13,P:13,B:15,S:15}},
+    4:  {xp:10000,   thac0:17, aac_ab:2, saves:{D:10,W:11,P:11,B:13,S:12}},
+    5:  {xp:20000,   thac0:17, aac_ab:2, saves:{D:10,W:11,P:11,B:13,S:12}},
+    6:  {xp:40000,   thac0:17, aac_ab:2, saves:{D:10,W:11,P:11,B:13,S:12}},
+    7:  {xp:80000,   thac0:14, aac_ab:5, saves:{D:8, W:9, P:9, B:10,S:10}},
+    8:  {xp:150000,  thac0:14, aac_ab:5, saves:{D:8, W:9, P:9, B:10,S:10}},
+    9:  {xp:300000,  thac0:14, aac_ab:5, saves:{D:8, W:9, P:9, B:10,S:10}},
+    10: {xp:450000,  thac0:12, aac_ab:7, saves:{D:6, W:7, P:8, B:8, S:8}},
+    11: {xp:600000,  thac0:12, aac_ab:7, saves:{D:6, W:7, P:8, B:8, S:8}},
+    12: {xp:750000,  thac0:12, aac_ab:7, saves:{D:6, W:7, P:8, B:8, S:8}},
+  },
+  "AF_HalfOrc": {
+    1:  {xp:0,       thac0:19, aac_ab:0, saves:{D:13,W:14,P:13,B:16,S:15}},
+    2:  {xp:1800,    thac0:19, aac_ab:0, saves:{D:13,W:14,P:13,B:16,S:15}},
+    3:  {xp:3600,    thac0:19, aac_ab:0, saves:{D:13,W:14,P:13,B:16,S:15}},
+    4:  {xp:7000,    thac0:19, aac_ab:0, saves:{D:13,W:14,P:13,B:16,S:15}},
+    5:  {xp:14000,   thac0:17, aac_ab:2, saves:{D:12,W:13,P:11,B:14,S:13}},
+    6:  {xp:28000,   thac0:17, aac_ab:2, saves:{D:12,W:13,P:11,B:14,S:13}},
+    7:  {xp:60000,   thac0:17, aac_ab:2, saves:{D:12,W:13,P:11,B:14,S:13}},
+    8:  {xp:120000,  thac0:17, aac_ab:2, saves:{D:12,W:13,P:11,B:14,S:13}},
+  },
 };
 
 const CLASSES = {
@@ -383,7 +450,115 @@ const CLASSES = {
     spellcaster: false,
   },
 
-  // ── Advanced Fantasy — Race as Class ──────────────────────────────────────
+  // ── Advanced Fantasy — Demihuman (Race as Class) ─────────────────────────
+
+  "AF_Drow": {
+    requirements: {INT:9},
+    prime_requisites: ["STR","WIS"],
+    hit_die: 6,
+    max_level: 10,
+    languages: ["Alignment","Common","Deepcommon","Elvish","Gnomish","Spider (secret)"],
+    title_lvl1: "Drow Acolyte",
+    xp_next_level: 4000,
+    special_abilities: [
+      "Infravision 90'",
+      "Detect secret doors 2-in-6 (when searching)",
+      "Immunity to ghoul paralysis",
+      "Listen at doors 2-in-6",
+      "Light sensitivity: −2 to attack and −1 AC in bright light",
+      "Spider affinity: speak spider secret language; +1 reaction with spiders",
+      "Divine spells from Cleric list (light/darkness only at 1st; full list from 2nd; web from 3rd)",
+    ],
+    spellcaster: true,
+    spell_list: "cleric",
+    af_class: true,
+    af_demihuman: true,
+  },
+  "AF_Duergar": {
+    requirements: {CON:9, INT:9},
+    prime_requisites: ["STR"],
+    hit_die: 6,
+    max_level: 10,
+    languages: ["Alignment","Common","Deepcommon","Dwarvish","Gnomish","Goblin","Kobold"],
+    title_lvl1: "Skulk",
+    xp_next_level: 2800,
+    special_abilities: [
+      "Infravision 90'",
+      "Detect construction tricks 2-in-6",
+      "Detect room traps 2-in-6",
+      "Listen at doors 2-in-6",
+      "Light sensitivity: −2 to attack and −1 AC in bright light",
+      "Stealth: 3-in-6 move silently underground",
+      "Mental powers (1/day/level): Enlargement, Invisibility, Shrinking, Heat",
+      "Cannot use longbows or two-handed swords",
+    ],
+    spellcaster: false,
+    af_class: true,
+    af_demihuman: true,
+  },
+  "AF_Gnome": {
+    requirements: {CON:9},
+    prime_requisites: ["DEX","INT"],
+    hit_die: 4,
+    max_level: 8,
+    languages: ["Alignment","Common","Gnomish","Dwarvish","Kobold","Burrowing Mammal (secret)"],
+    title_lvl1: "Gnome Prestidigitator",
+    xp_next_level: 3000,
+    special_abilities: [
+      "Infravision 90'",
+      "Detect construction tricks 2-in-6",
+      "Listen at doors 2-in-6",
+      "Defensive bonus: +2 AC vs large opponents",
+      "Hiding: 90% in woodland; 2-in-6 in dungeons (motionless only)",
+      "Speak with burrowing mammals (secret language)",
+      "Illusionist spells from 1st level",
+      "Cannot use longbows or two-handed swords",
+    ],
+    spellcaster: true,
+    spell_list: "illusionist",
+    af_class: true,
+    af_demihuman: true,
+  },
+  "AF_HalfElf": {
+    requirements: {CHA:9, CON:9},
+    prime_requisites: ["INT","STR"],
+    hit_die: 6,
+    max_level: 12,
+    languages: ["Alignment","Common","Elvish"],
+    title_lvl1: "Half-Elf Veteran",
+    xp_next_level: 2500,
+    special_abilities: [
+      "Infravision 60'",
+      "Detect secret doors 2-in-6 (when searching)",
+      "Arcane spells from Magic-User list (from 2nd level)",
+    ],
+    spellcaster: true,
+    spell_list: "magic_user",
+    spells_start_level: 2,
+    af_class: true,
+    af_demihuman: true,
+  },
+  "AF_HalfOrc": {
+    requirements: {},
+    prime_requisites: ["DEX","STR"],
+    hit_die: 6,
+    max_level: 8,
+    languages: ["Alignment","Common","Orcish"],
+    title_lvl1: "Outlaw",
+    xp_next_level: 1800,
+    special_abilities: [
+      "Infravision 60'",
+      "Back-stab (+4 to hit, double damage vs unaware from behind)",
+      "Thieving skills: Hide in Shadows, Move Silently, Pick Pockets",
+      "Retainer loyalty −1 (except half-orc retainers)",
+      "Cannot wear armour heavier than chainmail",
+    ],
+    spellcaster: false,
+    af_class: true,
+    af_demihuman: true,
+  },
+
+  // ── Advanced Fantasy — Human (Race as Class) ──────────────────────────────
 
   "AF_Acrobat": {
     requirements: {},
@@ -587,7 +762,26 @@ const LEVEL_TITLES = {
   "AF_Knight":     ["Rider","Lancer","Armiger","Scutifer","Esquire","Knight Errant","Knight Bachelor","Knight","Knightly Lord","Knightly Lord","Knightly Lord","Knightly Lord","Knightly Lord","Knightly Lord"],
   "AF_Paladin":    ["Gallant","Keeper","Protector","Defender","Warder","Guardian","Chevalier","Justiciar","Paladin","Paladin","Paladin","Paladin","Paladin","Paladin"],
   "AF_Ranger":     ["Runner","Strider","Scout","Courser","Tracker","Guide","Pathfinder","Ranger","Ranger Knight","Ranger Knight","Ranger Knight","Ranger Knight","Ranger Knight","Ranger Knight"],
+  // Advanced Fantasy — Demihuman (Race as Class)
+  "AF_Drow":    ["Drow Acolyte","Drow Adept","Drow Priest","Drow Vicar","Drow Curate","Drow Elder","Drow Bishop","Drow Lama","Drow Patriarch","Drow Patriarch"],
+  "AF_Duergar": ["Skulk","Prowler","Scavenger","Warden","Mentalist","Kineticist","Vanisher","Duergar Champion","Duergar Lord","Duergar Lord"],
+  "AF_Gnome":   ["Gnome Prestidigitator","Minor Gnome Trickster","Gnome Trickster","Master Gnome Trickster","Gnome Cabalist","Gnome Visionist","Gnome Phantasmist","Gnome Apparitionist"],
+  "AF_HalfElf": ["Half-Elf Veteran","Half-Elf Warrior","Half-Elf Swordmaster","Half-Elf Hero","Half-Elf Swashbuckler","Half-Elf Myrmidon","Half-Elf Champion","Half-Elf Superhero","Half-Elf Lord","Half-Elf Lord","Half-Elf Lord","Half-Elf Lord"],
+  "AF_HalfOrc": ["Outlaw","Pickpocket","Brigand","Bandit","Raider","Pillager","Marauder","Plunderer"],
 };
+
+// ── Half-Orc skills by level ─────────────────────────────────────────────
+const HALFORC_SKILLS = [
+  null, // placeholder (1-based)
+  {hide:"10%", move:"20%", pp:"20%"},
+  {hide:"15%", move:"25%", pp:"25%"},
+  {hide:"20%", move:"30%", pp:"30%"},
+  {hide:"25%", move:"35%", pp:"35%"},
+  {hide:"30%", move:"40%", pp:"40%"},
+  {hide:"36%", move:"45%", pp:"45%"},
+  {hide:"45%", move:"55%", pp:"55%"},
+  {hide:"55%", move:"65%", pp:"65%"},
+];
 
 // ── Acrobat skills by level ───────────────────────────────────────────────
 const ACROBAT_SKILLS = [

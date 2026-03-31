@@ -18,10 +18,11 @@
         <div class="options-grid">
 
           <div class="option-group">
-            <label>Ruleset <span class="help" title="Classic Fantasy (B/X): the original 7 classes. Advanced Fantasy: 9 additional classes from the Advanced Players Tome.">?</span></label>
+            <label>Ruleset <span class="help" title="Classic Fantasy (B/X): the original 7 classes. Advanced Fantasy (Race as Class): 14 additional classes including demihumans from the Advanced Players Tome.">?</span></label>
             <select name="ruleset" id="ruleset">
               <option value="classic" selected>Classic Fantasy (B/X)</option>
-              <option value="advanced">Advanced Fantasy</option>
+              <option value="advanced">Advanced Fantasy (Race as Class)</option>
+              <option value="advanced_rc" disabled>Advanced Fantasy (Race + Class) — coming soon</option>
             </select>
           </div>
 
@@ -38,7 +39,7 @@
                 <option value="Magic-User">Magic-User</option>
                 <option value="Thief">Thief</option>
               </optgroup>
-              <optgroup label="Advanced Fantasy — Race as Class">
+              <optgroup label="Advanced Fantasy — Human">
                 <option value="AF_Acrobat">Acrobat</option>
                 <option value="AF_Assassin">Assassin</option>
                 <option value="AF_Barbarian">Barbarian</option>
@@ -48,6 +49,13 @@
                 <option value="AF_Knight">Knight</option>
                 <option value="AF_Paladin">Paladin</option>
                 <option value="AF_Ranger">Ranger</option>
+              </optgroup>
+              <optgroup label="Advanced Fantasy — Demihuman">
+                <option value="AF_Drow">Drow</option>
+                <option value="AF_Duergar">Duergar</option>
+                <option value="AF_Gnome">Gnome</option>
+                <option value="AF_HalfElf">Half-Elf</option>
+                <option value="AF_HalfOrc">Half-Orc</option>
               </optgroup>
             </select>
           </div>

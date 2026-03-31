@@ -97,6 +97,12 @@ const CLASS_WEAPON_RULES = {
   "AF_Knight":     {allowed_qualities:["any"], excluded:[]},
   "AF_Paladin":    {allowed_qualities:["any"], excluded:[]},
   "AF_Ranger":     {allowed_qualities:["any"], excluded:[]},
+  // Advanced Fantasy — Demihuman
+  "AF_Drow":       {allowed_qualities:["any"], excluded:[]},
+  "AF_Duergar":    {allowed_qualities:["any"], excluded:["Long bow","Two-handed sword"]},
+  "AF_Gnome":      {allowed_qualities:["any"], excluded:["Long bow","Two-handed sword"]},
+  "AF_HalfElf":   {allowed_qualities:["any"], excluded:[]},
+  "AF_HalfOrc":   {allowed_qualities:["any"], excluded:[]},
 };
 
 const CLASS_ARMOUR_RULES = {
@@ -118,6 +124,12 @@ const CLASS_ARMOUR_RULES = {
   "AF_Knight":     {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
   "AF_Paladin":    {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
   "AF_Ranger":     {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
+  // Advanced Fantasy — Demihuman
+  "AF_Drow":       {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
+  "AF_Duergar":    {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
+  "AF_Gnome":      {can_wear:["Leather"], can_use_shield:true},
+  "AF_HalfElf":   {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
+  "AF_HalfOrc":   {can_wear:["Leather","Chainmail"], can_use_shield:true},
 };
 
 const CLASS_ESSENTIALS = {
@@ -127,6 +139,9 @@ const CLASS_ESSENTIALS = {
   "AF_Acrobat":[], "AF_Assassin":["Thieves' tools"], "AF_Barbarian":[],
   "AF_Bard":[], "AF_Druid":[], "AF_Illusionist":[],
   "AF_Knight":[], "AF_Paladin":["Holy symbol"], "AF_Ranger":[],
+  // Advanced Fantasy — Demihuman
+  "AF_Drow":["Holy symbol"], "AF_Duergar":[], "AF_Gnome":[],
+  "AF_HalfElf":[], "AF_HalfOrc":[],
 };
 
 const STANDARD_KIT_ITEMS = [

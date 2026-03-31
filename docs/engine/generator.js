@@ -8,8 +8,13 @@ function isValidClass(charClass, scores) {
   return true;
 }
 
-// Returns display name for AF classes (strip AF_ prefix)
+// Returns display name for AF classes (strip AF_ prefix, handle special cases)
+const AF_DISPLAY_NAMES = {
+  "AF_HalfElf": "Half-Elf",
+  "AF_HalfOrc": "Half-Orc",
+};
 function classDisplayName(charClass) {
+  if (AF_DISPLAY_NAMES[charClass]) return AF_DISPLAY_NAMES[charClass];
   return charClass.startsWith("AF_") ? charClass.slice(3) : charClass;
 }
 
@@ -283,12 +288,12 @@ function generateCharacter(options) {
     const spellsStartLevel = classData.spells_start_level || 1;
     const hasSpellsAtLevel = targetLevel >= spellsStartLevel;
 
-    if (charClass === "Cleric" || charClass === "AF_Paladin" || !hasSpellsAtLevel) {
-      // Clerics and Paladins don't start with a spell book; Rangers/Paladins below spell level get nothing
+    if (charClass === "Cleric" || charClass === "AF_Paladin" || charClass === "AF_Drow" || !hasSpellsAtLevel) {
+      // Clerics, Paladins, and Drow don't start with a spell book
     } else if (charClass === "AF_Druid" || charClass === "AF_Bard" || charClass === "AF_Ranger") {
       // Druid-list casters: pick one random 1st-level druid spell as known
       spellsKnown.push(randomChoice(DRUID_SPELLS_L1));
-    } else if (charClass === "AF_Illusionist") {
+    } else if (charClass === "AF_Illusionist" || charClass === "AF_Gnome") {
       let list = [...ILLUSIONIST_SPELLS_L1];
       if (options.give_read_magic) {
         spellsKnown.push("Read Magic");
@@ -296,7 +301,7 @@ function generateCharacter(options) {
       }
       spellsKnown.push(randomChoice(list));
     } else {
-      // MU / Elf
+      // MU / Elf / Half-Elf
       let spellList = [...MU_ELF_SPELLS_L1];
       if (options.give_read_magic) {
         spellsKnown.push("Read Magic");
@@ -336,6 +341,27 @@ function generateCharacter(options) {
   }
   if (charClass === "AF_Ranger" && targetLevel < 8) {
     notes.push("Druid spells available from 8th level");
+  }
+  if (charClass === "AF_Drow" && targetLevel === 1) {
+    notes.push("Spell restriction: at 1st level may only pray for Light (Darkness); full cleric list from 2nd level; may also pray for web (MU spell) from 3rd level");
+  }
+  if (charClass === "AF_Drow" && targetLevel >= 3) {
+    notes.push("May also pray for web (Magic-User spell) in addition to cleric spells");
+  }
+  if (charClass === "AF_HalfElf" && targetLevel < 2) {
+    notes.push("Arcane spells (Magic-User list) available from 2nd level");
+  }
+  if (charClass === "AF_HalfOrc") {
+    const sk = HALFORC_SKILLS[targetLevel];
+    notes.push(`Half-Orc Skills (level ${targetLevel}): Hide in Shadows ${sk.hide}, Move Silently ${sk.move}, Pick Pockets ${sk.pp}`);
+    notes.push("Pick Pockets: −5% per level of target above 5th; rolling >2× success means caught");
+  }
+  if (charClass === "AF_Duergar") {
+    notes.push("Mental Powers (1/day/level): Enlargement (double size/dmg 1d4 rds), Invisibility (1 turn, affects 1HD/level), Shrinking (6\" tall, 1 turn/level), Heat (1d4 dmg/rd, 1 rd/level)");
+    notes.push("Activating a mental power requires full concentration (no movement, attacks, or other actions that round)");
+  }
+  if (charClass === "AF_Drow" || charClass === "AF_Duergar") {
+    notes.push("Light sensitivity: −2 to attack rolls and −1 AC in bright light (daylight or continual light)");
   }
   // Spell slots for AF spellcasters
   const afSlotClass = AF_SPELL_SLOTS[charClass];
@@ -393,13 +419,21 @@ function generateCharacter(options) {
 
   // Race/Class display
   const DEMI_HUMANS = new Set(["Dwarf","Elf","Halfling"]);
-  const AF_HUMAN_CLASSES = new Set(["AF_Acrobat","AF_Assassin","AF_Barbarian","AF_Bard","AF_Druid","AF_Illusionist","AF_Knight","AF_Paladin","AF_Ranger"]);
-  const isDemiHuman = DEMI_HUMANS.has(charClass);
-  const isAFHuman = AF_HUMAN_CLASSES.has(charClass);
+  const AF_DEMI_HUMANS = new Set(["AF_Drow","AF_Duergar","AF_Gnome","AF_HalfElf","AF_HalfOrc"]);
+  const isDemiHuman = DEMI_HUMANS.has(charClass) || AF_DEMI_HUMANS.has(charClass);
   const displayClass = classDisplayName(charClass);
-  const raceField = isDemiHuman ? charClass : "Human";
+  // For AF demihumans, race = friendly name, class = blank
+  const AF_DEMIHUMAN_RACE_NAMES = {
+    "AF_Drow": "Drow", "AF_Duergar": "Duergar", "AF_Gnome": "Gnome",
+    "AF_HalfElf": "Half-Elf", "AF_HalfOrc": "Half-Orc",
+  };
+  const raceField = isDemiHuman
+    ? (AF_DEMIHUMAN_RACE_NAMES[charClass] || charClass)
+    : "Human";
   const classField = isDemiHuman ? "" : displayClass;
-  const oldSheetClass = isDemiHuman ? charClass : `Human ${displayClass}`;
+  const oldSheetClass = isDemiHuman
+    ? (AF_DEMIHUMAN_RACE_NAMES[charClass] || charClass)
+    : `Human ${displayClass}`;
 
   // Special abilities (filter already-shown-elsewhere)
   const abilities = (CLASSES[charClass].special_abilities || [])
