@@ -155,7 +155,7 @@ const AF_SPELL_SLOTS = {
     [3,2,1],        // 14
   ],
   // Ranger: druid spell list, up to 3rd level, starts at 8th level
-  "Ranger": [
+  "AF_Ranger": [
     null,
     [],[], [], [], [], [], [],       // 1-7: no spells
     [1],            // 8

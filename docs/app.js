@@ -97,6 +97,35 @@ const generateBtn = document.getElementById("generate-btn");
 const classSelect = document.getElementById("class_selection");
 const diceSelect = document.getElementById("dice_method");
 const levelSelect = document.getElementById("level");
+const rulesetSelect = document.getElementById("ruleset");
+
+// Ruleset toggle — show/hide class optgroups
+function updateClassDropdownForRuleset() {
+  const ruleset = rulesetSelect.value;
+  const classicGroup = classSelect.querySelector('optgroup[label="Classic Fantasy"]');
+  const afGroup = classSelect.querySelector('optgroup[label="Advanced Fantasy — Race as Class"]');
+  if (ruleset === "advanced") {
+    if (classicGroup) classicGroup.style.display = "none";
+    if (afGroup) afGroup.style.display = "";
+    // Reset to random if current selection is a Classic class
+    const currentVal = classSelect.value;
+    const isClassicClass = classicGroup && Array.from(classicGroup.options).some(o => o.value === currentVal);
+    if (isClassicClass) classSelect.value = "random";
+  } else {
+    if (classicGroup) classicGroup.style.display = "";
+    if (afGroup) afGroup.style.display = "none";
+    // Reset to random if current selection is an AF class
+    const currentVal = classSelect.value;
+    const isAFClass = afGroup && Array.from(afGroup.options).some(o => o.value === currentVal);
+    if (isAFClass) classSelect.value = "random";
+  }
+  // Trigger downstream updates
+  classSelect.dispatchEvent(new Event("change"));
+}
+
+rulesetSelect.addEventListener("change", updateClassDropdownForRuleset);
+// Init on load
+updateClassDropdownForRuleset();
 
 function updateLevelDropdown() {
   const val = classSelect.value;
@@ -189,6 +218,7 @@ form.addEventListener("submit", async function(e) {
   }
 
   const options = {
+    ruleset: fd.get("ruleset") || "classic",
     dice_method: fd.get("dice_method"),
     class_selection: classSelection,
     chosen_class: chosenClass,

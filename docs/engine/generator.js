@@ -20,10 +20,15 @@ function calcPrXpBonus(scores, charClass) {
   return prXpMod(minScore);
 }
 
-function pickRandomClassByXp(scores) {
-  // Random selection only draws from Classic classes
-  const valid = Object.keys(CLASSES).filter(c => !CLASSES[c].af_class && isValidClass(c, scores));
-  if (!valid.length) return "Fighter";
+function pickRandomClassByXp(scores, ruleset="classic") {
+  // Filter by ruleset: classic excludes AF classes, advanced includes only AF classes
+  const valid = Object.keys(CLASSES).filter(c => {
+    const isAF = !!CLASSES[c].af_class;
+    if (ruleset === "advanced") return isAF && isValidClass(c, scores);
+    return !isAF && isValidClass(c, scores);
+  });
+  const fallback = ruleset === "advanced" ? "AF_Fighter" : "Fighter";
+  if (!valid.length) return ruleset === "advanced" ? "AF_Barbarian" : "Fighter";
 
   const plus=[], none=[], minus10=[];
   for (const c of valid) {
@@ -89,7 +94,7 @@ function determineClass(scores, options) {
   if (mode === "choose" && options.chosen_class) {
     if (isValidClass(options.chosen_class, scores)) return options.chosen_class;
   }
-  return pickRandomClassByXp(scores);
+  return pickRandomClassByXp(scores, options.ruleset || "classic");
 }
 
 function determineAlignment(options, charClass) {
@@ -229,7 +234,7 @@ function generateCharacter(options) {
   // Determine class
   const charClass = (classSelection === "choose" && chosenClass && isValidClass(chosenClass, scores))
     ? chosenClass
-    : pickRandomClassByXp(scores);
+    : pickRandomClassByXp(scores, options.ruleset || "classic");
 
   // Clamp level to class max
   const maxLevel = CLASSES[charClass].max_level;
@@ -307,9 +312,18 @@ function generateCharacter(options) {
     const page = SPELL_PAGE_NUMBERS[spell];
     notes.push(`Spell: ${spell}${page ? ` (p. ${page})` : ""}`);
   }
-  if (charClass === "Thief" || charClass === "AF_Assassin") {
+  if (charClass === "Thief") {
     const ts = CLASSES["Thief"].thief_skills_lvl1;
     notes.push(`Thief Skills: CS ${ts.CS}, TR ${ts.TR}, HN ${ts.HN}, HS ${ts.HS}, MS ${ts.MS}, OL ${ts.OL}, PP ${ts.PP}`);
+  }
+  if (charClass === "AF_Acrobat") {
+    const sk = ACROBAT_SKILLS[targetLevel];
+    notes.push(`Acrobat Skills (level ${targetLevel}): Climb ${sk.climb}, Falling (reduce dmg by ${sk.falling}), Hide in Shadows ${sk.hide}, Move Silently ${sk.move}, Tightrope Walking ${sk.tightrope}`);
+  }
+  if (charClass === "AF_Assassin") {
+    const sk = ASSASSIN_SKILLS[targetLevel];
+    const asn = sk.assassination ? `Assassination (victim saves vs death ${sk.assassination})` : "Assassination: not yet available (gained at 2nd level)";
+    notes.push(`Assassin Skills (level ${targetLevel}): ${asn}, Climb ${sk.climb}, Hear Noise ${sk.hear}, Hide in Shadows ${sk.hide}, Move Silently ${sk.move}`);
   }
   if (charClass === "AF_Barbarian") {
     notes.push("Illiterate at 1st level (cannot read or write regardless of INT)");
@@ -322,6 +336,15 @@ function generateCharacter(options) {
   }
   if (charClass === "AF_Ranger" && targetLevel < 8) {
     notes.push("Druid spells available from 8th level");
+  }
+  // Spell slots for AF spellcasters
+  const afSlotClass = AF_SPELL_SLOTS[charClass];
+  if (afSlotClass) {
+    const slots = afSlotClass[targetLevel];
+    if (slots && slots.length > 0) {
+      const slotStr = slots.map((n, i) => `L${i+1}:${n}`).join(", ");
+      notes.push(`Spell Slots: ${slotStr}`);
+    }
   }
   if (kit.gold_remaining > 0 && encMode === "item_based") {
     notes.push(`Remaining gold: ${kit.gold_remaining} gp`);

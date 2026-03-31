@@ -589,6 +589,44 @@ const LEVEL_TITLES = {
   "AF_Ranger":     ["Runner","Strider","Scout","Courser","Tracker","Guide","Pathfinder","Ranger","Ranger Knight","Ranger Knight","Ranger Knight","Ranger Knight","Ranger Knight","Ranger Knight"],
 };
 
+// ── Acrobat skills by level ───────────────────────────────────────────────
+const ACROBAT_SKILLS = [
+  null, // placeholder (1-based)
+  {climb:"87%", falling:"1d6×5'", hide:"10%", move:"20%", tightrope:"70%"},
+  {climb:"88%", falling:"1d6×5'", hide:"15%", move:"25%", tightrope:"72%"},
+  {climb:"89%", falling:"1d6×5'", hide:"20%", move:"30%", tightrope:"74%"},
+  {climb:"90%", falling:"2d6×5'", hide:"25%", move:"35%", tightrope:"76%"},
+  {climb:"91%", falling:"2d6×5'", hide:"30%", move:"40%", tightrope:"78%"},
+  {climb:"92%", falling:"2d6×5'", hide:"35%", move:"45%", tightrope:"82%"},
+  {climb:"93%", falling:"2d6×5'", hide:"45%", move:"55%", tightrope:"86%"},
+  {climb:"94%", falling:"3d6×5'", hide:"55%", move:"65%", tightrope:"90%"},
+  {climb:"95%", falling:"3d6×5'", hide:"65%", move:"75%", tightrope:"95%"},
+  {climb:"96%", falling:"3d6×5'", hide:"75%", move:"85%", tightrope:"99%"},
+  {climb:"97%", falling:"3d6×5'", hide:"85%", move:"95%", tightrope:"99%"},
+  {climb:"98%", falling:"4d6×5'", hide:"90%", move:"99%", tightrope:"99%"},
+  {climb:"99%", falling:"4d6×5'", hide:"95%", move:"99%", tightrope:"99%"},
+  {climb:"99%", falling:"4d6×5'", hide:"99%", move:"99%", tightrope:"99%"},
+];
+
+// ── Assassin skills by level ──────────────────────────────────────────────
+const ASSASSIN_SKILLS = [
+  null, // placeholder (1-based)
+  {assassination:null,       climb:"87%", hear:"1–2/d6", hide:"10%", move:"20%"},
+  {assassination:"save −4",  climb:"88%", hear:"1–2/d6", hide:"15%", move:"25%"},
+  {assassination:"save −3",  climb:"89%", hear:"1–2/d6", hide:"20%", move:"30%"},
+  {assassination:"save −2",  climb:"90%", hear:"1–2/d6", hide:"25%", move:"35%"},
+  {assassination:"save −1",  climb:"91%", hear:"1–2/d6", hide:"30%", move:"40%"},
+  {assassination:"save +0",  climb:"92%", hear:"1–3/d6", hide:"35%", move:"45%"},
+  {assassination:"save +1",  climb:"93%", hear:"1–3/d6", hide:"45%", move:"55%"},
+  {assassination:"save +2",  climb:"94%", hear:"1–3/d6", hide:"55%", move:"65%"},
+  {assassination:"save +3",  climb:"95%", hear:"1–4/d6", hide:"65%", move:"75%"},
+  {assassination:"save +4",  climb:"96%", hear:"1–4/d6", hide:"75%", move:"85%"},
+  {assassination:"save +5",  climb:"97%", hear:"1–4/d6", hide:"85%", move:"95%"},
+  {assassination:"save +6",  climb:"98%", hear:"1–4/d6", hide:"90%", move:"99%"},
+  {assassination:"save +7",  climb:"99%", hear:"1–5/d6", hide:"95%", move:"99%"},
+  {assassination:"save +8",  climb:"99%", hear:"1–5/d6", hide:"99%", move:"99%"},
+];
+
 const LANGUAGE_PICK_LIST = [
   "Bugbear","Doppelgänger","Dragon","Dwarvish","Elvish","Gargoyle",
   "Gnoll","Gnomish","Goblin","Halfling","Harpy","Hobgoblin","Kobold",

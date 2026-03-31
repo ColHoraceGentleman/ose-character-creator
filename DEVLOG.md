@@ -2,6 +2,31 @@
 
 ---
 
+## 2026-03-31 — Phase 2a: Advanced Fantasy Classes Wired Up
+
+### What Was Changed
+
+1. **Ruleset toggle enabled** (`index.html`, `app.js`) — Advanced Fantasy option is no longer disabled. Selecting it filters the class dropdown to show only AF classes; switching back to Classic shows only Classic classes. Ruleset value is threaded into generator options.
+
+2. **Random class selection respects ruleset** (`generator.js`) — `pickRandomClassByXp()` now accepts a `ruleset` parameter. Classic mode excludes AF classes (existing behaviour). Advanced mode picks only from AF classes, still using the XP-bonus priority logic.
+
+3. **Ranger spell slot key fixed** (`spells.js`) — `AF_SPELL_SLOTS` entry was keyed as `"Ranger"` instead of `"AF_Ranger"`. Fixed.
+
+4. **Acrobat and Assassin skill tables added** (`classes.js`, `generator.js`) — Proper per-level skill percentages from OSE APT added as `ACROBAT_SKILLS` and `ASSASSIN_SKILLS` arrays. Generator now outputs correct skills in Notes at the character's level. Removed the Thief-skills-as-placeholder logic for AF_Assassin.
+
+5. **Spell slots shown in Notes** (`generator.js`) — AF spellcasting classes (Bard, Druid, Illusionist, Paladin from 9th, Ranger from 8th) now show their spell slot counts per level in the Notes field (e.g. `Spell Slots: L1:2, L2:1`).
+
+6. **Alignment enforcement** — Already handled correctly by `determineAlignment()` which reads `alignment_restriction` from class data. No changes needed.
+
+7. **Equipment kits** — AF classes already covered by `CLASS_WEAPON_RULES`, `CLASS_ARMOUR_RULES`, and `CLASS_ESSENTIALS` in `equipment.js`. `autoKit()` selects best affordable armour/weapon within class restrictions. No changes needed.
+
+### OSE APT Reference
+- PDF added to `references/OSE APT.pdf`
+- Spell lists and slot tables verified against APT — all correct
+- Class data (saves, THAC0, XP, HD) verified against APT — all correct
+
+---
+
 ## 2026-03-16 — Phase 2 (Part 1): Level Selection, Max HP, Multiple Characters
 
 ### What Was Added
