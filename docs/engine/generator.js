@@ -8,6 +8,11 @@ function isValidClass(charClass, scores) {
   return true;
 }
 
+// Returns display name for AF classes (strip AF_ prefix)
+function classDisplayName(charClass) {
+  return charClass.startsWith("AF_") ? charClass.slice(3) : charClass;
+}
+
 function calcPrXpBonus(scores, charClass) {
   const prs = CLASSES[charClass].prime_requisites;
   if (prs.length === 1) return prXpMod(scores[prs[0]]);
@@ -16,7 +21,8 @@ function calcPrXpBonus(scores, charClass) {
 }
 
 function pickRandomClassByXp(scores) {
-  const valid = Object.keys(CLASSES).filter(c => isValidClass(c, scores));
+  // Random selection only draws from Classic classes
+  const valid = Object.keys(CLASSES).filter(c => !CLASSES[c].af_class && isValidClass(c, scores));
   if (!valid.length) return "Fighter";
 
   const plus=[], none=[], minus10=[];
@@ -86,8 +92,19 @@ function determineClass(scores, options) {
   return pickRandomClassByXp(scores);
 }
 
-function determineAlignment(options) {
+function determineAlignment(options, charClass) {
   if (options.alignment_blank) return "";
+  // Class alignment restrictions override user selection
+  const classRestriction = (CLASSES[charClass] || {}).alignment_restriction;
+  if (classRestriction) {
+    // Intersect user allowed with class restriction; if nothing left, use class restriction
+    const userAllowed = options.allowed_alignments || [];
+    const valid = userAllowed.length
+      ? classRestriction.filter(a => userAllowed.includes(a))
+      : classRestriction;
+    const pool = valid.length ? valid : classRestriction;
+    return pool.length === 1 ? pool[0] : randomChoice(pool);
+  }
   const allowed = options.allowed_alignments || [];
   if (!allowed.length) return "Neutral";
   if (allowed.length === 1) return allowed[0];
@@ -229,7 +246,7 @@ function generateCharacter(options) {
   };
 
   const prog = LEVEL_PROGRESSION[charClass][targetLevel];
-  const alignment = determineAlignment(options);
+  const alignment = determineAlignment(options, charClass);
 
   // HP
   const hp = rollHp(charClass, mods.CON.hp, options.reroll_low_hp||false, options.max_hp_at_level1||false, targetLevel);
@@ -256,13 +273,32 @@ function generateCharacter(options) {
 
   // Spells
   const spellsKnown = [];
-  if (CLASSES[charClass].spellcaster && charClass !== "Cleric") {
-    let spellList = [...MU_ELF_SPELLS_L1];
-    if (options.give_read_magic) {
-      spellsKnown.push("Read Magic");
-      spellList = spellList.filter(s => s !== "Read Magic");
+  const classData = CLASSES[charClass];
+  if (classData.spellcaster) {
+    const spellsStartLevel = classData.spells_start_level || 1;
+    const hasSpellsAtLevel = targetLevel >= spellsStartLevel;
+
+    if (charClass === "Cleric" || charClass === "AF_Paladin" || !hasSpellsAtLevel) {
+      // Clerics and Paladins don't start with a spell book; Rangers/Paladins below spell level get nothing
+    } else if (charClass === "AF_Druid" || charClass === "AF_Bard" || charClass === "AF_Ranger") {
+      // Druid-list casters: pick one random 1st-level druid spell as known
+      spellsKnown.push(randomChoice(DRUID_SPELLS_L1));
+    } else if (charClass === "AF_Illusionist") {
+      let list = [...ILLUSIONIST_SPELLS_L1];
+      if (options.give_read_magic) {
+        spellsKnown.push("Read Magic");
+        list = list.filter(s => s !== "Read Magic");
+      }
+      spellsKnown.push(randomChoice(list));
+    } else {
+      // MU / Elf
+      let spellList = [...MU_ELF_SPELLS_L1];
+      if (options.give_read_magic) {
+        spellsKnown.push("Read Magic");
+        spellList = spellList.filter(s => s !== "Read Magic");
+      }
+      spellsKnown.push(randomChoice(spellList));
     }
-    spellsKnown.push(randomChoice(spellList));
   }
 
   // Notes
@@ -271,9 +307,21 @@ function generateCharacter(options) {
     const page = SPELL_PAGE_NUMBERS[spell];
     notes.push(`Spell: ${spell}${page ? ` (p. ${page})` : ""}`);
   }
-  if (charClass === "Thief") {
+  if (charClass === "Thief" || charClass === "AF_Assassin") {
     const ts = CLASSES["Thief"].thief_skills_lvl1;
     notes.push(`Thief Skills: CS ${ts.CS}, TR ${ts.TR}, HN ${ts.HN}, HS ${ts.HS}, MS ${ts.MS}, OL ${ts.OL}, PP ${ts.PP}`);
+  }
+  if (charClass === "AF_Barbarian") {
+    notes.push("Illiterate at 1st level (cannot read or write regardless of INT)");
+  }
+  if (charClass === "AF_Druid") {
+    notes.push("Armour: leather only; shields must be wooden (no metal)");
+  }
+  if (charClass === "AF_Paladin" && targetLevel < 9) {
+    notes.push("Cleric spells available from 9th level");
+  }
+  if (charClass === "AF_Ranger" && targetLevel < 8) {
+    notes.push("Druid spells available from 8th level");
   }
   if (kit.gold_remaining > 0 && encMode === "item_based") {
     notes.push(`Remaining gold: ${kit.gold_remaining} gp`);
@@ -322,10 +370,13 @@ function generateCharacter(options) {
 
   // Race/Class display
   const DEMI_HUMANS = new Set(["Dwarf","Elf","Halfling"]);
+  const AF_HUMAN_CLASSES = new Set(["AF_Acrobat","AF_Assassin","AF_Barbarian","AF_Bard","AF_Druid","AF_Illusionist","AF_Knight","AF_Paladin","AF_Ranger"]);
   const isDemiHuman = DEMI_HUMANS.has(charClass);
+  const isAFHuman = AF_HUMAN_CLASSES.has(charClass);
+  const displayClass = classDisplayName(charClass);
   const raceField = isDemiHuman ? charClass : "Human";
-  const classField = isDemiHuman ? "" : charClass;
-  const oldSheetClass = isDemiHuman ? charClass : `Human ${charClass}`;
+  const classField = isDemiHuman ? "" : displayClass;
+  const oldSheetClass = isDemiHuman ? charClass : `Human ${displayClass}`;
 
   // Special abilities (filter already-shown-elsewhere)
   const abilities = (CLASSES[charClass].special_abilities || [])
@@ -347,7 +398,7 @@ function generateCharacter(options) {
   const langsForSheet = [...new Set(languages.filter(l => l !== "Alignment"))].sort().join(", ");
 
   return {
-    character_class: charClass,
+    character_class: displayClass,
     old_sheet_class: oldSheetClass,
     race_field: raceField,
     class_field: classField,

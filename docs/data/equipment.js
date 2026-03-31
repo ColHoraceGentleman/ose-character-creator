@@ -79,27 +79,54 @@ const STANDARD_ENCUMBRANCE_WEIGHTS = {
 };
 
 const CLASS_WEAPON_RULES = {
-  "Cleric":     {allowed_qualities:["Blunt"], excluded:["Long bow","Two-handed sword","Battle axe","Polearm"]},
-  "Dwarf":      {allowed_qualities:["any"], excluded:["Long bow","Two-handed sword","Polearm"]},
-  "Elf":        {allowed_qualities:["any"], excluded:[]},
-  "Fighter":    {allowed_qualities:["any"], excluded:[]},
-  "Halfling":   {allowed_qualities:["any"], excluded:["Long bow","Two-handed sword","Polearm","Lance"]},
-  "Magic-User": {allowed_qualities:["any"], only:["Dagger"]},
-  "Thief":      {allowed_qualities:["any"], excluded:[]},
+  // Classic
+  "Cleric":        {allowed_qualities:["Blunt"], excluded:["Long bow","Two-handed sword","Battle axe","Polearm"]},
+  "Dwarf":         {allowed_qualities:["any"], excluded:["Long bow","Two-handed sword","Polearm"]},
+  "Elf":           {allowed_qualities:["any"], excluded:[]},
+  "Fighter":       {allowed_qualities:["any"], excluded:[]},
+  "Halfling":      {allowed_qualities:["any"], excluded:["Long bow","Two-handed sword","Polearm","Lance"]},
+  "Magic-User":    {allowed_qualities:["any"], only:["Dagger"]},
+  "Thief":         {allowed_qualities:["any"], excluded:[]},
+  // Advanced Fantasy — Race as Class
+  "AF_Acrobat":    {allowed_qualities:["any"], excluded:["Battle axe","Club","Crossbow","Hand axe","Lance","Long bow","Mace","Polearm","Two-handed sword","Warhammer"]},
+  "AF_Assassin":   {allowed_qualities:["any"], excluded:[]},
+  "AF_Barbarian":  {allowed_qualities:["any"], excluded:[]},
+  "AF_Bard":       {allowed_qualities:["any"], excluded:["Battle axe","Crossbow","Lance","Polearm","Two-handed sword","Warhammer"], melee_only_two_handed:true},
+  "AF_Druid":      {allowed_qualities:["any"], only:["Club","Dagger","Sling","Spear","Staff"]},
+  "AF_Illusionist":{allowed_qualities:["any"], only:["Dagger"]},
+  "AF_Knight":     {allowed_qualities:["any"], excluded:[]},
+  "AF_Paladin":    {allowed_qualities:["any"], excluded:[]},
+  "AF_Ranger":     {allowed_qualities:["any"], excluded:[]},
 };
 
 const CLASS_ARMOUR_RULES = {
-  "Cleric":     {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
-  "Dwarf":      {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
-  "Elf":        {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
-  "Fighter":    {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
-  "Halfling":   {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
-  "Magic-User": {can_wear:[], can_use_shield:false},
-  "Thief":      {can_wear:["Leather"], can_use_shield:false},
+  // Classic
+  "Cleric":        {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
+  "Dwarf":         {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
+  "Elf":           {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
+  "Fighter":       {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
+  "Halfling":      {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
+  "Magic-User":    {can_wear:[], can_use_shield:false},
+  "Thief":         {can_wear:["Leather"], can_use_shield:false},
+  // Advanced Fantasy — Race as Class
+  "AF_Acrobat":    {can_wear:["Leather"], can_use_shield:false},
+  "AF_Assassin":   {can_wear:["Leather"], can_use_shield:true},
+  "AF_Barbarian":  {can_wear:["Leather","Chainmail"], can_use_shield:true},
+  "AF_Bard":       {can_wear:["Leather","Chainmail"], can_use_shield:false},
+  "AF_Druid":      {can_wear:["Leather"], can_use_shield:true},  // wooden shields only (handled in notes)
+  "AF_Illusionist":{can_wear:[], can_use_shield:false},
+  "AF_Knight":     {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
+  "AF_Paladin":    {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
+  "AF_Ranger":     {can_wear:["Leather","Chainmail","Plate mail"], can_use_shield:true},
 };
 
 const CLASS_ESSENTIALS = {
+  // Classic
   "Cleric":["Holy symbol"], "Dwarf":[], "Elf":[], "Fighter":[], "Halfling":[], "Magic-User":[], "Thief":["Thieves' tools"],
+  // Advanced Fantasy — Race as Class
+  "AF_Acrobat":[], "AF_Assassin":["Thieves' tools"], "AF_Barbarian":[],
+  "AF_Bard":[], "AF_Druid":[], "AF_Illusionist":[],
+  "AF_Knight":[], "AF_Paladin":["Holy symbol"], "AF_Ranger":[],
 };
 
 const STANDARD_KIT_ITEMS = [
