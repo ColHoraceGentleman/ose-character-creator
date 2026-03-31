@@ -104,7 +104,7 @@ const CLASS_ESSENTIALS = {
 
 const STANDARD_KIT_ITEMS = [
   "Backpack","Torches (6)","Tinder box","Rations (standard, 7 days)",
-  "Waterskin","Rope (50')","Oil (1 flask)","Iron spikes (12)","Sack (large)",
+  "Waterskin","Rope (50')","Iron spikes (12)","Sack (large)",
 ];
 
 function getAllowedWeapons(charClass) {
@@ -252,12 +252,7 @@ function autoKit(charClass, gold) {
 
   // Armour
   const [armourName, armourCost] = bestAffordableArmour(charClass, remaining);
-  if (armourName) {
-    remaining = buy(armourName, armourCost, "equipped");
-    if (CLASS_ARMOUR_RULES[charClass].can_use_shield && remaining >= 10) {
-      remaining = buy("Shield",10,"equipped");
-    }
-  }
+  if (armourName) remaining = buy(armourName, armourCost, "equipped");
 
   // Weapon
   const [weaponName, weaponCost] = bestAffordableWeapon(charClass, remaining);
@@ -269,6 +264,11 @@ function autoKit(charClass, gold) {
     if (remaining >= cost && !packed.includes(item) && !equipped.includes(item) && !unencumbering.includes(item)) {
       remaining = buy(item,cost,"packed");
     }
+  }
+
+  // Shield (if class can use one and gold remains)
+  if (CLASS_ARMOUR_RULES[charClass].can_use_shield && remaining >= 10) {
+    remaining = buy("Shield", 10, "equipped");
   }
 
   return {equipped, packed, unencumbering, gold_spent:spent, gold_remaining:remaining};
