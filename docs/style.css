@@ -105,6 +105,13 @@ select {
   border-bottom: 1px solid var(--border);
 }
 
+.char-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
 .btn-download {
   padding: 10px 20px;
   background: var(--success);

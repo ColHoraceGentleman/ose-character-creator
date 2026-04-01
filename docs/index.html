@@ -174,6 +174,10 @@
                 <input type="checkbox" name="magic_items" id="magic_items">
                 <span>Magic Item Chance <span class="help" title="Percentage chance that a generated character receives a magic item from the appropriate list (CF or AF).">ⓘ</span></span>
               </label>
+              <label class="toggle">
+                <input type="checkbox" name="generate_name" id="generate_name" checked>
+                <span>Generate Name <span class="help" title="Randomly generate a name appropriate to the character's race.">ⓘ</span></span>
+              </label>
               <select name="magic_item_pct" id="magic_item_pct" style="margin-left:8px;">
                 <option value="5">5%</option>
                 <option value="10" selected>10%</option>
@@ -196,6 +200,7 @@
       <div id="result" class="result hidden">
         <div class="result-header">
           <div>
+            <div id="r-name" class="char-name"></div>
             <strong id="r-class-level"></strong>
             <span id="r-title" style="color:var(--text-dim); margin-left:10px;"></span>
           </div>
@@ -277,10 +282,12 @@
   <script src="data/classes.js"></script>
   <script src="data/spells.js"></script>
   <script src="data/equipment.js"></script>
+  <script src="data/names.js"></script>
 
   <!-- Engine -->
   <script src="engine/dice.js"></script>
   <script src="engine/ability_scores.js"></script>
+  <script src="engine/name_generator.js"></script>
   <script src="engine/generator.js"></script>
   <script src="engine/pdf.js"></script>
   <script src="engine/storage.js"></script>

@@ -65,7 +65,7 @@ async function fillPdf(character, pdfPath) {
 
   if (acMode === "aac") {
     // AAC sheets — field names with " 2" suffix
-    setText("Name 2", "");
+    setText("Name 2", character.name || "");
     setText("Character Class 2", " " + (character.old_sheet_class || character.character_class || ""));
     setText("Title 2", " " + (character.title || ""));
     setText("Level 2", String(character.level || 1));
@@ -109,7 +109,7 @@ async function fillPdf(character, pdfPath) {
     setCheck("Literacy 2", character.literate);
   } else {
     // DAC sheets — plain field names
-    setText("Name", "");
+    setText("Name", character.name || "");
     setText("Title", " " + (character.title || ""));
     setText("Race", " " + (character.race_field || ""));
     setText("Class", " " + (character.class_field || ""));

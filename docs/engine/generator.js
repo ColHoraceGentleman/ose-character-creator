@@ -171,6 +171,23 @@ function fmtDamage(die, bonus) {
   return die;
 }
 
+// Name generation: map class to name set key
+function getNameSetKey(charClass) {
+  const map = {
+    // Classic
+    "Fighter": "human", "Cleric": "human", "Magic-User": "human", "Thief": "human",
+    "Dwarf": "dwarf", "Elf": "elf", "Halfling": "halfling",
+    // AF human classes
+    "AF_Acrobat": "human", "AF_Assassin": "human", "AF_Barbarian": "human",
+    "AF_Bard": "human", "AF_Druid": "human", "AF_Illusionist": "human",
+    "AF_Knight": "human", "AF_Paladin": "human", "AF_Ranger": "human",
+    // AF demihuman
+    "AF_Drow": "drow", "AF_Duergar": "duergar", "AF_Gnome": "gnome",
+    "AF_HalfElf": "half-elf", "AF_HalfOrc": "half-orc",
+  };
+  return map[charClass] || "human";
+}
+
 function formatEquippedItems(equipped, strMeleeModVal, dexMissileModVal) {
   return equipped.map(item => {
     if (WEAPONS[item]) {
@@ -545,10 +562,18 @@ function generateCharacter(options) {
   // Halfling AC bonus vs large (show on sheet)
   const dexAcForSheet = charClass === "Halfling" ? mods.DEX.ac + 2 : mods.DEX.ac;
 
+  // Name generation
+  let charName = "";
+  if (options.generate_name) {
+    const nameKey = getNameSetKey(charClass);
+    charName = generate_name(nameKey) || "Unknown";
+  }
+
   // Format languages (exclude "Alignment", deduplicate)
   const langsForSheet = [...new Set(languages.filter(l => l !== "Alignment"))].sort().join(", ");
 
   return {
+    name: charName,
     character_class: displayClass,
     old_sheet_class: oldSheetClass,
     race_field: raceField,

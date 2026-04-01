@@ -31,6 +31,7 @@ function displayCharacter(char, options) {
   hideError();
 
   // Header info
+  document.getElementById("r-name").textContent = char.name || "";
   document.getElementById("r-class-level").textContent = char.character_class + " " + char.level;
   document.getElementById("r-title").textContent = char.title;
   document.getElementById("r-alignment").textContent = char.alignment || "—";
@@ -240,6 +241,7 @@ form.addEventListener("submit", async function(e) {
     weapon_proficiency: fd.get("weapon_proficiency") === "on",
     magic_items: fd.get("magic_items") === "on",
     magic_item_pct: parseInt(fd.get("magic_item_pct") || "10"),
+    generate_name: fd.get("generate_name") === "on",
   };
 
   generateBtn.disabled = true;
