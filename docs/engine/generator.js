@@ -248,7 +248,7 @@ function rollSecondarySkill() {
     "Woodcutter", "Woodcutter", "Woodcutter", // 94-96
     "Vintner", "Vintner", // 97-98
   ];
-  const roll = roll1d100();
+  const roll = Math.floor(Math.random() * 100) + 1;
   if (roll >= 99) {
     // Roll twice
     return rollSecondarySkill() + " / " + rollSecondarySkill();
