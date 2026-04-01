@@ -380,7 +380,7 @@ When picking up this project, always work in `docs/`.
 - [ ] Magic item generation (toggle + options)
 - [x] Multiple characters per run / bulk ZIP download (done in docs/ browser version)
 - [ ] Preferences UI (dice method default, spell selection, auto-kit strictness)
-- [ ] Manual equipment shopping mode
+- [x] Manual equipment mode — skips auto-kit, sets full starting gold on sheet; player buys gear separately from book
 - [ ] QA agent review of full codebase
 - [ ] Name generation (random fantasy names per race/class)
 - [ ] **Optional rule: Weapon Proficiency** — players select weapons their character is trained in, chosen from class-allowed weapons (Basic method) or race+class-allowed weapons (Advanced method). Full rules on p23 of AF rulebook. Not yet sourced — needs dedicated reference pages before implementation.
