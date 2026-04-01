@@ -382,7 +382,7 @@ None currently known.
 - [ ] Preferences UI (dice method default, spell selection, auto-kit strictness)
 - [x] Manual equipment mode — skips auto-kit, sets full starting gold on sheet; player buys gear separately from book
 - [ ] QA agent review of full codebase
-- [ ] Name generation (random fantasy names per race/class)
+- [x] Name generation — Donjon Markov chain engine; per-race name sets (human, dwarf, duergar, elf, half-elf, halfling, gnome, drow, half-orc); checkbox toggle (default on); fills Name field on PDF
 - [ ] **Optional rule: Weapon Proficiency** (p23) — source: `references/Optional Rules.pdf`
   - Classes split into **Martial** (THAC0 improves every 3 levels), **Semi-Martial** (every 4), **Non-Martial** (every 5)
   - Starting proficiencies: Martial=4, Semi-Martial=3, Non-Martial=1
