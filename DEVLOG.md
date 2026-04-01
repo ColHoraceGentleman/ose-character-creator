@@ -403,6 +403,7 @@ None currently known.
 ## Phase 3 — Advanced Character Creation (Future)
 
 > **Do not start until Phase 2 Basic CC is complete and QA'd.**
+> **End-of-phase QA review is mandatory before starting the next phase.**
 
 Source document: `~/Downloads/character creation methods.pdf` (pages extracted 2026-04-01).
 
