@@ -426,6 +426,16 @@ function generateCharacter(options) {
     notes.push(`Secondary Skill: ${secSkill}`);
   }
 
+  // Magic Item
+  if (options.magic_items) {
+    const roll = Math.floor(Math.random() * 100) + 1;
+    if (roll <= (options.magic_item_pct || 10)) {
+      const itemList = (options.ruleset === "advanced") ? AF_MAGIC_ITEMS : CF_MAGIC_ITEMS;
+      const item = itemList[Math.floor(Math.random() * itemList.length)];
+      notes.push(`Magic Item: ${item}`);
+    }
+  }
+
   // Weapon Proficiency
   if (options.weapon_proficiency) {
     const martialCat = MARTIAL_CATEGORY[charClass] || "non-martial";
