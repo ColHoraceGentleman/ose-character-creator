@@ -100,33 +100,71 @@ const diceSelect = document.getElementById("dice_method");
 const levelSelect = document.getElementById("level");
 const rulesetSelect = document.getElementById("ruleset");
 
-// Ruleset toggle — show/hide class optgroups
-// In Classic mode: hide the "Classic Fantasy" optgroup header (redundant when AF is hidden)
-// by replacing it with a plain disabled separator. In Advanced mode: show it as a group.
+// Class definitions for dropdown rebuilding
+const CF_CLASSES = [
+  { value: "Cleric",      label: "Cleric" },
+  { value: "Dwarf",       label: "Dwarf" },
+  { value: "Elf",         label: "Elf" },
+  { value: "Fighter",     label: "Fighter" },
+  { value: "Halfling",    label: "Halfling" },
+  { value: "Magic-User",  label: "Magic-User" },
+  { value: "Thief",       label: "Thief" },
+];
+const AF_HUMAN_CLASSES = [
+  { value: "AF_Acrobat",    label: "Acrobat" },
+  { value: "AF_Assassin",   label: "Assassin" },
+  { value: "AF_Barbarian",  label: "Barbarian" },
+  { value: "AF_Bard",       label: "Bard" },
+  { value: "AF_Druid",      label: "Druid" },
+  { value: "AF_Illusionist",label: "Illusionist" },
+  { value: "AF_Knight",     label: "Knight" },
+  { value: "AF_Paladin",    label: "Paladin" },
+  { value: "AF_Ranger",     label: "Ranger" },
+];
+const AF_DEMI_CLASSES = [
+  { value: "AF_Drow",    label: "Drow" },
+  { value: "AF_Duergar", label: "Duergar" },
+  { value: "AF_Gnome",   label: "Gnome" },
+  { value: "AF_HalfElf", label: "Half-Elf" },
+  { value: "AF_HalfOrc", label: "Half-Orc" },
+];
+
+// Rebuild the class dropdown from scratch based on ruleset
 function updateClassDropdownForRuleset() {
   const ruleset = rulesetSelect.value;
-  const classicGroup = classSelect.querySelector('#optgroup-classic');
-  const afHumanGroup = classSelect.querySelector('#optgroup-af-human');
-  const afDemiGroup = classSelect.querySelector('#optgroup-af-demihuman');
-  const afGroups = [afHumanGroup, afDemiGroup].filter(Boolean);
+  const prevVal = classSelect.value;
+
+  // Clear and rebuild
+  classSelect.innerHTML = "";
+
+  function addOption(value, label) {
+    const opt = document.createElement("option");
+    opt.value = value;
+    opt.textContent = label;
+    return opt;
+  }
+  function addGroup(label, classes) {
+    const grp = document.createElement("optgroup");
+    if (label) grp.label = label;
+    classes.forEach(c => grp.appendChild(addOption(c.value, c.label)));
+    classSelect.appendChild(grp);
+  }
+
+  classSelect.appendChild(addOption("random", "Random class"));
 
   if (ruleset === "advanced") {
-    // Show CF group with its label (as a category header among multiple groups)
-    if (classicGroup) { classicGroup.style.display = ""; classicGroup.label = "Classic Fantasy"; }
-    afGroups.forEach(g => g.style.display = "");
-    // Reset to random if current selection is a Classic class
-    const currentVal = classSelect.value;
-    const isClassicClass = classicGroup && Array.from(classicGroup.options).some(o => o.value === currentVal);
-    if (isClassicClass) classSelect.value = "random";
+    addGroup("Classic Fantasy", CF_CLASSES);
+    addGroup("Advanced Fantasy — Human", AF_HUMAN_CLASSES);
+    addGroup("Advanced Fantasy — Demihuman", AF_DEMI_CLASSES);
   } else {
-    // Classic mode: hide AF groups, and hide CF optgroup label (only group visible, label is noise)
-    if (classicGroup) { classicGroup.style.display = ""; classicGroup.label = ""; }
-    afGroups.forEach(g => g.style.display = "none");
-    // Reset to random if current selection is an AF class
-    const currentVal = classSelect.value;
-    const isAFClass = afGroups.some(g => Array.from(g.options).some(o => o.value === currentVal));
-    if (isAFClass) classSelect.value = "random";
+    // Classic mode: flat list, no group header
+    CF_CLASSES.forEach(c => classSelect.appendChild(addOption(c.value, c.label)));
   }
+
+  // Restore previous selection if still valid
+  const stillValid = Array.from(classSelect.options).some(o => o.value === prevVal);
+  classSelect.value = stillValid ? prevVal : "random";
+
   // Trigger downstream updates
   classSelect.dispatchEvent(new Event("change"));
 }
@@ -137,9 +175,17 @@ updateClassDropdownForRuleset();
 
 function updateLevelDropdown() {
   const val = classSelect.value;
-  const maxLevel = (val === "random" || !CLASSES[val])
-    ? 14
-    : CLASSES[val].max_level;
+  let maxLevel;
+  if (val !== "random" && CLASSES[val]) {
+    maxLevel = CLASSES[val].max_level;
+  } else {
+    // Random: cap to the max level of any class available in the current ruleset
+    const ruleset = rulesetSelect.value;
+    const availableClasses = ruleset === "advanced"
+      ? [...CF_CLASSES, ...AF_HUMAN_CLASSES, ...AF_DEMI_CLASSES]
+      : CF_CLASSES;
+    maxLevel = Math.max(...availableClasses.map(c => CLASSES[c.value] ? CLASSES[c.value].max_level : 1));
+  }
   const current = parseInt(levelSelect.value) || 1;
   levelSelect.innerHTML = "";
   for (let i = 1; i <= maxLevel; i++) {
