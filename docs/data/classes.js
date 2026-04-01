@@ -833,3 +833,21 @@ const ABILITIES_SHOWN_ELSEWHERE = new Set([
   "Detect room traps 2-in-6",
   "Detect secret doors 2-in-6 (when searching)",
 ]);
+
+// Weapon Proficiency categories
+// Verified by checking LEVEL_PROGRESSION — thac0 first drops from 19 at:
+// Martial (every 3 levels): Fighter, Dwarf, Halfling, Barbarian, Knight, Paladin, Ranger, Duergar
+// Semi-Martial (every 4 levels): Cleric, Elf, Thief, Acrobat, Assassin, Bard, Druid, Drow, HalfElf, HalfOrc
+// Non-Martial (every 5 levels): Magic-User, Illusionist, Gnome
+const MARTIAL_CATEGORY = {
+  "Fighter": "martial", "Dwarf": "martial", "Halfling": "martial",
+  "AF_Barbarian": "martial", "AF_Knight": "martial", "AF_Paladin": "martial",
+  "AF_Ranger": "martial", "AF_Duergar": "martial",
+  "Cleric": "semi-martial", "Elf": "semi-martial", "Thief": "semi-martial",
+  "AF_Acrobat": "semi-martial", "AF_Assassin": "semi-martial", "AF_Bard": "semi-martial",
+  "AF_Druid": "semi-martial", "AF_Drow": "semi-martial", "AF_HalfElf": "semi-martial",
+  "AF_HalfOrc": "semi-martial",
+  "Magic-User": "non-martial", "AF_Illusionist": "non-martial", "AF_Gnome": "non-martial",
+};
+const MARTIAL_STARTING_PROFS = { "martial": 4, "semi-martial": 3, "non-martial": 1 };
+const MARTIAL_NONPROF_PENALTY = { "martial": -2, "semi-martial": -3, "non-martial": -5 };

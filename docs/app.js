@@ -236,6 +236,8 @@ form.addEventListener("submit", async function(e) {
     reroll_low_hp: fd.get("reroll_low_hp") === "on",
     reroll_subpar: fd.get("reroll_subpar") === "on",
     give_read_magic: fd.get("give_read_magic") === "on",
+    secondary_skill: fd.get("secondary_skill") === "on",
+    weapon_proficiency: fd.get("weapon_proficiency") === "on",
   };
 
   generateBtn.disabled = true;

@@ -213,6 +213,50 @@ function formatEquippedItems(equipped, strMeleeModVal, dexMissileModVal) {
   });
 }
 
+// Secondary Skill table (d100 roll -> profession)
+function rollSecondarySkill() {
+  const SECONDARY_SKILLS = [
+    "Animal trainer", "Animal trainer", "Animal trainer", // 01-03
+    "Armourer", "Armourer", // 04-05
+    "Baker", "Baker", "Baker", "Baker", // 06-09
+    "Blacksmith", "Blacksmith", "Blacksmith", // 10-12
+    "Bookbinder", // 13
+    "Bowyer / fletcher", "Bowyer / fletcher", "Bowyer / fletcher", // 14-16
+    "Brewer", "Brewer", "Brewer", "Brewer", // 17-20
+    "Butcher", "Butcher", "Butcher", // 21-23
+    "Carpenter", "Carpenter", "Carpenter", // 24-26
+    "Chandler", "Chandler", // 27-28
+    "Cooper", "Cooper", "Cooper", "Cooper", "Cooper", // 29-33
+    "Coppersmith", "Coppersmith", // 34-35
+    "Farmer", "Farmer", "Farmer", "Farmer", "Farmer", "Farmer", "Farmer", "Farmer", "Farmer", "Farmer", "Farmer", // 36-46
+    "Fisher", "Fisher", "Fisher", "Fisher", // 47-50
+    "Furrier", "Furrier", "Furrier", "Furrier", // 51-54
+    "Glassblower", // 55
+    "Huntsman", "Huntsman", "Huntsman", "Huntsman", // 56-59
+    "Lapidary / jeweller", "Lapidary / jeweller", "Lapidary / jeweller", // 60-62
+    "Lorimer", "Lorimer", "Lorimer", "Lorimer", // 63-66
+    "Mapmaker", // 67
+    "Mason", "Mason", // 68-69
+    "Miner", "Miner", "Miner", "Miner", // 70-73
+    "Potter", "Potter", "Potter", // 74-76
+    "Roper", "Roper", // 77-78
+    "Seafarer", "Seafarer", "Seafarer", // 79-81
+    "Shipwright", "Shipwright", "Shipwright", // 82-84
+    "Tailor", "Tailor", "Tailor", // 85-87
+    "Tanner", "Tanner", "Tanner", // 88-90
+    "Thatcher / roofer", "Thatcher / roofer", "Thatcher / roofer", // 91-93
+    "Woodcutter", "Woodcutter", "Woodcutter", // 94-96
+    "Vintner", "Vintner", // 97-98
+  ];
+  const roll = roll1d100();
+  if (roll >= 99) {
+    // Roll twice
+    return rollSecondarySkill() + " / " + rollSecondarySkill();
+  }
+  const idx = Math.min(roll - 1, 98);
+  return SECONDARY_SKILLS[idx] || "Farmer";
+}
+
 function generateCharacter(options) {
   const classSelection = options.class_selection || "random";
   const chosenClass = options.chosen_class || null;
@@ -374,6 +418,46 @@ function generateCharacter(options) {
   }
   if (kit.gold_remaining > 0 && encMode === "item_based") {
     notes.push(`Remaining gold: ${kit.gold_remaining} gp`);
+  }
+
+  // Secondary Skill
+  if (options.secondary_skill) {
+    const secSkill = rollSecondarySkill();
+    notes.push(`Secondary Skill: ${secSkill}`);
+  }
+
+  // Weapon Proficiency
+  if (options.weapon_proficiency) {
+    const martialCat = MARTIAL_CATEGORY[charClass] || "non-martial";
+    const classProgs = LEVEL_PROGRESSION[charClass];
+    // Count THAC0 improvements from level 1 to targetLevel
+    let thac0ImprovementCount = 0;
+    let prevThac0 = classProgs[1].thac0;
+    for (let lvl = 2; lvl <= targetLevel; lvl++) {
+      const currThac0 = classProgs[lvl].thac0;
+      if (currThac0 < prevThac0) thac0ImprovementCount++;
+      prevThac0 = currThac0;
+    }
+    const totalProfs = MARTIAL_STARTING_PROFS[martialCat] + thac0ImprovementCount;
+    
+    // Build available weapon list
+    const weaponRules = CLASS_WEAPON_RULES[charClass];
+    let availableWeapons;
+    if (weaponRules && weaponRules.only) {
+      availableWeapons = weaponRules.only;
+    } else {
+      availableWeapons = Object.keys(WEAPONS);
+      if (weaponRules && weaponRules.excluded) {
+        availableWeapons = availableWeapons.filter(w => !weaponRules.excluded.includes(w));
+      }
+    }
+    // Shuffle and pick
+    const shuffled = shuffle(availableWeapons);
+    const profs = shuffled.slice(0, Math.min(totalProfs, availableWeapons.length)).sort();
+    const catName = martialCat.charAt(0).toUpperCase() + martialCat.slice(1);
+    const penalty = MARTIAL_NONPROF_PENALTY[martialCat];
+    notes.push(`Weapon Proficiencies (${catName}): ${profs.join(", ")}`);
+    notes.push(`Non-proficiency penalty: ${penalty} to attack rolls`);
   }
 
   // AC calculations
