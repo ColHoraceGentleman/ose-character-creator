@@ -377,7 +377,7 @@ When picking up this project, always work in `docs/`.
 
 > **Scope note:** All Phase 2 AF work uses the **Basic Character Creation** method (class determines race, same pipeline as Classic). The Advanced Character Creation method (separate race + class) is Phase 3. See Phase 3 section below.
 
-- [ ] Magic item generation (toggle + options)
+- [x] Magic item generation — % chance toggle (5–50%, default 10%); CF and AF item lists; outputs `Magic Item: <name>` in Notes
 - [x] Multiple characters per run / bulk ZIP download (done in docs/ browser version)
 - [ ] Preferences UI (dice method default, spell selection, auto-kit strictness)
 - [x] Manual equipment mode — skips auto-kit, sets full starting gold on sheet; player buys gear separately from book
