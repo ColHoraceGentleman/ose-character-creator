@@ -383,8 +383,20 @@ When picking up this project, always work in `docs/`.
 - [x] Manual equipment mode — skips auto-kit, sets full starting gold on sheet; player buys gear separately from book
 - [ ] QA agent review of full codebase
 - [ ] Name generation (random fantasy names per race/class)
-- [ ] **Optional rule: Weapon Proficiency** — players select weapons their character is trained in, chosen from class-allowed weapons (Basic method) or race+class-allowed weapons (Advanced method). Full rules on p23 of AF rulebook. Not yet sourced — needs dedicated reference pages before implementation.
-- [ ] **Optional rule: Secondary Skills** — character has a non-adventuring background profession. Determined at character creation (Step 13 Basic / Step 14 Advanced). Full rules on p25 of AF rulebook. Not yet sourced — needs dedicated reference pages before implementation.
+- [ ] **Optional rule: Weapon Proficiency** (p23) — source: `references/Optional Rules.pdf`
+  - Classes split into **Martial** (THAC0 improves every 3 levels), **Semi-Martial** (every 4), **Non-Martial** (every 5)
+  - Starting proficiencies: Martial=4, Semi-Martial=3, Non-Martial=1
+  - Gain 1 new proficiency each time THAC0/saves improve
+  - Non-proficiency attack penalty: Martial=−2, Semi-Martial=−3, Non-Martial=−5
+  - **Weapon Specialisation (optional):** Martial only; spend 2 slots on one weapon for +1 attack & damage
+  - Proficiencies chosen only from class-allowed weapons (+ race restrictions if Advanced CC method)
+  - Generator: pick random proficiencies from class weapon list up to starting count; output in Notes
+- [ ] **Optional rule: Secondary Skills** (p25) — source: `references/Optional Rules.pdf`
+  - Roll d100 at character creation; consult table (38 skills e.g. Blacksmith, Fisher, Farmer, Seafarer, etc.)
+  - 99–00 result = roll twice for two skills
+  - Referee may allow player to choose instead of rolling randomly
+  - Effect: basic-level competence (assess value, minor repairs, construct simple items)
+  - Generator: roll on table, output secondary skill in Notes field; toggle to enable/disable
 
 ---
 
