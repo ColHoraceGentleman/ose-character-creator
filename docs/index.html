@@ -286,12 +286,13 @@
   <script src="data/classes.js"></script>
   <script src="data/spells.js"></script>
   <script src="data/equipment.js"></script>
-  <script src="data/names.js"></script>
 
   <!-- Engine -->
   <script src="engine/dice.js"></script>
   <script src="engine/ability_scores.js"></script>
   <script src="engine/name_generator.js"></script>
+  <!-- names.js must load AFTER name_generator.js (needs name_set to be declared first) -->
+  <script src="data/names.js"></script>
   <script src="engine/generator.js"></script>
   <script src="engine/pdf.js"></script>
   <script src="engine/storage.js"></script>
