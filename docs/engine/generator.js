@@ -120,7 +120,8 @@ function rollAbilityScores(method, chosenClass=null, rerollOnes=false) {
 function determineClass(scores, options) {
   const mode = options.class_selection || "random";
   if (mode === "choose" && options.chosen_class) {
-    if (isValidClass(options.chosen_class, scores)) return options.chosen_class;
+    // User explicitly chose a class — always honor it, regardless of stat minimums
+    return options.chosen_class;
   }
   return pickRandomClassByXp(scores, options.ruleset || "classic");
 }
@@ -321,8 +322,8 @@ function generateCharacter(options) {
     scores = doRoll();
   }
 
-  // Determine class
-  const charClass = (classSelection === "choose" && chosenClass && isValidClass(chosenClass, scores))
+  // Determine class — if user chose a specific class, always honor it
+  const charClass = (classSelection === "choose" && chosenClass)
     ? chosenClass
     : pickRandomClassByXp(scores, options.ruleset || "classic");
 
@@ -590,7 +591,9 @@ function generateCharacter(options) {
   let charName = "";
   if (options.generate_name) {
     const nameKey = getNameSetKey(charClass);
-    charName = generate_name(nameKey) || "Unknown";
+    charName = generate_name(nameKey) || (name_set[nameKey] && name_set[nameKey].length
+      ? name_set[nameKey][Math.floor(Math.random() * name_set[nameKey].length)]
+      : "");
   }
 
   // Format languages (exclude "Alignment", deduplicate)
