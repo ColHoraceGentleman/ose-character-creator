@@ -373,7 +373,9 @@ When picking up this project, always work in `docs/`.
 
 ---
 
-## Upcoming — Phase 2
+## Upcoming — Phase 2 (Advanced Fantasy: Basic Character Creation)
+
+> **Scope note:** All Phase 2 AF work uses the **Basic Character Creation** method (class determines race, same pipeline as Classic). The Advanced Character Creation method (separate race + class) is Phase 3. See Phase 3 section below.
 
 - [ ] Magic item generation (toggle + options)
 - [x] Multiple characters per run / bulk ZIP download (done in docs/ browser version)
@@ -381,6 +383,44 @@ When picking up this project, always work in `docs/`.
 - [ ] Manual equipment shopping mode
 - [ ] QA agent review of full codebase
 - [ ] Name generation (random fantasy names per race/class)
+- [ ] **Optional rule: Weapon Proficiency** — players select weapons their character is trained in, chosen from class-allowed weapons (Basic method) or race+class-allowed weapons (Advanced method). Full rules on p23 of AF rulebook. Not yet sourced — needs dedicated reference pages before implementation.
+- [ ] **Optional rule: Secondary Skills** — character has a non-adventuring background profession. Determined at character creation (Step 13 Basic / Step 14 Advanced). Full rules on p25 of AF rulebook. Not yet sourced — needs dedicated reference pages before implementation.
+
+---
+
+## Phase 3 — Advanced Character Creation (Future)
+
+> **Do not start until Phase 2 Basic CC is complete and QA'd.**
+
+Source document: `~/Downloads/character creation methods.pdf` (pages extracted 2026-04-01).
+
+### What it is
+The Advanced method separates race and class into two independent choices. A player picks a race (e.g. Elf), then picks any class available to that race (e.g. Fighter, Thief, Magic-User). This produces combinations like Elf Fighter, Dwarf Thief, Gnome Illusionist, etc. — impossible under the Basic method.
+
+### Key differences from Basic CC
+- **Step 2 (new): Choose Race** — separate from class; race has its own ability score minimums and modifiers (cannot exceed 18 or go below 3)
+- **Step 3: Choose Class** — filtered to classes available to the chosen race
+- **Race abilities + Class abilities** — both apply independently (saves, attacks, special abilities all combine)
+- **Languages** — determined by race (not class)
+- **Equipment restrictions** — intersection of race AND class restrictions
+- **Weapon Proficiency (optional)** — chosen from weapons allowed by race AND class
+
+### Multiple Classes (Optional Rule)
+- Up to 3 classes chosen at creation
+- XP split evenly between classes; prime requisite bonus applied per-class
+- Level tracked separately per class
+- HP divided by number of classes (fractions tracked and accumulated)
+- Uses best THAC0 and best saving throw across all classes
+- Uses best armour/weapon options across all classes
+- Stealth abilities (hide in shadows, move silently) only usable in armour allowed by the granting class
+- Traditionally only demihumans could multiclass, in specific combinations — referee may restrict to demihuman-only combos
+
+### Implementation requirements (to be specced before work begins)
+- Race data: ability score minimums, modifiers, available classes, level caps per class, racial abilities, languages
+- UI: two-step selection (race → class filtered by race); multiclass toggle
+- Generator: merge race abilities + class abilities; multiclass HP/XP/level split logic
+- PDF: Race field populated separately from Class field
+- All data to be sourced from AF rulebook before coding begins
 
 ---
 
