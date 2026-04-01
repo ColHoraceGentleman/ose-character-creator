@@ -2,8 +2,8 @@
 // written and released to the public domain by drow <drow@bin.sh>
 // http://creativecommons.org/publicdomain/zero/1.0/
 
-const name_set = {};
-const chain_cache = {};
+var name_set = {};
+var chain_cache = {};
 
 function generate_name(type) {
   let chain;
