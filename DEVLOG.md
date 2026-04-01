@@ -369,7 +369,7 @@ When picking up this project, always work in `docs/`.
 
 ## Known Bugs (docs/ browser version)
 
-- **Level dropdown doesn't filter by class max** — dropdown always shows 1–14 regardless of class selected. Demi-humans have lower caps (Dwarf 12, Elf 10, Halfling 8). Generator correctly clamps at runtime, but the UI should dynamically update the dropdown options when a specific class is chosen. When "Random" is selected, show 1–14. Fix: add JS to watch the class `<select>` and rebuild the level `<option>` list based on `CLASSES[selectedClass].max_level`.
+None currently known.
 
 ---
 
