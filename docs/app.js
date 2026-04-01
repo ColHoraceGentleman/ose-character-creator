@@ -101,22 +101,26 @@ const levelSelect = document.getElementById("level");
 const rulesetSelect = document.getElementById("ruleset");
 
 // Ruleset toggle — show/hide class optgroups
+// In Classic mode: hide the "Classic Fantasy" optgroup header (redundant when AF is hidden)
+// by replacing it with a plain disabled separator. In Advanced mode: show it as a group.
 function updateClassDropdownForRuleset() {
   const ruleset = rulesetSelect.value;
-  const classicGroup = classSelect.querySelector('optgroup[label="Classic Fantasy"]');
-  const afHumanGroup = classSelect.querySelector('optgroup[label="Advanced Fantasy — Human"]');
-  const afDemiGroup = classSelect.querySelector('optgroup[label="Advanced Fantasy — Demihuman"]');
+  const classicGroup = classSelect.querySelector('#optgroup-classic');
+  const afHumanGroup = classSelect.querySelector('#optgroup-af-human');
+  const afDemiGroup = classSelect.querySelector('#optgroup-af-demihuman');
   const afGroups = [afHumanGroup, afDemiGroup].filter(Boolean);
 
   if (ruleset === "advanced") {
-    if (classicGroup) classicGroup.style.display = "none";
+    // Show CF group with its label (as a category header among multiple groups)
+    if (classicGroup) { classicGroup.style.display = ""; classicGroup.label = "Classic Fantasy"; }
     afGroups.forEach(g => g.style.display = "");
     // Reset to random if current selection is a Classic class
     const currentVal = classSelect.value;
     const isClassicClass = classicGroup && Array.from(classicGroup.options).some(o => o.value === currentVal);
     if (isClassicClass) classSelect.value = "random";
   } else {
-    if (classicGroup) classicGroup.style.display = "";
+    // Classic mode: hide AF groups, and hide CF optgroup label (only group visible, label is noise)
+    if (classicGroup) { classicGroup.style.display = ""; classicGroup.label = ""; }
     afGroups.forEach(g => g.style.display = "none");
     // Reset to random if current selection is an AF class
     const currentVal = classSelect.value;
@@ -235,6 +239,7 @@ form.addEventListener("submit", async function(e) {
     num_characters: parseInt(fd.get("num_characters") || 1),
     max_hp_at_level1: fd.get("max_hp_at_level1") === "on",
     reroll_low_hp: fd.get("reroll_low_hp") === "on",
+    reroll_ones_ability: fd.get("reroll_ones_ability") === "on",
     reroll_subpar: fd.get("reroll_subpar") === "on",
     give_read_magic: fd.get("give_read_magic") === "on",
     secondary_skill: fd.get("secondary_skill") === "on",

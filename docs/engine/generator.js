@@ -49,23 +49,46 @@ function pickRandomClassByXp(scores, ruleset="classic") {
   return randomChoice(valid);
 }
 
-function rollAbilityScores(method, chosenClass=null) {
+function rollAbilityScores(method, chosenClass=null, rerollOnes=false) {
   const ORDER = ["STR","INT","WIS","DEX","CON","CHA"];
+
+  // Wrap roll functions to reroll any individual die showing 1
+  function makeRoll3d6() {
+    if (!rerollOnes) return roll3d6();
+    let total = 0;
+    for (let i = 0; i < 3; i++) {
+      let d = roll(6);
+      while (d === 1) d = roll(6);
+      total += d;
+    }
+    return total;
+  }
+  function makeRoll4d6DropLowest() {
+    if (!rerollOnes) return roll4d6DropLowest();
+    const dice = [];
+    for (let i = 0; i < 4; i++) {
+      let d = roll(6);
+      while (d === 1) d = roll(6);
+      dice.push(d);
+    }
+    dice.sort((a, b) => a - b);
+    return dice[1] + dice[2] + dice[3];
+  }
 
   if (method === "3d6_order") {
     const s = {};
-    for (const stat of ORDER) s[stat] = roll3d6();
+    for (const stat of ORDER) s[stat] = makeRoll3d6();
     return s;
   }
 
   if (method === "4d6_order_drop_lowest") {
     const s = {};
-    for (const stat of ORDER) s[stat] = roll4d6DropLowest();
+    for (const stat of ORDER) s[stat] = makeRoll4d6DropLowest();
     return s;
   }
 
   if (method === "3d6_optimized" || method === "4d6_optimized_drop_lowest") {
-    const rollFn = method === "3d6_optimized" ? roll3d6 : roll4d6DropLowest;
+    const rollFn = method === "3d6_optimized" ? makeRoll3d6 : makeRoll4d6DropLowest;
     const rolls = shuffle([rollFn(),rollFn(),rollFn(),rollFn(),rollFn(),rollFn()]).sort((a,b)=>b-a);
     const prs = chosenClass ? CLASSES[chosenClass].prime_requisites : [];
     const nonPr = ORDER.filter(s => !prs.includes(s));
@@ -289,7 +312,7 @@ function generateCharacter(options) {
   const effectiveClass = (classSelection === "choose" && chosenClass) ? chosenClass : null;
 
   function doRoll() {
-    return rollAbilityScores(diceMethod, effectiveClass || "Fighter");
+    return rollAbilityScores(diceMethod, effectiveClass || "Fighter", options.reroll_ones_ability || false);
   }
 
   if (options.reroll_subpar) {
