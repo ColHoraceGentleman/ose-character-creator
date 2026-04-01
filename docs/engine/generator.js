@@ -231,7 +231,8 @@ function formatEquippedItems(equipped, strMeleeModVal, dexMissileModVal) {
 }
 
 // Secondary Skill table (d100 roll -> profession)
-function rollSecondarySkill() {
+function rollSecondarySkill(depth=0) {
+  if (depth > 4) return "Farmer"; // recursion guard (99-00 re-rolls)
   const SECONDARY_SKILLS = [
     "Animal trainer", "Animal trainer", "Animal trainer", // 01-03
     "Armourer", "Armourer", // 04-05
@@ -268,7 +269,7 @@ function rollSecondarySkill() {
   const roll = Math.floor(Math.random() * 100) + 1;
   if (roll >= 99) {
     // Roll twice
-    return rollSecondarySkill() + " / " + rollSecondarySkill();
+    return rollSecondarySkill(depth+1) + " / " + rollSecondarySkill(depth+1);
   }
   const idx = Math.min(roll - 1, 98);
   return SECONDARY_SKILLS[idx] || "Farmer";
