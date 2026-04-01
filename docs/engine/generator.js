@@ -316,13 +316,24 @@ function generateCharacter(options) {
     return rollAbilityScores(diceMethod, effectiveClass || "Fighter", options.reroll_ones_ability || false);
   }
 
-  if (options.reroll_subpar) {
+  if (classSelection === "choose" && chosenClass) {
+    // Reroll until stats meet the chosen class's requirements (+ subpar check if enabled)
+    let attempts = 0;
+    do {
+      scores = doRoll();
+      attempts++;
+      if (attempts > 1000) break; // safety valve for classes with very strict requirements
+    } while (
+      !isValidClass(chosenClass, scores) ||
+      (options.reroll_subpar && !Object.values(scores).some(s => s > 8))
+    );
+  } else if (options.reroll_subpar) {
     do { scores = doRoll(); } while (!Object.values(scores).some(s => s > 8));
   } else {
     scores = doRoll();
   }
 
-  // Determine class — if user chose a specific class, always honor it
+  // Determine class
   const charClass = (classSelection === "choose" && chosenClass)
     ? chosenClass
     : pickRandomClassByXp(scores, options.ruleset || "classic");
