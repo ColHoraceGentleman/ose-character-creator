@@ -153,9 +153,10 @@ function updateClassDropdownForRuleset() {
   classSelect.appendChild(addOption("random", "Random class"));
 
   if (ruleset === "advanced") {
-    addGroup("Classic Fantasy", CF_CLASSES);
-    addGroup("Advanced Fantasy — Human", AF_HUMAN_CLASSES);
-    addGroup("Advanced Fantasy — Demihuman", AF_DEMI_CLASSES);
+    // Merge all AF classes into one alphabetically sorted list
+    const allAF = [...CF_CLASSES, ...AF_HUMAN_CLASSES, ...AF_DEMI_CLASSES]
+      .sort((a, b) => a.label.localeCompare(b.label));
+    addGroup(null, allAF);
   } else {
     // Classic mode: flat list, no group header
     CF_CLASSES.forEach(c => classSelect.appendChild(addOption(c.value, c.label)));
