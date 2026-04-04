@@ -600,7 +600,10 @@ function generateCharacter(options) {
 
   // Name generation
   let charName = "";
-  if (options.generate_name) {
+  const nameStyle = options.name_style || (options.generate_name ? "fantasy" : "none");
+  if (nameStyle === "ikea") {
+    charName = IKEA_NAMES[Math.floor(Math.random() * IKEA_NAMES.length)];
+  } else if (nameStyle === "fantasy") {
     const nameKey = getNameSetKey(charClass);
     charName = generate_name(nameKey) || (name_set[nameKey] && name_set[nameKey].length
       ? name_set[nameKey][Math.floor(Math.random() * name_set[nameKey].length)]

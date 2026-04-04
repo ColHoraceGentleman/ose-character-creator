@@ -65,6 +65,10 @@ select {
 .toggle { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
 .toggle input { margin-top: 3px; }
 
+/* Option row with select dropdown */
+.option-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.option-row select { margin-left: auto; }
+
 .toggle.coming-soon { opacity: 0.5; cursor: not-allowed; }
 .toggle.coming-soon input { cursor: not-allowed; }
 
