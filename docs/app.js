@@ -32,9 +32,11 @@ function displayCharacter(char, options) {
 
   // Header info
   document.getElementById("r-name").textContent = char.name || "";
-  // Build compact class/level line: e.g. "Human Fighter 3" or "Elf 3"
-  const racePart = (char.race && char.race !== char.character_class) ? char.race + " " : "";
-  document.getElementById("r-class-level").textContent = racePart + char.character_class + " " + char.level;
+  document.getElementById("r-race").textContent = char.race_field || "—";
+  document.getElementById("r-class").textContent = char.class_field || char.character_class || "—";
+  document.getElementById("r-level").textContent = char.level;
+  // Keep hidden fields populated for PDF use
+  document.getElementById("r-class-level").textContent = char.character_class + " " + char.level;
   document.getElementById("r-title").textContent = char.title || "";
   document.getElementById("r-alignment").textContent = char.alignment || "—";
   document.getElementById("r-hp").textContent = char.hp;
