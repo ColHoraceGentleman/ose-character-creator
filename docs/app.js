@@ -181,16 +181,29 @@ updateClassDropdownForRuleset();
 
 function updateLevelDropdown() {
   const val = classSelect.value;
+  const ruleset = rulesetSelect.value;
+  const raceSelect = document.getElementById("race_selection");
+  const selectedRace = (ruleset === "advanced_rc" && raceSelect) ? raceSelect.value : null;
   let maxLevel;
   if (val !== "random" && CLASSES[val]) {
     maxLevel = CLASSES[val].max_level;
+    // In advanced_rc mode, cap by the race's class max level if a specific race is chosen
+    if (selectedRace && selectedRace !== "random" && typeof RACES !== "undefined" && RACES[selectedRace]) {
+      const raceCap = RACES[selectedRace].available_classes[val];
+      if (raceCap !== undefined) maxLevel = Math.min(maxLevel, raceCap);
+    }
   } else {
-    // Random: cap to the max level of any class available in the current ruleset
-    const ruleset = rulesetSelect.value;
-    const availableClasses = ruleset === "advanced"
-      ? [...CF_CLASSES, ...AF_HUMAN_CLASSES, ...AF_DEMI_CLASSES]
-      : CF_CLASSES;
-    maxLevel = Math.max(...availableClasses.map(c => CLASSES[c.value] ? CLASSES[c.value].max_level : 1));
+    // Random: cap to the max level of any class available in the current ruleset/race
+    if (selectedRace && selectedRace !== "random" && typeof RACES !== "undefined" && RACES[selectedRace]) {
+      // Use the max level of any class available to this race
+      const raceCaps = Object.values(RACES[selectedRace].available_classes);
+      maxLevel = raceCaps.length ? Math.max(...raceCaps) : 14;
+    } else {
+      const availableClasses = ruleset === "advanced" || ruleset === "advanced_rc"
+        ? [...CF_CLASSES, ...AF_HUMAN_CLASSES, ...AF_DEMI_CLASSES]
+        : CF_CLASSES;
+      maxLevel = Math.max(...availableClasses.map(c => CLASSES[c.value] ? CLASSES[c.value].max_level : 1));
+    }
   }
   const current = parseInt(levelSelect.value) || 1;
   levelSelect.innerHTML = "";
@@ -258,7 +271,10 @@ function updateClassOptionsForRC() {
   }
 }
 
-document.getElementById("race_selection")?.addEventListener("change", updateClassOptionsForRC);
+document.getElementById("race_selection")?.addEventListener("change", function() {
+  updateClassOptionsForRC();
+  updateLevelDropdown();
+});
 document.getElementById("ruleset").addEventListener("change", updateRaceVisibility);
 // Call once on load
 updateRaceVisibility();
