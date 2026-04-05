@@ -16,9 +16,11 @@
 
   <div class="page-wrapper">
     <div class="builder-pane">
+      <div class="generate-bar">
+        <button type="submit" form="gen-form" class="btn-generate" id="generate-btn">🎲 Generate Character</button>
+      </div>
+
       <form id="gen-form">
-        <button type="submit" class="btn-generate" id="generate-btn">🎲 Generate Character</button>
-        <p class="generate-hint">Set your options below, then click Generate</p>
 
         <!-- Card 1: Ruleset & Class -->
         <div class="card">
@@ -333,8 +335,6 @@
         <div class="result-header">
           <div>
             <div id="r-name" class="char-name"></div>
-            <strong id="r-class-level"></strong>
-            <span id="r-title" style="color:var(--text-dim); margin-left:10px;"></span>
           </div>
           <div style="display:flex;gap:10px;">
             <a id="dl-btn" class="btn-download" href="#" download>⬇ Download PDF</a>
@@ -343,13 +343,16 @@
         </div>
         <div class="stat-block">
           <div class="stat-row">
-            <div><span class="stat-label">Alignment</span><span class="stat-value" id="r-alignment"></span></div>
+            <div><span class="stat-value" id="r-class-level"></span></div>
             <div><span class="stat-label">HP</span><span class="stat-value big" id="r-hp"></span></div>
             <div><span class="stat-label">AC</span><span class="stat-value big" id="r-ac"></span></div>
-            <div><span class="stat-label">Attack Bonus</span><span class="stat-value" id="r-ab"></span></div>
-            <div><span class="stat-label">XP Bonus</span><span class="stat-value" id="r-xp-bonus"></span></div>
-            <div><span class="stat-label">Movement</span><span class="stat-value" id="r-movement"></span></div>
           </div>
+          <!-- Hidden fields still populated by JS for PDF use -->
+          <span id="r-alignment" style="display:none"></span>
+          <span id="r-ab" style="display:none"></span>
+          <span id="r-xp-bonus" style="display:none"></span>
+          <span id="r-movement" style="display:none"></span>
+          <span id="r-title" style="display:none"></span>
 
           <div class="abilities">
             <div class="ability" id="r-str"><span class="ab-name">STR</span><span class="ab-score"></span><span class="ab-mod"></span></div>

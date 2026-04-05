@@ -32,8 +32,10 @@ function displayCharacter(char, options) {
 
   // Header info
   document.getElementById("r-name").textContent = char.name || "";
-  document.getElementById("r-class-level").textContent = char.character_class + " " + char.level;
-  document.getElementById("r-title").textContent = char.title;
+  // Build compact class/level line: e.g. "Human Fighter 3" or "Elf 3"
+  const racePart = (char.race && char.race !== char.character_class) ? char.race + " " : "";
+  document.getElementById("r-class-level").textContent = racePart + char.character_class + " " + char.level;
+  document.getElementById("r-title").textContent = char.title || "";
   document.getElementById("r-alignment").textContent = char.alignment || "—";
   document.getElementById("r-hp").textContent = char.hp;
   document.getElementById("r-ac").textContent = char.ac;
