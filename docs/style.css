@@ -462,22 +462,18 @@ select:focus {
   border-bottom: 1px dashed var(--border);
 }
 
-.stat-row-identity {
+.stat-row-top {
   display: flex;
   gap: 8px;
   margin-bottom: 8px;
-}
-
-.stat-row-derived {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
   padding-bottom: 16px;
   border-bottom: 1px dashed var(--border);
+  align-items: stretch;
 }
 
-.stat-row-derived .ability {
-  flex: 1;
+.stat-row-top .ability {
+  flex: 0 0 auto;
+  width: calc((100% - 2 * 8px - 3 * 8px) / 5); /* same width as one ability score box */
 }
 
 .stat-box-wide {
