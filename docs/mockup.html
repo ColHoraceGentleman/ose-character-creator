@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSE Character Creator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --app-bg: #F3EFE3;
+      --surface: #FFFBF2;
+      --surface-alt: #F7F1E1;
+      --border: #D6CBB3;
+      --primary: #1F2937;
+      --secondary: #8B5A2B;
+      --accent: #1F7A5A;
+      --text-primary: #1B1B1B;
+      --text-secondary: #374151;
+      --text-muted: #6B7280;
+      --error: #B91C1C;
+      --error-bg: #FEE2E2;
+      --success: #166534;
+      --success-bg: #DCFCE7;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--app-bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 64px;
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .header-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 20px;
+      color: var(--primary);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.16s;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+      display: flex;
+      gap: 24px;
+    }
+
+    /* Builder Pane */
+    .builder-pane {
+      width: 55%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Preview Pane */
+    .preview-pane {
+      width: 45%;
+      position: sticky;
+      top: 88px;
+      align-self: flex-start;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .card-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--primary);
+      border-left: 3px solid var(--secondary);
+      padding-left: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card-divider {
+      border-top: 1px dashed var(--border);
+      margin: 16px 0;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-help {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    select {
+      height: 48px;
+      width: 100%;
+      padding: 0 40px 0 14px;
+      background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 12px center;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--text-primary);
+      appearance: none;
+      -webkit-appearance: none;
+      transition: border-color 0.16s;
+      cursor: pointer;
+    }
+
+    select:hover {
+      border-color: var(--secondary);
+    }
+
+    select:focus {
+      border-color: var(--accent);
+      outline: 2px solid rgba(31,122,90,0.3);
+      outline-offset: 2px;
+    }
+
+    /* Radio Buttons */
+    .radio-group {
+      display: flex;
+      gap: 24px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .radio-option input[type="radio"] {
+      display: none;
+    }
+
+    .radio-custom {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.16s;
+    }
+
+    .radio-custom::after {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.16s;
+    }
+
+    .radio-option input[type="radio"]:checked + .radio-custom {
+      border-color: var(--accent);
+    }
+
+    .radio-option input[type="radio"]:checked + .radio-custom::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .radio-label {
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    /* Toggle Switch */
+    .toggle-group {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .toggle-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toggle-label {
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--border);
+      border-radius: 24px;
+      transition: 0.2s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.2s;
+    }
+
+    .toggle input:checked + .toggle-slider {
+      background: var(--accent);
+    }
+
+    .toggle input:checked + .toggle-slider::before {
+      transform: translateX(20px);
+    }
+
+    /* Generate Button */
+    .btn-generate {
+      width: 100%;
+      height: 56px;
+      background: var(--primary);
+      color: #F9FAFB;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.16s;
+    }
+
+    .btn-generate:hover {
+      background: #374151;
+    }
+
+    .generate-hint {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* Character Sheet Preview */
+    .character-sheet {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .preview-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 28px;
+      color: var(--primary);
+    }
+
+    .preview-subtitle {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .preview-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-icon {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.16s;
+    }
+
+    .btn-icon:hover {
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-box {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 28px;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    .stat-mod {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* Derived Stats */
+    .derived-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px 24px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .derived-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+    }
+
+    .derived-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .derived-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    /* Sections */
+    .sheet-section {
+      margin-bottom: 16px;
+    }
+
+    .sheet-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .section-list {
+      list-style: none;
+    }
+
+    .section-list li {
+      font-size: 14px;
+      color: var(--text-primary);
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .section-list li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--secondary);
+    }
+
+    .section-text {
+      font-size: 14px;
+      color: var(--text-primary);
+      padding: 4px 0;
+    }
+
+    .xp-progress {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 48px 24px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 1023px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .builder-pane,
+      .preview-pane {
+        width: 100%;
+      }
+
+      .preview-pane {
+        position: static;
+      }
+    }
+
+    @media (max-width: 767px) {
+      header {
+        padding: 0 16px;
+      }
+
+      .header-title {
+        font-size: 16px;
+      }
+
+      .container {
+        padding: 16px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .stat-box {
+        padding: 8px;
+      }
+
+      .stat-value {
+        font-size: 22px;
+      }
+
+      .radio-group {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .character-sheet {
+        padding: 16px;
+      }
+
+      .preview-title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-title">⚔️ OSE Character Creator</div>
+    <div class="header-actions">
+      <button class="btn-ghost">New Character</button>
+      <button class="btn-ghost">Export PDF</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="builder-pane">
+      <!-- Card 1: Ruleset & Class -->
+      <div class="card">
+        <h2 class="card-title">Ruleset & Class</h2>
+        
+        <div class="form-group">
+          <label class="form-label">Ruleset</label>
+          <select>
+            <option>Classic Fantasy (B/X)</option>
+            <option>Advanced Fantasy (Race as Class)</option>
+            <option>Advanced Fantasy (Race + Class)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Race</label>
+          <select>
+            <option>Random Race</option>
+            <option>Drow</option>
+            <option>Dwarf</option>
+            <option>Elf</option>
+            <option>Gnome</option>
+            <option>Half-Elf</option>
+            <option>Half-Orc</option>
+            <option>Halfling</option>
+            <option>Human</option>
+          </select>
+          <p class="form-help">Only shown for Race + Class</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Class</label>
+          <select>
+            <option>Random Class</option>
+            <option>Cleric</option>
+            <option>Fighter</option>
+            <option>Magic-User</option>
+            <option>Thief</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Level</label>
+          <select>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+            <option>11</option>
+            <option>12</option>
+            <option>13</option>
+            <option>14</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Card 2: Dice & Options -->
+      <div class="card">
+        <h2 class="card-title">Dice & Options</h2>
+
+        <div class="form-group">
+          <label class="form-label">Dice Method</label>
+          <select>
+            <option>3d6 in Order</option>
+            <option>3d6 Assign</option>
+            <option>4d6 Drop Lowest</option>
+            <option>4d6 Drop Lowest Assign</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Armour Class</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="ac" checked>
+              <span class="radio-custom"></span>
+              <span class="radio-label">Ascending (AAC)</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="ac">
+              <span class="radio-custom"></span>
+              <span class="radio-label">Descending (DAC)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="card-divider"></div>
+
+        <div class="form-group">
+          <label class="form-label">Encumbrance</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="enc" checked>
+              <span class="radio-custom"></span>
+              <span class="radio-label">Item-Based</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="enc">
+              <span class="radio-custom"></span>
+              <span class="radio-label">Standard</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Equipment</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="equip" checked>
+              <span class="radio-custom"></span>
+              <span class="radio-label">Auto Kit</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="equip">
+              <span class="radio-custom"></span>
+              <span class="radio-label">Manual (gold only)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Advanced Toggles -->
+      <div class="card">
+        <h2 class="card-title">Advanced Toggles</h2>
+
+        <div class="toggle-group">
+          <div class="toggle-option">
+            <span class="toggle-label">Max HP at 1st Level</span>
+            <label class="toggle">
+              <input type="checkbox">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-option">
+            <span class="toggle-label">Reroll 1s & 2s on Hit Dice</span>
+            <label class="toggle">
+              <input type="checkbox">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-option">
+            <span class="toggle-label">Reroll 1s on Ability Scores</span>
+            <label class="toggle">
+              <input type="checkbox">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-option">
+            <span class="toggle-label">Auto-Adjust Scores for XP Bonus</span>
+            <label class="toggle">
+              <input type="checkbox">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-option">
+            <span class="toggle-label">Random Spells</span>
+            <label class="toggle">
+              <input type="checkbox">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <p class="form-help">Spellcasters only</p>
+          <div class="toggle-option">
+            <span class="toggle-label">Read Magic</span>
+            <label class="toggle">
+              <input type="checkbox">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <p class="form-help">Spellcasters only</p>
+        </div>
+      </div>
+
+      <!-- Card 4: Name & Alignment -->
+      <div class="card">
+        <h2 class="card-title">Name & Alignment</h2>
+
+        <div class="form-group">
+          <label class="form-label">Name Style</label>
+          <select>
+            <option>Fantasy Name</option>
+            <option>IKEA Name</option>
+            <option>No Name</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Alignment</label>
+          <select>
+            <option>Random</option>
+            <option>Lawful</option>
+            <option>Neutral</option>
+            <option>Chaotic</option>
+            <option>Leave Blank</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Characters</label>
+          <select>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+          </select>
+          <p class="form-help">Generate multiple characters at once</p>
+        </div>
+      </div>
+
+      <!-- Generate Button -->
+      <button class="btn-generate">⚔ Generate Character</button>
+      <p class="generate-hint">Your character sheet will appear on the right →</p>
+    </div>
+
+    <div class="preview-pane">
+      <div class="character-sheet">
+        <div class="preview-header">
+          <div>
+            <h1 class="preview-title">Theron Aldric</h1>
+            <p class="preview-subtitle">Human Fighter — Level 3 — Neutral</p>
+          </div>
+          <div class="preview-actions">
+            <button class="btn-icon" title="Copy">📋</button>
+            <button class="btn-icon" title="Export PDF">📄</button>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">STR</div>
+            <div class="stat-value">14</div>
+            <div class="stat-mod">(+1)</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">DEX</div>
+            <div class="stat-value">11</div>
+            <div class="stat-mod">(0)</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">CON</div>
+            <div class="stat-value">16</div>
+            <div class="stat-mod">(+2)</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">INT</div>
+            <div class="stat-value">9</div>
+            <div class="stat-mod">(0)</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">WIS</div>
+            <div class="stat-value">12</div>
+            <div class="stat-mod">(0)</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">CHA</div>
+            <div class="stat-value">8</div>
+            <div class="stat-mod">(-1)</div>
+          </div>
+        </div>
+
+        <!-- Derived Stats -->
+        <div class="derived-grid">
+          <div class="derived-item">
+            <span class="derived-label">HP</span>
+            <span class="derived-value">12</span>
+          </div>
+          <div class="derived-item">
+            <span class="derived-label">AC</span>
+            <span class="derived-value">15 (AAC)</span>
+          </div>
+          <div class="derived-item">
+            <span class="derived-label">THAC0</span>
+            <span class="derived-value">19 [+0]</span>
+          </div>
+          <div class="derived-item">
+            <span class="derived-label">XP Bonus</span>
+            <span class="derived-value">+5%</span>
+          </div>
+          <div class="derived-item">
+            <span class="derived-label">Movement</span>
+            <span class="derived-value">90' (30')</span>
+          </div>
+          <div class="derived-item">
+            <span class="derived-label">Saves</span>
+            <span class="derived-value">D12 W13 P14 B15 S16</span>
+          </div>
+        </div>
+
+        <!-- Equipped Items -->
+        <div class="sheet-section">
+          <h3 class="section-title">Equipped</h3>
+          <ul class="section-list">
+            <li>Chainmail</li>
+            <li>Sword</li>
+            <li>Shield</li>
+          </ul>
+        </div>
+
+        <!-- Packed Items -->
+        <div class="sheet-section">
+          <h3 class="section-title">Packed</h3>
+          <ul class="section-list">
+            <li>Backpack</li>
+            <li>Torches (6)</li>
+            <li>Rations (iron, 7 days)</li>
+            <li>Rope (50')</li>
+            <li>Tinder box</li>
+          </ul>
+        </div>
+
+        <!-- Abilities & Notes -->
+        <div class="sheet-section">
+          <h3 class="section-title">Abilities & Notes</h3>
+          <p class="section-text">Fighter combat abilities: +1 melee attack and damage</p>
+          <p class="section-text xp-progress">XP: 0 / 2,000 (Level 3 → 4)</p>
+        </div>
+
+        <!-- Languages -->
+        <div class="sheet-section">
+          <p class="section-text">Languages: Common, Elvish</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>OSE Character Creator is an independent fan tool, not affiliated with Necrotic Gnome. Old-School Essentials is a trademark of Necrotic Gnome.</p>
+    <p><a href="#">Legal & OGL</a></p>
+  </footer>
+</body>
+</html>
