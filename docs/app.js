@@ -215,6 +215,61 @@ classSelect.addEventListener("change", function() {
   updateLevelDropdown();
 });
 
+// ---------------------------------------------------------------------------
+// Race dropdown and class filtering for Advanced RC
+// ---------------------------------------------------------------------------_
+
+// Show/hide race dropdown based on ruleset
+function updateRaceVisibility() {
+  const ruleset = document.getElementById("ruleset").value;
+  const raceGroup = document.getElementById("race_option_group");
+  if (raceGroup) raceGroup.style.display = (ruleset === "advanced_rc") ? "" : "none";
+  updateClassOptionsForRC();
+}
+
+// Filter class dropdown for advanced_rc mode
+function updateClassOptionsForRC() {
+  const ruleset = document.getElementById("ruleset").value;
+  const raceSelect = document.getElementById("race_selection");
+  const classSelect = document.getElementById("class_selection");
+  if (!classSelect) return;
+
+  // Get all optgroups
+  const classicGroup = document.getElementById("optgroup-classic");
+  const afHumanGroup = document.getElementById("optgroup-af-human");
+  const afDemiGroup = document.getElementById("optgroup-af-demihuman");
+
+  if (ruleset !== "advanced_rc") {
+    // Restore normal visibility (let existing ruleset handler manage it)
+    return;
+  }
+
+  // In advanced_rc: hide classic group and AF demihuman group, show AF human group
+  if (classicGroup) classicGroup.style.display = "none";
+  if (afDemiGroup) afDemiGroup.style.display = "none";
+  if (afHumanGroup) afHumanGroup.style.display = "";
+
+  // If specific race selected, filter class options to only available ones
+  const race = raceSelect ? raceSelect.value : "random";
+  if (race !== "random" && typeof RACES !== "undefined" && RACES[race]) {
+    const available = RACES[race].available_classes;
+    const options = classSelect.querySelectorAll("option");
+    options.forEach(opt => {
+      if (opt.value === "random") { opt.style.display = ""; return; }
+      opt.style.display = (opt.value in available) ? "" : "none";
+    });
+  } else {
+    // Random race: show all human class options
+    const options = classSelect.querySelectorAll("option");
+    options.forEach(opt => { opt.style.display = ""; });
+  }
+}
+
+document.getElementById("race_selection")?.addEventListener("change", updateClassOptionsForRC);
+document.getElementById("ruleset").addEventListener("change", updateRaceVisibility);
+// Call once on load
+updateRaceVisibility();
+
 // Init level dropdown on page load
 updateLevelDropdown();
 
@@ -277,6 +332,8 @@ form.addEventListener("submit", async function(e) {
     dice_method: fd.get("dice_method"),
     class_selection: classSelection,
     chosen_class: chosenClass,
+    race_selection: fd.get("race_selection") || "random",
+    chosen_race: (fd.get("race_selection") && fd.get("race_selection") !== "random") ? fd.get("race_selection") : null,
     alignment_blank: alignBlank,
     allowed_alignments: allowedAlignments,
     ac_mode: fd.get("ac_mode"),

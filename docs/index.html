@@ -22,7 +22,23 @@
             <select name="ruleset" id="ruleset">
               <option value="classic" selected>Classic Fantasy (B/X)</option>
               <option value="advanced">Advanced Fantasy (Race as Class)</option>
-              <option value="advanced_rc" disabled>Advanced Fantasy (Race + Class) — coming soon</option>
+              <option value="advanced_rc">Advanced Fantasy (Race + Class)</option>
+            </select>
+          </div>
+
+          <div class="option-group" id="race_option_group" style="display:none">
+            <label>Race <span class="help" title="Choose a race for your character. Each race has ability score requirements, modifiers, and a limited set of available classes.">?</span></label>
+            <select name="race_selection" id="race_selection">
+              <option value="random">Random race</option>
+              <option value="Drow">Drow</option>
+              <option value="Duergar">Duergar</option>
+              <option value="Dwarf">Dwarf</option>
+              <option value="Elf">Elf</option>
+              <option value="Gnome">Gnome</option>
+              <option value="Half-Elf">Half-Elf</option>
+              <option value="Half-Orc">Half-Orc</option>
+              <option value="Halfling">Halfling</option>
+              <option value="Human">Human</option>
             </select>
           </div>
 
@@ -298,6 +314,7 @@
   <script src="data/classes.js"></script>
   <script src="data/spells.js"></script>
   <script src="data/equipment.js"></script>
+  <script src="data/races.js"></script>
 
   <!-- Engine -->
   <script src="engine/dice.js"></script>

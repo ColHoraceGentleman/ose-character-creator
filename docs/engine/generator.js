@@ -183,6 +183,15 @@ function determineLanguages(charClass, intScore, extraLanguages) {
   return base;
 }
 
+function determineLanguagesFromRace(race, intScore, extraLanguages) {
+  const base = [...(RACES[race].languages || []), "Common"];
+  const deduped = [...new Set(base)];
+  const bonus = LANGUAGE_PICK_LIST.filter(l => !deduped.includes(l));
+  const shuffled = bonus.sort(() => Math.random() - 0.5);
+  for (let i = 0; i < extraLanguages && i < shuffled.length; i++) deduped.push(shuffled[i]);
+  return deduped;
+}
+
 function fmtBonus(val) {
   if (val > 0) return `+${val}`;
   if (val < 0) return `${val}`;
@@ -302,6 +311,8 @@ function rollSecondarySkill(depth=0) {
 function generateCharacter(options) {
   const classSelection = options.class_selection || "random";
   const chosenClass = options.chosen_class || null;
+  const isAdvancedRC = (options.ruleset === "advanced_rc");
+  let race = null;
   const diceMethod = options.dice_method || "3d6_order";
   const acMode = options.ac_mode || "aac";
   const encMode = options.encumbrance_mode || "item_based";
@@ -333,10 +344,41 @@ function generateCharacter(options) {
     scores = doRoll();
   }
 
+  // Advanced RC: pick race and apply modifiers
+  if (isAdvancedRC) {
+    if (options.chosen_race) {
+      race = options.chosen_race;
+    } else {
+      // Random race: pick one whose requirements the scores meet
+      const allRaces = Object.keys(RACES);
+      const eligible = allRaces.filter(r => {
+        const reqs = RACES[r].requirements || {};
+        return Object.entries(reqs).every(([stat, min]) => scores[stat] >= min);
+      });
+      race = eligible.length > 0 ? randomChoice(eligible) : "Human";
+    }
+    // Apply racial ability score modifiers (clamped 3–18)
+    for (const [stat, mod] of Object.entries(RACES[race].ability_modifiers || {})) {
+      scores[stat] = Math.max(3, Math.min(18, scores[stat] + mod));
+    }
+  }
+
   // Determine class
-  const charClass = (classSelection === "choose" && chosenClass)
-    ? chosenClass
-    : pickRandomClassByXp(scores, options.ruleset || "classic");
+  let charClass;
+  if (isAdvancedRC && race) {
+    const raceClasses = Object.keys(RACES[race].available_classes);
+    if (classSelection === "choose" && chosenClass && raceClasses.includes(chosenClass)) {
+      charClass = chosenClass;
+    } else {
+      // Pick random valid class for this race
+      const eligible = raceClasses.filter(c => CLASSES[c] && isValidClass(c, scores));
+      charClass = eligible.length > 0 ? randomChoice(eligible) : raceClasses[0];
+    }
+  } else {
+    charClass = (classSelection === "choose" && chosenClass)
+      ? chosenClass
+      : pickRandomClassByXp(scores, options.ruleset || "classic");
+  }
 
   // Auto-adjust ability scores to maximise XP bonus (optional)
   if (options.auto_adjust_scores) {
@@ -376,8 +418,14 @@ function generateCharacter(options) {
     }
   }
 
-  // Clamp level to class max
-  const maxLevel = CLASSES[charClass].max_level;
+  // Clamp level to class max (and race max for advanced_rc)
+  let maxLevel = CLASSES[charClass].max_level;
+  if (isAdvancedRC && race && RACES[race]) {
+    const raceMax = RACES[race].available_classes[charClass];
+    if (raceMax && raceMax !== 999) {
+      maxLevel = Math.min(maxLevel, raceMax);
+    }
+  }
   const targetLevel = Math.max(1, Math.min(targetLevelRaw, maxLevel));
 
   // Modifiers
@@ -401,7 +449,9 @@ function generateCharacter(options) {
   const saves = prog.saves;
 
   // Languages / literacy
-  const languages = determineLanguages(charClass, scores.INT, mods.INT.languages);
+  const languages = isAdvancedRC && race
+    ? determineLanguagesFromRace(race, scores.INT, mods.INT.languages)
+    : determineLanguages(charClass, scores.INT, mods.INT.languages);
   const literate = mods.INT.literacy === "Literate";
 
   // Level info
@@ -449,6 +499,12 @@ function generateCharacter(options) {
 
   // Notes
   const notes = [];
+  // Add racial abilities for advanced_rc mode
+  if (isAdvancedRC && race && RACES[race] && RACES[race].racial_abilities) {
+    for (const ability of RACES[race].racial_abilities) {
+      notes.push(ability);
+    }
+  }
   for (const spell of spellsKnown) {
     const page = SPELL_PAGE_NUMBERS[spell];
     notes.push(`Spell: ${spell}${page ? ` (p. ${page})` : ""}`);
@@ -604,22 +660,31 @@ function generateCharacter(options) {
   }
 
   // Race/Class display
-  const DEMI_HUMANS = new Set(["Dwarf","Elf","Halfling"]);
-  const AF_DEMI_HUMANS = new Set(["AF_Drow","AF_Duergar","AF_Gnome","AF_HalfElf","AF_HalfOrc"]);
-  const isDemiHuman = DEMI_HUMANS.has(charClass) || AF_DEMI_HUMANS.has(charClass);
-  const displayClass = classDisplayName(charClass);
-  // For AF demihumans, race = friendly name, class = blank
-  const AF_DEMIHUMAN_RACE_NAMES = {
-    "AF_Drow": "Drow", "AF_Duergar": "Duergar", "AF_Gnome": "Gnome",
-    "AF_HalfElf": "Half-Elf", "AF_HalfOrc": "Half-Orc",
-  };
-  const raceField = isDemiHuman
-    ? (AF_DEMIHUMAN_RACE_NAMES[charClass] || charClass)
-    : "Human";
-  const classField = isDemiHuman ? "" : displayClass;
-  const oldSheetClass = isDemiHuman
-    ? (AF_DEMIHUMAN_RACE_NAMES[charClass] || charClass)
-    : `Human ${displayClass}`;
+  let raceField, classField, oldSheetClass;
+  if (isAdvancedRC && race) {
+    // Advanced RC: use race name and class name separately
+    raceField = race;
+    classField = classDisplayName(charClass);
+    oldSheetClass = `${race} ${classDisplayName(charClass)}`;
+  } else {
+    // Classic or Advanced (Race as Class) rulesets
+    const DEMI_HUMANS = new Set(["Dwarf","Elf","Halfling"]);
+    const AF_DEMI_HUMANS = new Set(["AF_Drow","AF_Duergar","AF_Gnome","AF_HalfElf","AF_HalfOrc"]);
+    const isDemiHuman = DEMI_HUMANS.has(charClass) || AF_DEMI_HUMANS.has(charClass);
+    const displayClass = classDisplayName(charClass);
+    // For AF demihumans, race = friendly name, class = blank
+    const AF_DEMIHUMAN_RACE_NAMES = {
+      "AF_Drow": "Drow", "AF_Duergar": "Duergar", "AF_Gnome": "Gnome",
+      "AF_HalfElf": "Half-Elf", "AF_HalfOrc": "Half-Orc",
+    };
+    raceField = isDemiHuman
+      ? (AF_DEMIHUMAN_RACE_NAMES[charClass] || charClass)
+      : "Human";
+    classField = isDemiHuman ? "" : displayClass;
+    oldSheetClass = isDemiHuman
+      ? (AF_DEMIHUMAN_RACE_NAMES[charClass] || charClass)
+      : `Human ${displayClass}`;
+  }
 
   // Special abilities (filter already-shown-elsewhere)
   const abilities = (CLASSES[charClass].special_abilities || [])
