@@ -28,7 +28,7 @@ Both AC systems are now supported via the **Armour Class** dropdown in the UI.
 
 Both encumbrance systems are supported via the **Encumbrance** dropdown.
 
-**Item-Based** (OSE Carrion Crawler #2):
+**Item-Based** (OSE Carcass Crawler #2):
 - Movement based on number of items carried (1-handed = 1 item, 2-handed = 2 items)
 - STR melee modifier shifts packed item thresholds upward
 - Tiny items (garlic, holy symbols) are non-encumbering
@@ -105,7 +105,7 @@ Phase 1 focuses purely on generating a valid, complete character and exporting i
 
 **Phase 3 backlog (open):**
 - Auto-equipment kit review/improvement per class (AF classes may need tuning)
-- Carrion Crawler optional rules
+- Carcass Crawler optional rules — incorporate additional optional rules from the official OSE zine (classes, races, spells, optional rules)
 - Other rules for starting equipment
 - AF Advanced Method (Race + Class) — blocked on AF race data from rulebook
 - Web deployment / muckdart.com integration
@@ -555,7 +555,7 @@ ose-character-creator/
 3. **Auto kit logic** — Strictly follow class restrictions. Always include class essentials (e.g. holy symbol for Cleric, thieves' tools for Thief). Spend remaining gold on sensible gear within class limits.
 4. **Name field** — Leave blank on the character sheet. Name generation is a future phase feature.
 5. **Armour Class system** — **Using optional Ascending AAC** (OSE Classic p. 32). Descending AC is NOT used. This is a permanent project decision.
-6. **Encumbrance system** — **Using optional Item-Based Encumbrance** (OSE Carrion Crawler #2). Movement calculated from item counts. STR melee modifier shifts packed thresholds. Packed slots 1–3 gated by STR (9+, 6+, 4+). STR-gated header slots (13+, 16+, 18+) show item limits or "Insufficient STR Score". This is a permanent project decision.
+6. **Encumbrance system** — **Using optional Item-Based Encumbrance** (OSE Carcass Crawler #2). Movement calculated from item counts. STR melee modifier shifts packed thresholds. Packed slots 1–3 gated by STR (9+, 6+, 4+). STR-gated header slots (13+, 16+, 18+) show item limits or "Insufficient STR Score". This is a permanent project decision.
 7. **Weapons** — Melee weapons listed in Equipped include damage die and STR melee modifier (e.g. "Sword (1d8+1 dmg)").
 
 ## DONE: Phase 3 — AF Advanced Method (Race + Class) — 2026-04-04

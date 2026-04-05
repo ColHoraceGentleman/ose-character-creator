@@ -243,7 +243,7 @@ Added test suite: `tests/test_equipment.py`
 
 ## 2026-03-14 — Item-Based Encumbrance (OSE CC2)
 
-Implemented the optional Item-Based Encumbrance system from OSE Carrion Crawler #2.
+Implemented the optional Item-Based Encumbrance system from OSE Carcass Crawler #2.
 
 **Changes:**
 - `equipment.py`: Added `encumbrance` key to all ADVENTURING_GEAR, WEAPONS, and ARMOUR entries. New functions: `item_encumbrance()`, `count_encumbrance()`, `calculate_movement()`, `ENCUMBRANCE_TABLE`. Updated `auto_kit()` to track unencumbering items separately. Storage containers (backpack, sacks) count as 0 items when in use.
@@ -526,6 +526,6 @@ Phase 2 completed. AF Basic Method is fully implemented. Several QoL features ad
 
 ### Open items for Phase 3
 - Auto-equipment kit review for AF classes
-- Carrion Crawler optional rules
+- Carcass Crawler optional rules — incorporate additional optional rules from the official OSE zine (classes, races, spells, optional rules)
 - AF Advanced Method (Race + Class) — blocked on race data
 - Web deployment / muckdart.com
