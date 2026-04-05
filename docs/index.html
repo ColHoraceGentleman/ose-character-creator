@@ -343,8 +343,8 @@
         </div>
         <div class="stat-block">
           <div class="stat-row">
-            <div class="stat-box-sm"><span class="stat-label">Race</span><span class="stat-value" id="r-race"></span></div>
-            <div class="stat-box-sm"><span class="stat-label">Class</span><span class="stat-value" id="r-class"></span></div>
+            <div class="stat-box-sm" id="r-race-box"><span class="stat-label">Race</span><span class="stat-value" id="r-race"></span></div>
+            <div class="stat-box-sm" id="r-class-box"><span class="stat-label">Class</span><span class="stat-value" id="r-class"></span></div>
             <div class="stat-box-sm"><span class="stat-label">Level</span><span class="stat-value big" id="r-level"></span></div>
             <div class="stat-box-sm"><span class="stat-label">HP</span><span class="stat-value big" id="r-hp"></span></div>
             <div class="stat-box-sm"><span class="stat-label">AC</span><span class="stat-value big" id="r-ac"></span></div>
@@ -366,36 +366,16 @@
             <div class="ability" id="r-cha"><span class="ab-name">CHA</span><span class="ab-score"></span><span class="ab-mod"></span></div>
           </div>
 
-          <div class="saves-block">
-            <h3>Saving Throws</h3>
-            <div class="saves">
-              <div><label>Death</label><span id="r-save-d"></span></div>
-              <div><label>Wands</label><span id="r-save-w"></span></div>
-              <div><label>Paralysis</label><span id="r-save-p"></span></div>
-              <div><label>Breath</label><span id="r-save-b"></span></div>
-              <div><label>Spells</label><span id="r-save-s"></span></div>
-            </div>
-          </div>
-
-          <div class="equipment-block">
-            <h3>Equipment</h3>
-            <div class="equip-cols">
-              <div>
-                <h4>Equipped</h4>
-                <ul id="r-equipped"></ul>
-              </div>
-              <div>
-                <h4>Packed</h4>
-                <ul id="r-packed"></ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="notes-block">
-            <h3>Notes &amp; Abilities</h3>
-            <p id="r-abilities" style="white-space:pre-wrap;margin-bottom:8px;font-size:0.9rem;"></p>
-            <p id="r-notes" style="white-space:pre-wrap;font-size:0.9rem;color:var(--text-dim);"></p>
-          </div>
+          <!-- Hidden fields for JS population (used by PDF generator) -->
+          <span id="r-save-d" style="display:none"></span>
+          <span id="r-save-w" style="display:none"></span>
+          <span id="r-save-p" style="display:none"></span>
+          <span id="r-save-b" style="display:none"></span>
+          <span id="r-save-s" style="display:none"></span>
+          <ul id="r-equipped" style="display:none"></ul>
+          <ul id="r-packed" style="display:none"></ul>
+          <p id="r-abilities" style="display:none"></p>
+          <p id="r-notes" style="display:none"></p>
         </div>
       </div>
 

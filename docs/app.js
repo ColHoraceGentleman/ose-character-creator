@@ -32,8 +32,21 @@ function displayCharacter(char, options) {
 
   // Header info
   document.getElementById("r-name").textContent = char.name || "";
-  document.getElementById("r-race").textContent = char.race_field || "—";
-  document.getElementById("r-class").textContent = char.class_field || char.character_class || "—";
+
+  // Race/Class display: demi-humans (class_field is blank) get a single "Race/Class" box
+  const isDemiHuman = !char.class_field;
+  const raceBox = document.getElementById("r-race-box");
+  const classBox = document.getElementById("r-class-box");
+  if (isDemiHuman) {
+    raceBox.querySelector(".stat-label").textContent = "Race/Class";
+    document.getElementById("r-race").textContent = char.race_field || char.character_class;
+    classBox.style.display = "none";
+  } else {
+    raceBox.querySelector(".stat-label").textContent = "Race";
+    document.getElementById("r-race").textContent = char.race_field || "—";
+    document.getElementById("r-class").textContent = char.class_field || char.character_class;
+    classBox.style.display = "";
+  }
   document.getElementById("r-level").textContent = char.level;
   // Keep hidden fields populated for PDF use
   document.getElementById("r-class-level").textContent = char.character_class + " " + char.level;
