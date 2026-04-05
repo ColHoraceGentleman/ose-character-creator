@@ -14,13 +14,16 @@
     <h1>⚔️ OSE Character Creator</h1>
   </header>
 
-  <div class="container">
-    <main>
+  <div class="page-wrapper">
+    <div class="builder-pane">
       <form id="gen-form">
-        <div class="options-grid">
-
-          <div class="option-group">
-            <label>Ruleset <span class="help" title="Classic Fantasy (B/X): the original 7 classes. Advanced Fantasy (Race as Class): 14 additional classes including demihumans from the Advanced Players Tome.">?</span></label>
+        
+        <!-- Card 1: Ruleset & Class -->
+        <div class="card">
+          <h2 class="card-title">Ruleset & Class</h2>
+          
+          <div class="form-group">
+            <label class="form-label">Ruleset <span class="help" title="Classic Fantasy (B/X): the original 7 classes. Advanced Fantasy (Race as Class): 14 additional classes including demihumans from the Advanced Players Tome.">?</span></label>
             <select name="ruleset" id="ruleset">
               <option value="classic" selected>Classic Fantasy (B/X)</option>
               <option value="advanced">Advanced Fantasy (Race as Class)</option>
@@ -28,8 +31,8 @@
             </select>
           </div>
 
-          <div class="option-group" id="race_option_group" style="display:none">
-            <label>Race <span class="help" title="Choose a race for your character. Each race has ability score requirements, modifiers, and a limited set of available classes.">?</span></label>
+          <div class="form-group" id="race_option_group" style="display:none">
+            <label class="form-label">Race <span class="help" title="Choose a race for your character. Each race has ability score requirements, modifiers, and a limited set of available classes.">?</span></label>
             <select name="race_selection" id="race_selection">
               <option value="random">Random race</option>
               <option value="Drow">Drow</option>
@@ -44,8 +47,8 @@
             </select>
           </div>
 
-          <div class="option-group">
-            <label>Class <span class="help" title="Random: picks a class that earns an XP bonus from your rolled stats. Specific: assigns best die results to the class's prime requisites.">?</span></label>
+          <div class="form-group">
+            <label class="form-label">Class <span class="help" title="Random: picks a class that earns an XP bonus from your rolled stats. Specific: assigns best die results to the class's prime requisites.">?</span></label>
             <select name="class_selection" id="class_selection">
               <option value="random">Random class</option>
               <optgroup label="Classic Fantasy" id="optgroup-classic">
@@ -78,8 +81,8 @@
             </select>
           </div>
 
-          <div class="option-group">
-            <label>Level <span class="help" title="Starting level (1–14, clamped to class maximum).">?</span></label>
+          <div class="form-group">
+            <label class="form-label">Level <span class="help" title="Starting level (1–14, clamped to class maximum).">?</span></label>
             <select name="level" id="level">
               <option value="1" selected>1</option>
               <option value="2">2</option>
@@ -97,9 +100,210 @@
               <option value="14">14</option>
             </select>
           </div>
+        </div>
 
-          <div class="option-group">
-            <label>Number of Characters <span class="help" title="Generate 1–10 characters. Multiple characters download as a ZIP.">?</span></label>
+        <!-- Card 2: Dice & Options -->
+        <div class="card">
+          <h2 class="card-title">Dice & Options</h2>
+
+          <div class="form-group">
+            <label class="form-label">Dice Method <span class="help" title="How ability scores are rolled. Optimised methods assign your best rolls to prime requisites.">?</span></label>
+            <select name="dice_method" id="dice_method">
+              <option value="3d6_order">3d6 in order</option>
+              <option value="4d6_order_drop_lowest">4d6 in order, drop lowest</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Armour Class <span class="help" title="AAC (Ascending): higher = better, uses Attack Bonus. DAC (Descending): lower = better, uses THAC0 matrix.">?</span></label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="ac_mode" value="aac" checked>
+                <span class="radio-custom"></span>
+                <span class="radio-label">Ascending (AAC)</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="ac_mode" value="dac">
+                <span class="radio-custom"></span>
+                <span class="radio-label">Descending (DAC)</span>
+              </label>
+            </div>
+          </div>
+
+          <hr class="card-divider">
+
+          <div class="form-group">
+            <label class="form-label">Encumbrance <span class="help" title="Item-Based (Carrion Crawler #2): movement from item count. Standard: movement from total coin weight.">?</span></label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="encumbrance_mode" value="item_based" checked>
+                <span class="radio-custom"></span>
+                <span class="radio-label">Item-Based (CC#2)</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="encumbrance_mode" value="standard">
+                <span class="radio-custom"></span>
+                <span class="radio-label">Standard (coin weight)</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Equipment <span class="help" title="Auto kit: automatically purchases sensible starting gear within class restrictions. Manual: generates starting gold only — purchase equipment yourself using the books.">?</span></label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="equipment_mode" value="auto" checked>
+                <span class="radio-custom"></span>
+                <span class="radio-label">Auto kit</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="equipment_mode" value="manual">
+                <span class="radio-custom"></span>
+                <span class="radio-label">Manual (gold only)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Advanced Toggles -->
+        <div class="card">
+          <h2 class="card-title">Advanced Toggles</h2>
+
+          <div class="toggle-rows">
+            <div class="toggle-row">
+              <span class="toggle-label">Max HP at 1st Level <span class="help" title="Roll maximum die value for 1st level HP (CON modifier still applied).">?</span></span>
+              <label class="toggle">
+                <input type="checkbox" name="max_hp_at_level1" id="max_hp_at_level1">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <span class="toggle-label">Reroll 1s &amp; 2s on hit dice <span class="help" title="Reroll any hit die that shows 1 or 2 until it shows 3+.">?</span></span>
+              <label class="toggle">
+                <input type="checkbox" name="reroll_low_hp" id="reroll_low_hp">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <span class="toggle-label">Reroll 1s on ability scores <span class="help" title="Reroll any individual die showing 1 when rolling ability scores.">?</span></span>
+              <label class="toggle">
+                <input type="checkbox" name="reroll_ones_ability" id="reroll_ones_ability">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <span class="toggle-label">Discard sub-par arrays <span class="help" title="Reroll entire stat array if no score exceeds 8.">?</span></span>
+              <label class="toggle">
+                <input type="checkbox" name="reroll_subpar" id="reroll_subpar">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <span class="toggle-label">Auto-adjust ability scores <span class="help" title="Automatically shift points from STR/INT/WIS into prime requisites to maximise XP bonus. Only lowers non-prime stats; never below 9.">ⓘ</span></span>
+              <label class="toggle">
+                <input type="checkbox" name="auto_adjust_scores" id="auto_adjust_scores">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <span class="toggle-label">Randomly select spells <span class="help" title="Randomly pick starting spells for spellcasters. Uncheck to leave the spell section blank so the player can choose their own spells.">ⓘ</span></span>
+              <label class="toggle">
+                <input type="checkbox" name="random_spells" id="random_spells" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="form-help">Spellcasters only</p>
+
+            <div class="toggle-row">
+              <span class="toggle-label">Give Read Magic to spellcasters <span class="help" title="Guarantees Read Magic in the starting spell (Magic-Users and Elves).">?</span></span>
+              <label class="toggle">
+                <input type="checkbox" name="give_read_magic" id="give_read_magic">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="form-help">Spellcasters only</p>
+
+            <div class="toggle-row">
+              <span class="toggle-label">Secondary Skill <span class="help" title="Grants a random non-adventuring background profession (d100 roll).">ⓘ</span></span>
+              <label class="toggle">
+                <input type="checkbox" name="secondary_skill" id="secondary_skill">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <span class="toggle-label">Weapon Proficiency <span class="help" title="Each character is proficient with a limited number of weapons. Non-proficient attacks suffer a penalty (Martial −2, Semi-Martial −3, Non-Martial −5).">ⓘ</span></span>
+              <label class="toggle">
+                <input type="checkbox" name="weapon_proficiency" id="weapon_proficiency">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <span class="toggle-label">Magic Item Chance <span class="help" title="Percentage chance that a generated character receives a magic item from the appropriate list (CF or AF).">ⓘ</span></span>
+              <label class="toggle">
+                <input type="checkbox" name="magic_items" id="magic_items">
+                <span class="toggle-slider"></span>
+              </label>
+              <select name="magic_item_pct" id="magic_item_pct">
+                <option value="5">5%</option>
+                <option value="10" selected>10%</option>
+                <option value="15">15%</option>
+                <option value="20">20%</option>
+                <option value="25">25%</option>
+                <option value="30">30%</option>
+                <option value="40">40%</option>
+                <option value="50">50%</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Name & Alignment -->
+        <div class="card">
+          <h2 class="card-title">Name & Alignment</h2>
+
+          <div class="form-group">
+            <label class="form-label">Name Style <span class="help" title="How to generate the character's name.">ⓘ</span></label>
+            <select name="name_style" id="name_style">
+              <option value="fantasy" selected>Fantasy Name</option>
+              <option value="ikea">IKEA Name 🛋️</option>
+              <option value="none">No Name</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Alignment <span class="help" title="Check all alignments allowed. Leave Blank fills no alignment on the sheet.">?</span></label>
+            <div class="toggle-row">
+              <span class="toggle-label">Leave blank</span>
+              <label class="toggle">
+                <input type="checkbox" id="alignment_blank" name="alignment_blank">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="alignment-checkboxes" id="alignment-options">
+              <label class="checkbox-option">
+                <input type="checkbox" name="align_lawful" checked>
+                <span>Lawful</span>
+              </label>
+              <label class="checkbox-option">
+                <input type="checkbox" name="align_neutral" checked>
+                <span>Neutral</span>
+              </label>
+              <label class="checkbox-option">
+                <input type="checkbox" name="align_chaotic" checked>
+                <span>Chaotic</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Number of Characters <span class="help" title="Generate 1–10 characters. Multiple characters download as a ZIP.">?</span></label>
             <select name="num_characters" id="num_characters">
               <option value="1" selected>1</option>
               <option value="2">2</option>
@@ -113,123 +317,23 @@
               <option value="10">10</option>
             </select>
           </div>
-
-          <div class="option-group">
-            <label>Dice Method <span class="help" title="How ability scores are rolled. Optimised methods assign your best rolls to prime requisites.">?</span></label>
-            <select name="dice_method" id="dice_method">
-              <option value="3d6_order">3d6 in order</option>
-              <option value="4d6_order_drop_lowest">4d6 in order, drop lowest</option>
-            </select>
-          </div>
-
-          <div class="option-group">
-            <label>Armour Class <span class="help" title="AAC (Ascending): higher = better, uses Attack Bonus. DAC (Descending): lower = better, uses THAC0 matrix.">?</span></label>
-            <select name="ac_mode" id="ac_mode">
-              <option value="aac" selected>AAC (Ascending)</option>
-              <option value="dac">DAC (Descending)</option>
-            </select>
-          </div>
-
-          <div class="option-group">
-            <label>Encumbrance <span class="help" title="Item-Based (Carrion Crawler #2): movement from item count. Standard: movement from total coin weight.">?</span></label>
-            <select name="encumbrance_mode" id="encumbrance_mode">
-              <option value="item_based" selected>Item-Based (CC#2)</option>
-              <option value="standard">Standard (coin weight)</option>
-            </select>
-          </div>
-
-          <div class="option-group">
-            <label>Alignment <span class="help" title="Check all alignments allowed. Leave Blank fills no alignment on the sheet.">?</span></label>
-            <div class="alignment-blank-toggle">
-              <label class="toggle">
-                <input type="checkbox" id="alignment_blank" name="alignment_blank">
-                <span>Leave blank</span>
-              </label>
-            </div>
-            <div class="alignment-checkboxes" id="alignment-options">
-              <label class="toggle"><input type="checkbox" name="align_lawful" checked> <span>Lawful</span></label>
-              <label class="toggle"><input type="checkbox" name="align_neutral" checked> <span>Neutral</span></label>
-              <label class="toggle"><input type="checkbox" name="align_chaotic" checked> <span>Chaotic</span></label>
-            </div>
-          </div>
-
-          <div class="option-group">
-            <label>Equipment <span class="help" title="Auto kit: automatically purchases sensible starting gear within class restrictions. Manual: generates starting gold only — purchase equipment yourself using the books.">?</span></label>
-            <select name="equipment_mode" id="equipment_mode">
-              <option value="auto" selected>Auto kit</option>
-              <option value="manual">Manual (starting gold only)</option>
-            </select>
-          </div>
-
-          <div class="option-group" style="grid-column: span 2;">
-            <label>Options</label>
-            <div class="toggles">
-              <label class="toggle">
-                <input type="checkbox" name="max_hp_at_level1" id="max_hp_at_level1">
-                <span>Max HP at 1st level <span class="help" title="Roll maximum die value for 1st level HP (CON modifier still applied).">?</span></span>
-              </label>
-              <label class="toggle">
-                <input type="checkbox" name="reroll_low_hp" id="reroll_low_hp">
-                <span>Reroll 1s &amp; 2s on hit dice <span class="help" title="Reroll any hit die that shows 1 or 2 until it shows 3+.">?</span></span>
-              </label>
-              <label class="toggle">
-                <input type="checkbox" name="reroll_ones_ability" id="reroll_ones_ability">
-                <span>Reroll 1s on ability scores <span class="help" title="Reroll any individual die showing 1 when rolling ability scores.">?</span></span>
-              </label>
-              <label class="toggle">
-                <input type="checkbox" name="reroll_subpar" id="reroll_subpar">
-                <span>Discard sub-par arrays <span class="help" title="Reroll entire stat array if no score exceeds 8.">?</span></span>
-              </label>
-              <label class="toggle">
-                <input type="checkbox" name="auto_adjust_scores" id="auto_adjust_scores">
-                <span>Auto-adjust ability scores <span class="help" title="Automatically shift points from STR/INT/WIS into prime requisites to maximise XP bonus. Only lowers non-prime stats; never below 9.">ⓘ</span></span>
-              </label>
-              <label class="toggle" id="random_spells_toggle">
-                <input type="checkbox" name="random_spells" id="random_spells" checked>
-                <span>Randomly select spells <span class="help" title="Randomly pick starting spells for spellcasters. Uncheck to leave the spell section blank so the player can choose their own spells.">ⓘ</span></span>
-              </label>
-              <label class="toggle" id="read_magic_toggle">
-                <input type="checkbox" name="give_read_magic" id="give_read_magic">
-                <span>Give Read Magic to spellcasters <span class="help" title="Guarantees Read Magic in the starting spell (Magic-Users and Elves).">?</span></span>
-              </label>
-              <label class="toggle">
-                <input type="checkbox" name="secondary_skill" id="secondary_skill">
-                <span>Secondary Skill <span class="help" title="Grants a random non-adventuring background profession (d100 roll).">ⓘ</span></span>
-              </label>
-              <label class="toggle">
-                <input type="checkbox" name="weapon_proficiency" id="weapon_proficiency">
-                <span>Weapon Proficiency <span class="help" title="Each character is proficient with a limited number of weapons. Non-proficient attacks suffer a penalty (Martial −2, Semi-Martial −3, Non-Martial −5).">ⓘ</span></span>
-              </label>
-              <label class="toggle">
-                <input type="checkbox" name="magic_items" id="magic_items">
-                <span>Magic Item Chance <span class="help" title="Percentage chance that a generated character receives a magic item from the appropriate list (CF or AF).">ⓘ</span>
-                <select name="magic_item_pct" id="magic_item_pct" style="margin-left:8px;">
-                  <option value="5">5%</option>
-                  <option value="10" selected>10%</option>
-                  <option value="15">15%</option>
-                  <option value="20">20%</option>
-                  <option value="25">25%</option>
-                  <option value="30">30%</option>
-                  <option value="40">40%</option>
-                  <option value="50">50%</option>
-                </select></span>
-              </label>
-              <label class="option-row">
-                <span>Name <span class="help" title="How to generate the character's name.">ⓘ</span></span>
-                <select name="name_style" id="name_style">
-                  <option value="fantasy" selected>Fantasy Name</option>
-                  <option value="ikea">IKEA Name 🛋️</option>
-                  <option value="none">No Name</option>
-                </select>
-              </label>
-            </div>
-          </div>
-
         </div>
 
         <button type="submit" class="btn-generate" id="generate-btn">🎲 Generate Character</button>
+        <p class="generate-hint">Your character will appear on the right →</p>
       </form>
 
+      <!-- Previous characters -->
+      <div id="previous-section" class="previous hidden">
+        <div class="previous-header">
+          <h2>Previously Generated</h2>
+          <button id="clear-btn" class="btn-clear">Clear All</button>
+        </div>
+        <div class="prev-list" id="prev-list"></div>
+      </div>
+    </div>
+
+    <div class="preview-pane">
       <!-- Result panel -->
       <div id="result" class="result hidden">
         <div class="result-header">
@@ -297,15 +401,13 @@
 
       <div id="error-msg" class="error hidden"></div>
 
-      <!-- Previous characters -->
-      <div id="previous-section" class="previous hidden">
-        <div class="previous-header">
-          <h2>Previously Generated</h2>
-          <button id="clear-btn" class="btn-clear">Clear All</button>
-        </div>
-        <div class="prev-list" id="prev-list"></div>
+      <!-- Preview Placeholder -->
+      <div id="preview-placeholder" class="preview-placeholder">
+        <div class="placeholder-icon">⚔️</div>
+        <p>Your character will appear here</p>
+        <p style="font-size:13px; margin-top:8px;">Set your options and click Generate</p>
       </div>
-    </main>
+    </div>
   </div>
 
   <footer>
