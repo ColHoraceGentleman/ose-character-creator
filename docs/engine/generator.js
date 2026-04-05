@@ -338,6 +338,44 @@ function generateCharacter(options) {
     ? chosenClass
     : pickRandomClassByXp(scores, options.ruleset || "classic");
 
+  // Auto-adjust ability scores to maximise XP bonus (optional)
+  if (options.auto_adjust_scores) {
+    const prs = CLASSES[charClass].prime_requisites;
+    // Only STR, INT, WIS may be lowered; never lower below 9; never lower a prime req
+    const donorStats = ["STR", "INT", "WIS"].filter(s => !prs.includes(s));
+    // Keep trying until no more beneficial trades can be made
+    let improved = true;
+    while (improved) {
+      improved = false;
+      // Current XP tier (use min of prime reqs for multi-PR classes)
+      const prMin = () => Math.min(...prs.map(p => scores[p]));
+      const xpTier = (v) => v >= 16 ? 2 : v >= 13 ? 1 : 0;
+      const currentTier = xpTier(prMin());
+      if (currentTier >= 2) break; // already at +10%, can't do better
+      // Find the prime req that's lowest (the bottleneck)
+      const targetPr = prs.reduce((a, b) => scores[a] <= scores[b] ? a : b);
+      const targetVal = scores[targetPr];
+      const nextThreshold = targetVal < 13 ? 13 : 16;
+      const pointsNeeded = (nextThreshold - targetVal); // points to add to PR
+      const pointsToDrain = pointsNeeded * 2;           // costs 2 donor points per 1 PR point
+      // Try to find enough donor points (each donor can give down to 9)
+      let available = 0;
+      for (const s of donorStats) available += Math.max(0, scores[s] - 9);
+      if (available < pointsToDrain) break; // can't reach next threshold
+      // Drain donors in order
+      let remaining = pointsToDrain;
+      for (const s of donorStats) {
+        const canGive = Math.max(0, scores[s] - 9);
+        const take = Math.min(canGive, remaining);
+        scores[s] -= take;
+        remaining -= take;
+        if (remaining === 0) break;
+      }
+      scores[targetPr] += pointsNeeded;
+      improved = true;
+    }
+  }
+
   // Clamp level to class max
   const maxLevel = CLASSES[charClass].max_level;
   const targetLevel = Math.max(1, Math.min(targetLevelRaw, maxLevel));
