@@ -32,20 +32,23 @@ function pickRandomClassByXp(scores, ruleset="classic") {
     if (ruleset === "advanced") return isAF && isValidClass(c, scores);
     return !isAF && isValidClass(c, scores);
   });
-  const fallback = ruleset === "advanced" ? "AF_Fighter" : "Fighter";
+  // Note: AF_Fighter does not exist; fallback is unused but kept for reference clarity
+  // const fallback = ruleset === "advanced" ? "AF_Barbarian" : "Fighter";
   if (!valid.length) return ruleset === "advanced" ? "AF_Barbarian" : "Fighter";
 
-  const plus=[], none=[], minus10=[];
+  const plus=[], none=[], minus10=[], minus20=[];
   for (const c of valid) {
     const b = calcPrXpBonus(scores, c);
     if (b==="+5%"||b==="+10%") plus.push(c);
     else if (b==="None") none.push(c);
     else if (b==="-10%") minus10.push(c);
+    else minus20.push(c);
   }
 
   if (plus.length) return randomChoice(plus);
   if (none.length) return randomChoice(none);
   if (minus10.length) return randomChoice(minus10);
+  if (minus20.length) return randomChoice(minus20);
   return randomChoice(valid);
 }
 
@@ -57,8 +60,8 @@ function rollAbilityScores(method, chosenClass=null, rerollOnes=false) {
     if (!rerollOnes) return roll3d6();
     let total = 0;
     for (let i = 0; i < 3; i++) {
-      let d = roll(6);
-      while (d === 1) d = roll(6);
+      let d = roll("1d6");
+      while (d === 1) d = roll("1d6");
       total += d;
     }
     return total;
@@ -67,8 +70,8 @@ function rollAbilityScores(method, chosenClass=null, rerollOnes=false) {
     if (!rerollOnes) return roll4d6DropLowest();
     const dice = [];
     for (let i = 0; i < 4; i++) {
-      let d = roll(6);
-      while (d === 1) d = roll(6);
+      let d = roll("1d6");
+      while (d === 1) d = roll("1d6");
       dice.push(d);
     }
     dice.sort((a, b) => a - b);
@@ -578,7 +581,7 @@ function generateCharacter(options) {
   if (options.magic_items) {
     const roll = Math.floor(Math.random() * 100) + 1;
     if (roll <= (options.magic_item_pct || 10)) {
-      const itemList = (options.ruleset === "advanced") ? AF_MAGIC_ITEMS : CF_MAGIC_ITEMS;
+      const itemList = (options.ruleset === "advanced" || options.ruleset === "advanced_rc") ? AF_MAGIC_ITEMS : CF_MAGIC_ITEMS;
       const item = itemList[Math.floor(Math.random() * itemList.length)];
       notes.push(`Magic Item: ${item}`);
     }
