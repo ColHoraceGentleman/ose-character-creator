@@ -444,3 +444,59 @@ The Advanced method separates race and class into two independent choices. A pla
 3. Run `python3 server.py 8080` → http://localhost:8080
 4. Generate a character from each class and download the PDF to verify output
 5. Check "Upcoming — Phase 2" above for next tasks
+
+---
+
+## Session 2026-04-04 — AF Basic Method + QoL Features
+
+### Summary
+Phase 2 completed. AF Basic Method is fully implemented. Several QoL features added.
+
+### Changes
+
+**IKEA Name Generator**
+- Replaced name checkbox with a dropdown: Fantasy Name / IKEA Name 🛋️ / No Name
+- Added 490 real IKEA product names to `docs/data/names.js` (IKEA_NAMES array), filtered to 460 after removing English words (Billy, Urban, Fusion, etc.)
+- Generator picks randomly from the list when IKEA mode selected
+
+**AF class dropdown — alphabetical sort**
+- Advanced Fantasy mode now shows all 21 classes (Classic + AF) in a single flat alphabetical list
+- Was previously split into 3 optgroups in non-alphabetical grouping
+
+**Auto-adjust ability scores**
+- New optional toggle (off by default)
+- After rolling, greedily shifts points from non-prime STR/INT/WIS into prime requisite(s) to hit next XP threshold (13 = +5%, 16 = +10%)
+- Rules: only lowers STR/INT/WIS; never below 9; never lowers a prime req; stops if not enough points to reach next threshold
+
+**Manual equipment mode — confirmed complete**
+- Puts starting gold on sheet, no auto-kit; player purchases equipment from books
+- Intentional design: multi-character generation makes interactive manual selection impractical
+
+### AF Basic Method — Checklist (all steps from APT p16–17)
+- ✅ Step 1: Roll ability scores
+- ✅ Step 2: Choose class (all 14 AF classes)
+- ✅ Step 3: Adjust ability scores (auto-adjust toggle)
+- ✅ Step 4: Ability score modifiers
+- ✅ Step 5: Attack values (THAC0 / AAC)
+- ✅ Step 6: Saving throws & class abilities
+- ✅ Step 7: Roll hit points
+- ✅ Step 8: Choose alignment
+- ✅ Step 9: Languages
+- ✅ Step 10: Buy equipment (auto-kit or manual gold)
+- ✅ Step 11: Armour class
+- ✅ Step 12: Level and XP
+- ✅ Step 13: Secondary skill (optional)
+- ✅ Step 14: Name character
+
+### Commits
+- 9526493 feat: add IKEA Name Generator option
+- a730799 fix: handle undefined name_style to default to fantasy
+- 68269dd chore: remove 30 English words from IKEA_NAMES
+- 75be1c9 feat: sort Advanced Fantasy classes alphabetically in dropdown
+- 98297d5 feat: auto-adjust ability scores option to maximise prime req XP bonus
+
+### Open items for Phase 3
+- Auto-equipment kit review for AF classes
+- Carrion Crawler optional rules
+- AF Advanced Method (Race + Class) — blocked on race data
+- Web deployment / muckdart.com

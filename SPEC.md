@@ -1,9 +1,9 @@
 # OSE Character Creator — SPEC.md
 ## Phase 1: Character Sheet Generator
 
-**Version:** 0.4 (Phase 2 Part 1 — Level Selection + Multiple Characters)  
+**Version:** 0.5 (Phase 2 Complete — AF Basic Method + IKEA Names + Auto-Adjust)  
 **Last updated:** 2026-03-16  
-**Status:** Phase 2 (part 1) complete ✅
+**Status:** Phase 2 complete ✅ | Phase 3 (AF Advanced Method) pending race data
 
 ---
 
@@ -94,13 +94,21 @@ Phase 1 focuses purely on generating a valid, complete character and exporting i
 **Out of scope (future phases):**
 - Web deployment / muckdart.com integration (Phase 3)
 
-**Phase 2 backlog:**
-- Advanced Fantasy rules
-- Other rules for starting equipment
+**Phase 2 backlog (completed):**
+- ~~Advanced Fantasy Basic Method~~ ✅ Done (2026-04-04) — all 14 AF classes, auto-adjust scores, alphabetical dropdown
 - ~~Allow creation of characters above level 1~~ ✅ Done (2026-03-16)
 - ~~Multiple characters / party sheet~~ ✅ Done (2026-03-16)
-- Carrion Crawler options
 - ~~Max hit points at Level 1~~ ✅ Done (2026-03-16)
+- ~~Manual equipment mode~~ ✅ Done — puts starting gold on sheet, player buys gear from books
+- ~~IKEA Name Generator~~ ✅ Done (2026-04-04) — 460 real IKEA product names
+- ~~Auto-adjust ability scores~~ ✅ Done (2026-04-04) — shifts STR/INT/WIS into prime reqs to maximise XP bonus
+
+**Phase 3 backlog (open):**
+- Auto-equipment kit review/improvement per class (AF classes may need tuning)
+- Carrion Crawler optional rules
+- Other rules for starting equipment
+- AF Advanced Method (Race + Class) — blocked on AF race data from rulebook
+- Web deployment / muckdart.com integration
 
 ### Level Progression Rules (implemented)
 
