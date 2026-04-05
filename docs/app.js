@@ -460,7 +460,7 @@ function renderPrevious() {
   section.classList.remove("hidden");
   list.innerHTML = "";
 
-  saved.slice(0, 10).forEach(entry => {
+  saved.slice(0, 5).forEach(entry => {
     const c = entry.character;
     const item = document.createElement("div");
     item.className = "prev-item";
