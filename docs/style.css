@@ -56,10 +56,12 @@ body {
 
 .generate-bar {
   position: sticky;
-  top: 72px;
+  top: 64px;
   z-index: 50;
   background: var(--app-bg);
-  padding: 8px 0;
+  padding: 8px 0 10px;
+  margin-bottom: -2px;
+  box-shadow: 0 6px 12px 4px var(--app-bg);
 }
 
 .preview-pane {
