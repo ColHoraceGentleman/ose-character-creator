@@ -529,3 +529,63 @@ Phase 2 completed. AF Basic Method is fully implemented. Several QoL features ad
 - Carcass Crawler optional rules — incorporate additional optional rules from the official OSE zine (classes, races, spells, optional rules)
 - AF Advanced Method (Race + Class) — blocked on race data
 - Web deployment / muckdart.com
+
+---
+## 2026-04-05 — UI Redesign (Parchment/Ink Design System)
+
+### Overview
+Complete visual redesign of the app UI, plus structural improvements to layout and UX.
+
+### Design System
+- Created `docs/DESIGN.md` — authoritative style guide for all future UI work
+- Created `docs/mockup.html` — static HTML/CSS visual reference
+- Palette: parchment (`#F3EFE3`) background, `#FFFBF2` cards, `#1F2937` ink primary, `#8B5A2B` leather secondary, `#1F7A5A` emerald accent
+- Fonts: Fraunces (headings/stat values, 600/700) + Inter (UI/body, 400/500/600) from Google Fonts
+- 8px spacing grid, 12px card radius, 48px input/button height
+
+### Layout Changes
+- **Two-pane layout**: builder left (55%), character preview right (45%), side by side on desktop, stacked on mobile
+- **Grouped cards**: form reorganised into 4 named cards — Ruleset & Class / Dice & Options / Name & Alignment / Advanced Toggles
+- **Sticky Generate button**: fixed at top of left pane, always visible while scrolling
+- **Generate bar shadow**: masks content scrolling behind sticky button
+- **Character preview** in right pane (permanent, not below form)
+- **Previously Generated** section moved to right pane, capped at 5 entries
+- **Preview placeholder** shown when no character generated yet
+- Radio buttons for AC mode, encumbrance, equipment (replacing selects)
+- Toggle switches (label-left / toggle-right) for advanced options
+
+### Character Preview
+Compact header showing:
+- Row 1: Name + Download PDF button
+- Row 2: Race/Class (wide boxes) + Level/HP/AC (ability-score-sized boxes)
+- Row 3: Ability scores (STR/INT/WIS/DEX/CON/CHA) — unchanged
+- Saving throws, equipment, notes hidden from preview (still in PDF)
+- Demi-humans show single "Race/Class" box instead of separate Race + Class
+- Level/HP/AC boxes fixed to exact same width as ability score boxes
+
+### Default Changes
+- Equipment: Manual (gold only) — was Auto kit
+- Name: No Name — was Fantasy Name
+- Alignment: Lawful + Neutral — was Lawful + Neutral + Chaotic
+- Discard sub-par arrays: ON — was OFF
+
+### OGL / Legal
+- Created `docs/legal.html` with full OGL v1.0a text and complete copyright chain
+- Added footer link to legal page on index.html
+- Author credit: Patrick Bailey
+
+### Commits
+- a6eddd4 chore: add UI mockup for design review
+- 5632136 feat: redesign UI to parchment/ink design system
+- 1fa691b feat: two-pane layout matching mockup design
+- c00127c feat: move Generate button to top of builder pane
+- 1014380 feat: reorder cards, update defaults
+- 5efea71 fix: restore read_magic_toggle and random_spells_toggle IDs
+- af6bc9e fix: remove CC#2 parenthetical from Item-Based label
+- 786e6c5 feat: right pane scrolls, previous characters to right pane
+- f30fe81 feat: sticky generate button, compact character preview
+- d76dc2d feat: labeled stat boxes Race/Class/Level/HP/AC
+- cd15c0d fix: demi-human Race/Class box; strip saves/equipment/notes from preview
+- d1fa59e fix: full preview, limit previous to 5
+- cb0ed78 fix: generate bar shadow
+- 00fbb0b fix: Level/HP/AC exact width matching STR box; no ellipsis
