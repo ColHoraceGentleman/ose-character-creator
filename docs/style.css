@@ -471,9 +471,17 @@ select:focus {
   align-items: stretch;
 }
 
+/* Race/Class boxes grow to fill available space */
+.stat-box-wide {
+  flex: 2 1 0;
+  min-width: 0;
+}
+
+/* Level/HP/AC: fixed same size as ability score boxes (1/6 of full row width) */
 .stat-row-top .ability {
-  flex: 0 0 auto;
-  width: calc((100% - 2 * 8px - 3 * 8px) / 5); /* same width as one ability score box */
+  flex: 1 1 0;
+  min-width: 0;
+  width: 0;
 }
 
 .stat-box-wide {
