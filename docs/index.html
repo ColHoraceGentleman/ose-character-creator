@@ -104,7 +104,7 @@
           </div>
         </div>
 
-        <!-- Card 2: Dice & Options -->
+        <!-- Card 2: Dice & Options (now card 2, Name & Alignment moved to card 3) -->
         <div class="card">
           <h2 class="card-title">Dice & Options</h2>
 
@@ -154,12 +154,12 @@
             <label class="form-label">Equipment <span class="help" title="Auto kit: automatically purchases sensible starting gear within class restrictions. Manual: generates starting gold only — purchase equipment yourself using the books.">?</span></label>
             <div class="radio-group">
               <label class="radio-option">
-                <input type="radio" name="equipment_mode" value="auto" checked>
+                <input type="radio" name="equipment_mode" value="auto">
                 <span class="radio-custom"></span>
                 <span class="radio-label">Auto kit</span>
               </label>
               <label class="radio-option">
-                <input type="radio" name="equipment_mode" value="manual">
+                <input type="radio" name="equipment_mode" value="manual" checked>
                 <span class="radio-custom"></span>
                 <span class="radio-label">Manual (gold only)</span>
               </label>
@@ -167,7 +167,62 @@
           </div>
         </div>
 
-        <!-- Card 3: Advanced Toggles -->
+        <!-- Card 3: Name & Alignment -->
+        <div class="card">
+          <h2 class="card-title">Name & Alignment</h2>
+
+          <div class="form-group">
+            <label class="form-label">Name Style <span class="help" title="How to generate the character's name.">ⓘ</span></label>
+            <select name="name_style" id="name_style">
+              <option value="fantasy">Fantasy Name</option>
+              <option value="ikea">IKEA Name 🛋️</option>
+              <option value="none" selected>No Name</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Alignment <span class="help" title="Check all alignments allowed. Leave Blank fills no alignment on the sheet.">?</span></label>
+            <div class="toggle-row">
+              <span class="toggle-label">Leave blank</span>
+              <label class="toggle">
+                <input type="checkbox" id="alignment_blank" name="alignment_blank">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="alignment-checkboxes" id="alignment-options">
+              <label class="checkbox-option">
+                <input type="checkbox" name="align_lawful" checked>
+                <span>Lawful</span>
+              </label>
+              <label class="checkbox-option">
+                <input type="checkbox" name="align_neutral" checked>
+                <span>Neutral</span>
+              </label>
+              <label class="checkbox-option">
+                <input type="checkbox" name="align_chaotic">
+                <span>Chaotic</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Number of Characters <span class="help" title="Generate 1–10 characters. Multiple characters download as a ZIP.">?</span></label>
+            <select name="num_characters" id="num_characters">
+              <option value="1" selected>1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Card 4: Advanced Toggles -->
         <div class="card">
           <h2 class="card-title">Advanced Toggles</h2>
 
@@ -199,7 +254,7 @@
             <div class="toggle-row">
               <span class="toggle-label">Discard sub-par arrays <span class="help" title="Reroll entire stat array if no score exceeds 8.">?</span></span>
               <label class="toggle">
-                <input type="checkbox" name="reroll_subpar" id="reroll_subpar">
+                <input type="checkbox" name="reroll_subpar" id="reroll_subpar" checked>
                 <span class="toggle-slider"></span>
               </label>
             </div>
@@ -266,60 +321,7 @@
           </div>
         </div>
 
-        <!-- Card 4: Name & Alignment -->
-        <div class="card">
-          <h2 class="card-title">Name & Alignment</h2>
 
-          <div class="form-group">
-            <label class="form-label">Name Style <span class="help" title="How to generate the character's name.">ⓘ</span></label>
-            <select name="name_style" id="name_style">
-              <option value="fantasy" selected>Fantasy Name</option>
-              <option value="ikea">IKEA Name 🛋️</option>
-              <option value="none">No Name</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Alignment <span class="help" title="Check all alignments allowed. Leave Blank fills no alignment on the sheet.">?</span></label>
-            <div class="toggle-row">
-              <span class="toggle-label">Leave blank</span>
-              <label class="toggle">
-                <input type="checkbox" id="alignment_blank" name="alignment_blank">
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-            <div class="alignment-checkboxes" id="alignment-options">
-              <label class="checkbox-option">
-                <input type="checkbox" name="align_lawful" checked>
-                <span>Lawful</span>
-              </label>
-              <label class="checkbox-option">
-                <input type="checkbox" name="align_neutral" checked>
-                <span>Neutral</span>
-              </label>
-              <label class="checkbox-option">
-                <input type="checkbox" name="align_chaotic" checked>
-                <span>Chaotic</span>
-              </label>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Number of Characters <span class="help" title="Generate 1–10 characters. Multiple characters download as a ZIP.">?</span></label>
-            <select name="num_characters" id="num_characters">
-              <option value="1" selected>1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-            </select>
-          </div>
-        </div>
 
       </form>
 
