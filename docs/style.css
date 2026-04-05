@@ -464,24 +464,23 @@ select:focus {
 
 .stat-row-top {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 8px;
   padding-bottom: 16px;
   border-bottom: 1px dashed var(--border);
   align-items: stretch;
 }
 
-/* Race/Class boxes grow to fill available space */
+/* Race/Class boxes take remaining space after Level/HP/AC */
 .stat-box-wide {
-  flex: 2 1 0;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
-/* Level/HP/AC: fixed same size as ability score boxes (1/6 of full row width) */
+/* Level/HP/AC: exactly 1/6 of the abilities grid width */
 .stat-row-top .ability {
-  flex: 1 1 0;
-  min-width: 0;
-  width: 0;
+  flex: 0 0 calc((100% - 5 * 10px) / 6);
+  width: calc((100% - 5 * 10px) / 6);
 }
 
 .stat-box-wide {
@@ -510,10 +509,6 @@ select:focus {
   font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
 }
 
 .stat-box-sm {
@@ -543,10 +538,6 @@ select:focus {
   font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
 }
 
 .stat-box-sm .stat-value.big {
