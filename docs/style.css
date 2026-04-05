@@ -470,6 +470,10 @@ select:focus {
   text-align: center;
   min-width: 0;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .stat-box-sm .stat-value {
