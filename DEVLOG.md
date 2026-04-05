@@ -1,6 +1,35 @@
 # OSE Character Creator — Dev Log
 
 ---
+## 2026-04-04 — Phase 3: AF Advanced Method (Race + Class)
+
+### What Was Changed
+
+1. **New data file** (`docs/data/races.js`) — RACES object with 9 races (Drow, Duergar, Dwarf, Elf, Gnome, Half-Elf, Half-Orc, Halfling, Human), each with requirements, ability_modifiers, languages, available_classes (level caps), racial_abilities.
+
+2. **Race dropdown UI** (`docs/index.html`) — Added race_selection dropdown, visible only when ruleset=advanced_rc.
+
+3. **Class dropdown fix** (`docs/app.js`) — Fixed conflict between updateClassDropdownForRuleset and updateClassOptionsForRC; advanced_rc now rebuilds dropdown with human classes, then filters by race.
+
+4. **Generator integration** (`docs/engine/generator.js`) — Added isAdvancedRC branch: applies racial ability modifiers after rolling scores, picks race and class, enforces race-specific level caps, uses race languages, adds racial abilities to notes, sets race/class fields correctly.
+
+### Key Features
+- Race-specific ability score modifiers (clamped 3–18)
+- Race-specific class availability with max level (e.g. Elf Fighter capped at 7th, Magic-User at 11th)
+- Racial abilities in notes section (e.g. "Detect secret doors 2-in-6", "Infravision 60'", "Light sensitivity...")
+- Human race has unlimited level in all classes
+- Random race picks from eligible races (scores meet requirements)
+- Classic and Advanced (Race as Class) rulesets remain unaffected
+
+### Files Changed
+- `docs/data/races.js` (new)
+- `docs/index.html` (race dropdown + enabled advanced_rc)
+- `docs/app.js` (UI handlers + fix)
+- `docs/engine/generator.js` (Advanced RC logic)
+- `SPEC.md` (version bump + Phase 3 marked complete)
+
+
+---
 
 ## 2026-03-31 — Phase 2a: Advanced Fantasy Classes Wired Up
 

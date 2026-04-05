@@ -1,9 +1,9 @@
 # OSE Character Creator — SPEC.md
 ## Phase 1: Character Sheet Generator
 
-**Version:** 0.5 (Phase 2 Complete — AF Basic Method + IKEA Names + Auto-Adjust)  
-**Last updated:** 2026-03-16  
-**Status:** Phase 2 complete ✅ | Phase 3 (AF Advanced Method) pending race data
+**Version:** 0.6 (Phase 3 Complete — AF Advanced Method Race + Class)  
+**Last updated:** 2026-04-04  
+**Status:** Phase 3 complete ✅ | All three rulesets working
 
 ---
 
@@ -558,10 +558,18 @@ ose-character-creator/
 6. **Encumbrance system** — **Using optional Item-Based Encumbrance** (OSE Carrion Crawler #2). Movement calculated from item counts. STR melee modifier shifts packed thresholds. Packed slots 1–3 gated by STR (9+, 6+, 4+). STR-gated header slots (13+, 16+, 18+) show item limits or "Insufficient STR Score". This is a permanent project decision.
 7. **Weapons** — Melee weapons listed in Equipped include damage die and STR melee modifier (e.g. "Sword (1d8+1 dmg)").
 
+## DONE: Phase 3 — AF Advanced Method (Race + Class) — 2026-04-04
+- New ruleset: "Advanced Fantasy (Race + Class)"
+- 9 playable races: Drow, Duergar, Dwarf, Elf, Gnome, Half-Elf, Half-Orc, Halfling, Human
+- Race-specific ability score modifiers (e.g. Elf: –1 CON, +1 DEX)
+- Race-specific class availability + max level caps
+- Race-specific languages and racial abilities added to notes
+
 ## Future Phase Notes
 
-- ~~Spell selection preference (random / blank / user-picks)~~ ✅ Done 2026-04-04 — toggle added; off leaves spell section blank
-- ~~Coin denominations below GP~~ ✅ Non-issue — all OSE item prices are whole GP; no sub-GP remainder possible
-- ~~Name generation (generic fantasy, race/class-themed)~~ ✅ Done — fantasy + IKEA + none options
-- Equipment auto-kit preference (strict / loose) — Phase 3
-- Web hosting on www.muckdart.com — Phase 3
+- ~~Spell selection preference (random / blank / user-picks)~~ ✅ Done 2026-04-04
+- ~~Coin denominations below GP~~ ✅ Non-issue
+- ~~Name generation (generic fantasy, race/class-themed)~~ ✅ Done
+- ~~Advanced Fantasy (Race + Class)~~ ✅ Done 2026-04-04
+- Equipment auto-kit preference (strict / loose)
+- Web hosting on www.muckdart.com
