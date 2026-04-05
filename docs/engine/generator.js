@@ -419,7 +419,8 @@ function generateCharacter(options) {
   // Spells
   const spellsKnown = [];
   const classData = CLASSES[charClass];
-  if (classData.spellcaster) {
+  const randomSpells = options.random_spells !== false; // default true
+  if (classData.spellcaster && randomSpells) {
     const spellsStartLevel = classData.spells_start_level || 1;
     const hasSpellsAtLevel = targetLevel >= spellsStartLevel;
 

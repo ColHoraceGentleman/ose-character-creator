@@ -295,6 +295,7 @@ form.addEventListener("submit", async function(e) {
     magic_item_pct: parseInt(fd.get("magic_item_pct") || "10"),
     name_style: fd.get("name_style") || "fantasy",
     auto_adjust_scores: fd.get("auto_adjust_scores") === "on",
+    random_spells: fd.get("random_spells") === "on",
   };
 
   generateBtn.disabled = true;
