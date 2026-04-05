@@ -1,14 +1,14 @@
-// OSE Character Creator — Class Data (ported from src/classes.py)
+// OSE Character Creator -- Class Data (ported from src/classes.py)
 
 const HD_CAP = {
   // Classic
   "Cleric": 9, "Dwarf": 9, "Elf": 9, "Fighter": 9,
   "Halfling": 8, "Magic-User": 9, "Thief": 9,
-  // Advanced Fantasy — Race as Class (human)
+  // Advanced Fantasy -- Race as Class (human)
   "AF_Acrobat": 9, "AF_Assassin": 9, "AF_Barbarian": 9,
   "AF_Bard": 9, "AF_Druid": 9, "AF_Illusionist": 9,
   "AF_Knight": 9, "AF_Paladin": 9, "AF_Ranger": 9,
-  // Advanced Fantasy — Race as Class (demihuman)
+  // Advanced Fantasy -- Race as Class (demihuman)
   "AF_Drow": 9, "AF_Duergar": 9, "AF_Gnome": 8,
   "AF_HalfElf": 9, "AF_HalfOrc": 8,
 };
@@ -17,11 +17,11 @@ const FLAT_HP_PER_LEVEL = {
   // Classic
   "Cleric": 1, "Dwarf": 3, "Elf": 2, "Fighter": 2,
   "Halfling": 0, "Magic-User": 1, "Thief": 2,
-  // Advanced Fantasy — Race as Class (human)
+  // Advanced Fantasy -- Race as Class (human)
   "AF_Acrobat": 2, "AF_Assassin": 2, "AF_Barbarian": 3,
   "AF_Bard": 2, "AF_Druid": 1, "AF_Illusionist": 1,
   "AF_Knight": 2, "AF_Paladin": 2, "AF_Ranger": 2,
-  // Advanced Fantasy — Race as Class (demihuman)
+  // Advanced Fantasy -- Race as Class (demihuman)
   "AF_Drow": 2, "AF_Duergar": 3, "AF_Gnome": 1,
   "AF_HalfElf": 2, "AF_HalfOrc": 2,
 };
@@ -128,7 +128,7 @@ const LEVEL_PROGRESSION = {
     14: {xp:760000,  thac0:12, aac_ab:7, saves:{D:8, W:9, P:7, B:10,S:8}},
   },
 
-  // ── Advanced Fantasy — Race as Class ──────────────────────────────────────
+  // -- Advanced Fantasy -- Race as Class --------------------------------------
 
   "AF_Acrobat": {
     1:  {xp:0,       thac0:19, aac_ab:0, saves:{D:13,W:14,P:13,B:16,S:15}},
@@ -275,7 +275,7 @@ const LEVEL_PROGRESSION = {
     14: {xp:925000,  thac0:10, aac_ab:9, saves:{D:4, W:5, P:6, B:5, S:8}},
   },
 
-  // ── Advanced Fantasy — Demihuman (Race as Class) ─────────────────────────
+  // -- Advanced Fantasy -- Demihuman (Race as Class) -------------------------
 
   "AF_Drow": {
     1:  {xp:0,       thac0:19, aac_ab:0, saves:{D:12,W:13,P:13,B:15,S:12}},
@@ -444,13 +444,13 @@ const CLASSES = {
       "Cannot wear armour heavier than leather",
     ],
     thief_skills_lvl1: {
-      CS:"87%", TR:"10%", HN:"1–2 on d6",
+      CS:"87%", TR:"10%", HN:"1-2 on d6",
       HS:"10%", MS:"20%", OL:"15%", PP:"20%",
     },
     spellcaster: false,
   },
 
-  // ── Advanced Fantasy — Demihuman (Race as Class) ─────────────────────────
+  // -- Advanced Fantasy -- Demihuman (Race as Class) -------------------------
 
   "AF_Drow": {
     requirements: {INT:9},
@@ -465,7 +465,7 @@ const CLASSES = {
       "Detect secret doors 2-in-6 (when searching)",
       "Immunity to ghoul paralysis",
       "Listen at doors 2-in-6",
-      "Light sensitivity: −2 to attack and −1 AC in bright light",
+      "Light sensitivity: -2 to attack and -1 AC in bright light",
       "Spider affinity: speak spider secret language; +1 reaction with spiders",
       "Divine spells from Cleric list (light/darkness only at 1st; full list from 2nd; web from 3rd)",
     ],
@@ -487,7 +487,7 @@ const CLASSES = {
       "Detect construction tricks 2-in-6",
       "Detect room traps 2-in-6",
       "Listen at doors 2-in-6",
-      "Light sensitivity: −2 to attack and −1 AC in bright light",
+      "Light sensitivity: -2 to attack and -1 AC in bright light",
       "Stealth: 3-in-6 move silently underground",
       "Mental powers (1/day/level): Enlargement, Invisibility, Shrinking, Heat",
       "Cannot use longbows or two-handed swords",
@@ -550,7 +550,7 @@ const CLASSES = {
       "Infravision 60'",
       "Back-stab (+4 to hit, double damage vs unaware from behind)",
       "Thieving skills: Hide in Shadows, Move Silently, Pick Pockets",
-      "Retainer loyalty −1 (except half-orc retainers)",
+      "Retainer loyalty -1 (except half-orc retainers)",
       "Cannot wear armour heavier than chainmail",
     ],
     spellcaster: false,
@@ -558,7 +558,7 @@ const CLASSES = {
     af_demihuman: true,
   },
 
-  // ── Advanced Fantasy — Human (Race as Class) ──────────────────────────────
+  // -- Advanced Fantasy -- Human (Race as Class) ------------------------------
 
   "AF_Acrobat": {
     requirements: {},
@@ -592,7 +592,7 @@ const CLASSES = {
       "Back-stab (+4 to hit, double damage from behind)",
       "Acrobat-style skills: Climb Sheer Surfaces, Hear Noise, Hide in Shadows, Move Silently",
       "Disguise (2% base detection chance)",
-      "Poison use (victim saves at −2)",
+      "Poison use (victim saves at -2)",
       "May not be Lawful",
     ],
     spellcaster: false,
@@ -687,7 +687,7 @@ const CLASSES = {
     special_abilities: [
       "Mounted combat expertise",
       "Inspire allies: allies within 30' gain +1 to hit and saves when knight is visible and fighting",
-      "Challenge: may challenge a single opponent to single combat; opponent must accept or suffer −2 to morale",
+      "Challenge: may challenge a single opponent to single combat; opponent must accept or suffer -2 to morale",
       "Code of honour: must behave with honour or lose class abilities",
     ],
     spellcaster: false,
@@ -752,7 +752,7 @@ const LEVEL_TITLES = {
   "Halfling":   ["Halfling Veteran","Halfling Warrior","Halfling Swordmaster","Halfling Hero","Halfling Swashbuckler","Halfling Myrmidon","Halfling Champion","Sheriff"],
   "Magic-User": ["Medium","Seer","Conjurer","Magician","Enchanter","Warlock","Sorcerer","Necromancer","Wizard","Wizard","Wizard","Wizard","Wizard","Wizard"],
   "Thief":      ["Apprentice","Footpad","Robber","Burglar","Cutpurse","Sharper","Pilferer","Thief","Master Thief","Master Thief","Master Thief","Master Thief","Master Thief","Master Thief"],
-  // Advanced Fantasy — Race as Class
+  // Advanced Fantasy -- Race as Class
   "AF_Acrobat":    ["Apprentice","Tumbler","Jumper","Gymnast","Vaulter","Leaper","Aerialist","Acrobat","Master Acrobat","Master Acrobat","Master Acrobat","Master Acrobat","Master Acrobat","Master Acrobat"],
   "AF_Assassin":   ["Bravo","Rutterkin","Waghalter","Murderer","Thug","Killer","Cutthroat","Executioner","Assassin","Assassin","Assassin","Assassin","Assassin","Assassin"],
   "AF_Barbarian":  ["Hunter","Huntsmaster","Barbarian Warrior","Barbarian Hero","Berserker","Barbarian Champion","Horde Master","Conqueror","Barbarian Lord","Barbarian Lord","Barbarian Lord","Barbarian Lord","Barbarian Lord","Barbarian Lord"],
@@ -762,7 +762,7 @@ const LEVEL_TITLES = {
   "AF_Knight":     ["Rider","Lancer","Armiger","Scutifer","Esquire","Knight Errant","Knight Bachelor","Knight","Knightly Lord","Knightly Lord","Knightly Lord","Knightly Lord","Knightly Lord","Knightly Lord"],
   "AF_Paladin":    ["Gallant","Keeper","Protector","Defender","Warder","Guardian","Chevalier","Justiciar","Paladin","Paladin","Paladin","Paladin","Paladin","Paladin"],
   "AF_Ranger":     ["Runner","Strider","Scout","Courser","Tracker","Guide","Pathfinder","Ranger","Ranger Knight","Ranger Knight","Ranger Knight","Ranger Knight","Ranger Knight","Ranger Knight"],
-  // Advanced Fantasy — Demihuman (Race as Class)
+  // Advanced Fantasy -- Demihuman (Race as Class)
   "AF_Drow":    ["Drow Acolyte","Drow Adept","Drow Priest","Drow Vicar","Drow Curate","Drow Elder","Drow Bishop","Drow Lama","Drow Patriarch","Drow Patriarch"],
   "AF_Duergar": ["Skulk","Prowler","Scavenger","Warden","Mentalist","Kineticist","Vanisher","Duergar Champion","Duergar Lord","Duergar Lord"],
   "AF_Gnome":   ["Gnome Prestidigitator","Minor Gnome Trickster","Gnome Trickster","Master Gnome Trickster","Gnome Cabalist","Gnome Visionist","Gnome Phantasmist","Gnome Apparitionist"],
@@ -770,7 +770,7 @@ const LEVEL_TITLES = {
   "AF_HalfOrc": ["Outlaw","Pickpocket","Brigand","Bandit","Raider","Pillager","Marauder","Plunderer"],
 };
 
-// ── Half-Orc skills by level ─────────────────────────────────────────────
+// -- Half-Orc skills by level ---------------------------------------------
 const HALFORC_SKILLS = [
   null, // placeholder (1-based)
   {hide:"10%", move:"20%", pp:"20%"},
@@ -783,42 +783,42 @@ const HALFORC_SKILLS = [
   {hide:"55%", move:"65%", pp:"65%"},
 ];
 
-// ── Acrobat skills by level ───────────────────────────────────────────────
+// -- Acrobat skills by level -----------------------------------------------
 const ACROBAT_SKILLS = [
   null, // placeholder (1-based)
-  {climb:"87%", falling:"1d6×5'", hide:"10%", move:"20%", tightrope:"70%"},
-  {climb:"88%", falling:"1d6×5'", hide:"15%", move:"25%", tightrope:"72%"},
-  {climb:"89%", falling:"1d6×5'", hide:"20%", move:"30%", tightrope:"74%"},
-  {climb:"90%", falling:"2d6×5'", hide:"25%", move:"35%", tightrope:"76%"},
-  {climb:"91%", falling:"2d6×5'", hide:"30%", move:"40%", tightrope:"78%"},
-  {climb:"92%", falling:"2d6×5'", hide:"35%", move:"45%", tightrope:"82%"},
-  {climb:"93%", falling:"2d6×5'", hide:"45%", move:"55%", tightrope:"86%"},
-  {climb:"94%", falling:"3d6×5'", hide:"55%", move:"65%", tightrope:"90%"},
-  {climb:"95%", falling:"3d6×5'", hide:"65%", move:"75%", tightrope:"95%"},
-  {climb:"96%", falling:"3d6×5'", hide:"75%", move:"85%", tightrope:"99%"},
-  {climb:"97%", falling:"3d6×5'", hide:"85%", move:"95%", tightrope:"99%"},
-  {climb:"98%", falling:"4d6×5'", hide:"90%", move:"99%", tightrope:"99%"},
-  {climb:"99%", falling:"4d6×5'", hide:"95%", move:"99%", tightrope:"99%"},
-  {climb:"99%", falling:"4d6×5'", hide:"99%", move:"99%", tightrope:"99%"},
+  {climb:"87%", falling:"1d6x5'", hide:"10%", move:"20%", tightrope:"70%"},
+  {climb:"88%", falling:"1d6x5'", hide:"15%", move:"25%", tightrope:"72%"},
+  {climb:"89%", falling:"1d6x5'", hide:"20%", move:"30%", tightrope:"74%"},
+  {climb:"90%", falling:"2d6x5'", hide:"25%", move:"35%", tightrope:"76%"},
+  {climb:"91%", falling:"2d6x5'", hide:"30%", move:"40%", tightrope:"78%"},
+  {climb:"92%", falling:"2d6x5'", hide:"35%", move:"45%", tightrope:"82%"},
+  {climb:"93%", falling:"2d6x5'", hide:"45%", move:"55%", tightrope:"86%"},
+  {climb:"94%", falling:"3d6x5'", hide:"55%", move:"65%", tightrope:"90%"},
+  {climb:"95%", falling:"3d6x5'", hide:"65%", move:"75%", tightrope:"95%"},
+  {climb:"96%", falling:"3d6x5'", hide:"75%", move:"85%", tightrope:"99%"},
+  {climb:"97%", falling:"3d6x5'", hide:"85%", move:"95%", tightrope:"99%"},
+  {climb:"98%", falling:"4d6x5'", hide:"90%", move:"99%", tightrope:"99%"},
+  {climb:"99%", falling:"4d6x5'", hide:"95%", move:"99%", tightrope:"99%"},
+  {climb:"99%", falling:"4d6x5'", hide:"99%", move:"99%", tightrope:"99%"},
 ];
 
-// ── Assassin skills by level ──────────────────────────────────────────────
+// -- Assassin skills by level ----------------------------------------------
 const ASSASSIN_SKILLS = [
   null, // placeholder (1-based)
-  {assassination:null,       climb:"87%", hear:"1–2/d6", hide:"10%", move:"20%"},
-  {assassination:"save −4",  climb:"88%", hear:"1–2/d6", hide:"15%", move:"25%"},
-  {assassination:"save −3",  climb:"89%", hear:"1–2/d6", hide:"20%", move:"30%"},
-  {assassination:"save −2",  climb:"90%", hear:"1–2/d6", hide:"25%", move:"35%"},
-  {assassination:"save −1",  climb:"91%", hear:"1–2/d6", hide:"30%", move:"40%"},
-  {assassination:"save +0",  climb:"92%", hear:"1–3/d6", hide:"35%", move:"45%"},
-  {assassination:"save +1",  climb:"93%", hear:"1–3/d6", hide:"45%", move:"55%"},
-  {assassination:"save +2",  climb:"94%", hear:"1–3/d6", hide:"55%", move:"65%"},
-  {assassination:"save +3",  climb:"95%", hear:"1–4/d6", hide:"65%", move:"75%"},
-  {assassination:"save +4",  climb:"96%", hear:"1–4/d6", hide:"75%", move:"85%"},
-  {assassination:"save +5",  climb:"97%", hear:"1–4/d6", hide:"85%", move:"95%"},
-  {assassination:"save +6",  climb:"98%", hear:"1–4/d6", hide:"90%", move:"99%"},
-  {assassination:"save +7",  climb:"99%", hear:"1–5/d6", hide:"95%", move:"99%"},
-  {assassination:"save +8",  climb:"99%", hear:"1–5/d6", hide:"99%", move:"99%"},
+  {assassination:null,       climb:"87%", hear:"1-2/d6", hide:"10%", move:"20%"},
+  {assassination:"save -4",  climb:"88%", hear:"1-2/d6", hide:"15%", move:"25%"},
+  {assassination:"save -3",  climb:"89%", hear:"1-2/d6", hide:"20%", move:"30%"},
+  {assassination:"save -2",  climb:"90%", hear:"1-2/d6", hide:"25%", move:"35%"},
+  {assassination:"save -1",  climb:"91%", hear:"1-2/d6", hide:"30%", move:"40%"},
+  {assassination:"save +0",  climb:"92%", hear:"1-3/d6", hide:"35%", move:"45%"},
+  {assassination:"save +1",  climb:"93%", hear:"1-3/d6", hide:"45%", move:"55%"},
+  {assassination:"save +2",  climb:"94%", hear:"1-3/d6", hide:"55%", move:"65%"},
+  {assassination:"save +3",  climb:"95%", hear:"1-4/d6", hide:"65%", move:"75%"},
+  {assassination:"save +4",  climb:"96%", hear:"1-4/d6", hide:"75%", move:"85%"},
+  {assassination:"save +5",  climb:"97%", hear:"1-4/d6", hide:"85%", move:"95%"},
+  {assassination:"save +6",  climb:"98%", hear:"1-4/d6", hide:"90%", move:"99%"},
+  {assassination:"save +7",  climb:"99%", hear:"1-5/d6", hide:"95%", move:"99%"},
+  {assassination:"save +8",  climb:"99%", hear:"1-5/d6", hide:"99%", move:"99%"},
 ];
 
 const LANGUAGE_PICK_LIST = [
@@ -835,7 +835,7 @@ const ABILITIES_SHOWN_ELSEWHERE = new Set([
 ]);
 
 // Weapon Proficiency categories
-// Verified by checking LEVEL_PROGRESSION — thac0 first drops from 19 at:
+// Verified by checking LEVEL_PROGRESSION -- thac0 first drops from 19 at:
 // Martial (every 3 levels): Fighter, Dwarf, Halfling, Barbarian, Knight, Paladin, Ranger, Duergar
 // Semi-Martial (every 4 levels): Cleric, Elf, Thief, Acrobat, Assassin, Bard, Druid, Drow, HalfElf, HalfOrc
 // Non-Martial (every 5 levels): Magic-User, Illusionist, Gnome

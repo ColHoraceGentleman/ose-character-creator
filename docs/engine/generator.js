@@ -546,14 +546,14 @@ function generateCharacter(options) {
   if (charClass === "AF_HalfOrc") {
     const sk = HALFORC_SKILLS[targetLevel];
     notes.push(`Half-Orc Skills (level ${targetLevel}): Hide in Shadows ${sk.hide}, Move Silently ${sk.move}, Pick Pockets ${sk.pp}`);
-    notes.push("Pick Pockets: −5% per level of target above 5th; rolling >2× success means caught");
+    notes.push("Pick Pockets: -5% per level of target above 5th; rolling >2x success means caught");
   }
   if (charClass === "AF_Duergar") {
     notes.push("Mental Powers (1/day/level): Enlargement (double size/dmg 1d4 rds), Invisibility (1 turn, affects 1HD/level), Shrinking (6\" tall, 1 turn/level), Heat (1d4 dmg/rd, 1 rd/level)");
     notes.push("Activating a mental power requires full concentration (no movement, attacks, or other actions that round)");
   }
   if (charClass === "AF_Drow" || charClass === "AF_Duergar") {
-    notes.push("Light sensitivity: −2 to attack rolls and −1 AC in bright light (daylight or continual light)");
+    notes.push("Light sensitivity: -2 to attack rolls and -1 AC in bright light (daylight or continual light)");
   }
   // Spell slots for AF spellcasters
   const afSlotClass = AF_SPELL_SLOTS[charClass];
