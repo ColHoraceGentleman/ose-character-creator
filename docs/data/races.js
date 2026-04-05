@@ -4,14 +4,14 @@ const RACES = {
     ability_modifiers: {CON: -1, DEX: 1},
     languages: ["Alignment", "Common", "Deepcommon", "Elvish", "Gnomish"],
     available_classes: {"Fighter": 7, "Thief": 11, "AF_Assassin": 10, "AF_Acrobat": 10, "AF_Knight": 9, "Magic-User": 9, "AF_Ranger": 9, "Cleric": 11},
-    racial_abilities: ["Detect secret doors 2-in-6 (when searching)", "Immunity to ghoul paralysis", "Infravision 90'", "Light sensitivity: –2 attack, –1 AC in bright light", "Listening at doors 2-in-6", "Innate magic: darkness 1/day (at 2nd level), detect magic 1/day (at 4th level)", "Spider affinity: speak spider language, +1 reaction with spiders"]
+    racial_abilities: ["Detect secret doors 2-in-6 (when searching)", "Immunity to ghoul paralysis", "Infravision 90'", "Light sensitivity: -2 attack, -1 AC in bright light", "Listening at doors 2-in-6", "Innate magic: darkness 1/day (at 2nd level), detect magic 1/day (at 4th level)", "Spider affinity: speak spider language, +1 reaction with spiders"]
   },
   "Duergar": {
     requirements: {CON: 9, INT: 9},
     ability_modifiers: {CHA: -1, CON: 1},
     languages: ["Alignment", "Common", "Deepcommon", "Dwarvish", "Gnomish", "Goblin", "Kobold"],
     available_classes: {"Fighter": 9, "Thief": 9, "AF_Assassin": 9, "Cleric": 8},
-    racial_abilities: ["Detect construction tricks 2-in-6", "Detect room traps 2-in-6", "Infravision 90'", "Light sensitivity: –2 attack, –1 AC in bright light", "Listening at doors 2-in-6", "Resilience: CON-based bonus to saves vs paralysis/poison/spells/wands", "Stealth: 3-in-6 move silently underground", "Small/normal weapons only (no longbow or two-handed sword)"]
+    racial_abilities: ["Detect construction tricks 2-in-6", "Detect room traps 2-in-6", "Infravision 90'", "Light sensitivity: -2 attack, -1 AC in bright light", "Listening at doors 2-in-6", "Resilience: CON-based bonus to saves vs paralysis/poison/spells/wands", "Stealth: 3-in-6 move silently underground", "Small/normal weapons only (no longbow or two-handed sword)"]
   },
   "Dwarf": {
     requirements: {CON: 9},
