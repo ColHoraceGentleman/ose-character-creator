@@ -560,7 +560,8 @@ ose-character-creator/
 
 ## Future Phase Notes
 
-- Spell selection preference (random / blank / user-picks) — add to preferences UI
-- Equipment auto-kit preference (strict / loose) — add to preferences UI
-- Name generation (generic fantasy, race/class-themed) — future phase
-- Web hosting on www.muckdart.com — future phase
+- ~~Spell selection preference (random / blank / user-picks)~~ ✅ Done 2026-04-04 — toggle added; off leaves spell section blank
+- ~~Coin denominations below GP~~ ✅ Non-issue — all OSE item prices are whole GP; no sub-GP remainder possible
+- ~~Name generation (generic fantasy, race/class-themed)~~ ✅ Done — fantasy + IKEA + none options
+- Equipment auto-kit preference (strict / loose) — Phase 3
+- Web hosting on www.muckdart.com — Phase 3
