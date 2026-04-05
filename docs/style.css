@@ -477,9 +477,11 @@ select:focus {
 }
 
 .stat-box-sm .stat-value {
-  font-size: 14px;
-  word-break: break-word;
-  hyphens: auto;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .stat-label {
