@@ -57,9 +57,14 @@ body {
 .preview-pane {
   width: 45%;
   position: sticky;
-  top: 88px;
+  top: 72px;
   align-self: flex-start;
   min-width: 0;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 /* Header */
