@@ -158,11 +158,10 @@ function updateClassDropdownForRuleset() {
       .sort((a, b) => a.label.localeCompare(b.label));
     addGroup(null, allAF);
   } else if (ruleset === "advanced_rc") {
-    // Advanced RC: human classes only (race determines availability)
-    // Show all human classes; race filter is applied by updateClassOptionsForRC
+    // Advanced RC: human classes only, flat list (race filter applied by updateClassOptionsForRC)
     const allHuman = [...CF_CLASSES.filter(c => !["Dwarf","Elf","Halfling"].includes(c.value)), ...AF_HUMAN_CLASSES]
       .sort((a, b) => a.label.localeCompare(b.label));
-    addGroup(null, allHuman);
+    allHuman.forEach(c => classSelect.appendChild(addOption(c.value, c.label)));
   } else {
     // Classic mode: flat list, no group header
     CF_CLASSES.forEach(c => classSelect.appendChild(addOption(c.value, c.label)));
