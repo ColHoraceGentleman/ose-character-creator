@@ -660,18 +660,18 @@ function generateCharacter(options) {
   }
 
   // Race/Class display
+  const displayClass = classDisplayName(charClass);
   let raceField, classField, oldSheetClass;
   if (isAdvancedRC && race) {
     // Advanced RC: use race name and class name separately
     raceField = race;
-    classField = classDisplayName(charClass);
-    oldSheetClass = `${race} ${classDisplayName(charClass)}`;
+    classField = displayClass;
+    oldSheetClass = `${race} ${displayClass}`;
   } else {
     // Classic or Advanced (Race as Class) rulesets
     const DEMI_HUMANS = new Set(["Dwarf","Elf","Halfling"]);
     const AF_DEMI_HUMANS = new Set(["AF_Drow","AF_Duergar","AF_Gnome","AF_HalfElf","AF_HalfOrc"]);
     const isDemiHuman = DEMI_HUMANS.has(charClass) || AF_DEMI_HUMANS.has(charClass);
-    const displayClass = classDisplayName(charClass);
     // For AF demihumans, race = friendly name, class = blank
     const AF_DEMIHUMAN_RACE_NAMES = {
       "AF_Drow": "Drow", "AF_Duergar": "Duergar", "AF_Gnome": "Gnome",
