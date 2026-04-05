@@ -157,6 +157,12 @@ function updateClassDropdownForRuleset() {
     const allAF = [...CF_CLASSES, ...AF_HUMAN_CLASSES, ...AF_DEMI_CLASSES]
       .sort((a, b) => a.label.localeCompare(b.label));
     addGroup(null, allAF);
+  } else if (ruleset === "advanced_rc") {
+    // Advanced RC: human classes only (race determines availability)
+    // Show all human classes; race filter is applied by updateClassOptionsForRC
+    const allHuman = [...CF_CLASSES.filter(c => !["Dwarf","Elf","Halfling"].includes(c.value)), ...AF_HUMAN_CLASSES]
+      .sort((a, b) => a.label.localeCompare(b.label));
+    addGroup(null, allHuman);
   } else {
     // Classic mode: flat list, no group header
     CF_CLASSES.forEach(c => classSelect.appendChild(addOption(c.value, c.label)));
@@ -227,40 +233,28 @@ function updateRaceVisibility() {
   updateClassOptionsForRC();
 }
 
-// Filter class dropdown for advanced_rc mode
+// Filter class dropdown for advanced_rc mode (works on flat rebuilt dropdown)
 function updateClassOptionsForRC() {
   const ruleset = document.getElementById("ruleset").value;
   const raceSelect = document.getElementById("race_selection");
   const classSelect = document.getElementById("class_selection");
-  if (!classSelect) return;
+  if (!classSelect || ruleset !== "advanced_rc") return;
 
-  // Get all optgroups
-  const classicGroup = document.getElementById("optgroup-classic");
-  const afHumanGroup = document.getElementById("optgroup-af-human");
-  const afDemiGroup = document.getElementById("optgroup-af-demihuman");
-
-  if (ruleset !== "advanced_rc") {
-    // Restore normal visibility (let existing ruleset handler manage it)
-    return;
-  }
-
-  // In advanced_rc: hide classic group and AF demihuman group, show AF human group
-  if (classicGroup) classicGroup.style.display = "none";
-  if (afDemiGroup) afDemiGroup.style.display = "none";
-  if (afHumanGroup) afHumanGroup.style.display = "";
-
-  // If specific race selected, filter class options to only available ones
+  // Filter class options to only those available to the selected race
   const race = raceSelect ? raceSelect.value : "random";
+  const options = classSelect.querySelectorAll("option");
   if (race !== "random" && typeof RACES !== "undefined" && RACES[race]) {
     const available = RACES[race].available_classes;
-    const options = classSelect.querySelectorAll("option");
     options.forEach(opt => {
       if (opt.value === "random") { opt.style.display = ""; return; }
       opt.style.display = (opt.value in available) ? "" : "none";
     });
+    // Reset to random if current selection is no longer available
+    if (classSelect.value !== "random" && !(classSelect.value in available)) {
+      classSelect.value = "random";
+    }
   } else {
-    // Random race: show all human class options
-    const options = classSelect.querySelectorAll("option");
+    // Random race: show all options
     options.forEach(opt => { opt.style.display = ""; });
   }
 }
