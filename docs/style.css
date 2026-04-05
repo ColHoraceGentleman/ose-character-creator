@@ -466,10 +466,16 @@ select:focus {
   background: var(--surface-alt);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 8px 10px;
   text-align: center;
-  min-width: 52px;
+  min-width: 0;
   flex: 1;
+}
+
+.stat-box-sm .stat-value {
+  font-size: 14px;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .stat-label {
