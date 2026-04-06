@@ -36,7 +36,7 @@
           </div>
 
           <div class="form-group" id="race_option_group" style="display:none">
-            <label class="form-label">Race <span class="help" title="Choose a race for your character. Each race has ability score requirements, modifiers, and a limited set of available classes.">?</span></label>
+            <label class="form-label">Race <span class="help" data-tip="Choose a race for your character. Each race has ability score requirements, modifiers, and a limited set of available classes.">?</span></label>
             <select name="race_selection" id="race_selection">
               <option value="random">Random race</option>
               <option value="Drow">Drow</option>
@@ -52,7 +52,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Class <span class="help" title="Available valid classes based on selected ruleset, race, and level.">?</span></label>
+            <label class="form-label">Class <span class="help" data-tip="Available valid classes based on selected ruleset, race, and level.">?</span></label>
             <select name="class_selection" id="class_selection">
               <option value="random">Random class</option>
               <optgroup label="Classic Fantasy" id="optgroup-classic">
@@ -86,7 +86,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Level <span class="help" title="Available valid levels based on selected race &amp; class.">?</span></label>
+            <label class="form-label">Level <span class="help" data-tip="Available valid levels based on selected race &amp; class.">?</span></label>
             <select name="level" id="level">
               <option value="1" selected>1</option>
               <option value="2">2</option>
@@ -111,7 +111,7 @@
           <h2 class="card-title">Dice & Options</h2>
 
           <div class="form-group">
-            <label class="form-label">Dice Method for Ability Scores <span class="help" title="When Race or Class is selected, dice rolls are allocated to ensure the character race and class is allowed under the selected ruleset.">?</span></label>
+            <label class="form-label">Dice Method for Ability Scores <span class="help" data-tip="When Race or Class is selected, dice rolls are allocated to ensure the character race and class is allowed under the selected ruleset.">?</span></label>
             <select name="dice_method" id="dice_method">
               <option value="3d6_order">3d6 in order</option>
               <option value="4d6_order_drop_lowest">4d6 in order, drop lowest</option>
@@ -137,7 +137,7 @@
           <hr class="card-divider">
 
           <div class="form-group">
-            <label class="form-label">Encumbrance <span class="help" title="Choose between Standard (coin weight encumbrance per rulebook) and Item-Based (optional slot-based encumbrance from Carcass Crawler #2).">?</span></label>
+            <label class="form-label">Encumbrance <span class="help" data-tip="Choose between Standard (coin weight encumbrance per rulebook) and Item-Based (optional slot-based encumbrance from Carcass Crawler #2).">?</span></label>
             <div class="radio-group">
               <label class="radio-option">
                 <input type="radio" name="encumbrance_mode" value="standard" checked>
@@ -153,7 +153,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Equipment <span class="help" title="Manual Buy: player purchases equipment manually using starting gold. Auto Buy: automatically purchases sensible starting gear, subject to race and class restrictions.">?</span></label>
+            <label class="form-label">Equipment <span class="help" data-tip="Manual Buy: player purchases equipment manually using starting gold. Auto Buy: automatically purchases sensible starting gear, subject to race and class restrictions.">?</span></label>
             <div class="radio-group">
               <label class="radio-option">
                 <input type="radio" name="equipment_mode" value="manual" checked>
@@ -208,7 +208,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Number of Characters <span class="help" title="Generate 1–10 characters. Multiple characters download as a ZIP.">?</span></label>
+            <label class="form-label">Number of Characters <span class="help" data-tip="Generate 1–10 characters. Multiple characters download as a ZIP.">?</span></label>
             <select name="num_characters" id="num_characters">
               <option value="1" selected>1</option>
               <option value="2">2</option>
@@ -230,7 +230,7 @@
 
           <div class="toggle-rows">
             <div class="toggle-row">
-              <span class="toggle-label">Max HP at 1st Level <span class="help" title="HP at first level assigned as if a max roll was made with the appropriate hit die (adjusted for CON modifier). HP for levels above first are rolled per usual.">?</span></span>
+              <span class="toggle-label">Max HP at 1st Level <span class="help" data-tip="HP at first level assigned as if a max roll was made with the appropriate hit die (adjusted for CON modifier). HP for levels above first are rolled per usual.">?</span></span>
               <label class="toggle">
                 <input type="checkbox" name="max_hp_at_level1" id="max_hp_at_level1">
                 <span class="toggle-slider"></span>
@@ -238,7 +238,7 @@
             </div>
 
             <div class="toggle-row">
-              <span class="toggle-label">Reroll 1s &amp; 2s on hit dice <span class="help" title="Reroll any hit die that shows 1 or 2 until it shows 3+.">?</span></span>
+              <span class="toggle-label">Reroll 1s &amp; 2s on hit dice <span class="help" data-tip="Reroll any hit die that shows 1 or 2 until it shows 3+.">?</span></span>
               <label class="toggle">
                 <input type="checkbox" name="reroll_low_hp" id="reroll_low_hp">
                 <span class="toggle-slider"></span>
@@ -246,7 +246,7 @@
             </div>
 
             <div class="toggle-row">
-              <span class="toggle-label">Reroll 1s on ability scores <span class="help" title="Reroll any individual die showing 1 when rolling ability scores.">?</span></span>
+              <span class="toggle-label">Reroll 1s on ability scores <span class="help" data-tip="Reroll any individual die showing 1 when rolling ability scores.">?</span></span>
               <label class="toggle">
                 <input type="checkbox" name="reroll_ones_ability" id="reroll_ones_ability">
                 <span class="toggle-slider"></span>
@@ -254,7 +254,7 @@
             </div>
 
             <div class="toggle-row">
-              <span class="toggle-label">Discard Sub-Par Characters <span class="help" title="Optional rule from OSE rulebooks that discards stats and starts over if all rolled ability scores are 8 or lower.">?</span></span>
+              <span class="toggle-label">Discard Sub-Par Characters <span class="help" data-tip="Optional rule from OSE rulebooks that discards stats and starts over if all rolled ability scores are 8 or lower.">?</span></span>
               <label class="toggle">
                 <input type="checkbox" name="reroll_subpar" id="reroll_subpar" checked>
                 <span class="toggle-slider"></span>
@@ -262,7 +262,7 @@
             </div>
 
             <div class="toggle-row">
-              <span class="toggle-label">Auto-adjust ability scores <span class="help" title="Automatically shift points from STR/INT/WIS into prime requisites to maximize XP bonus. Only lowers non-prime stats; never below 9.">ⓘ</span></span>
+              <span class="toggle-label">Auto-adjust ability scores <span class="help" data-tip="Automatically shift points from STR/INT/WIS into prime requisites to maximize XP bonus. Only lowers non-prime stats; never below 9.">ⓘ</span></span>
               <label class="toggle">
                 <input type="checkbox" name="auto_adjust_scores" id="auto_adjust_scores">
                 <span class="toggle-slider"></span>
@@ -270,7 +270,7 @@
             </div>
 
             <div class="toggle-row" id="random_spells_toggle">
-              <span class="toggle-label">Randomly select spells <span class="help" title="Randomly pick starting spells for spellcasters. Uncheck to leave the spell section blank so the player can choose their own spells.">ⓘ</span></span>
+              <span class="toggle-label">Randomly select spells <span class="help" data-tip="Randomly pick starting spells for spellcasters. Uncheck to leave the spell section blank so the player can choose their own spells.">ⓘ</span></span>
               <label class="toggle">
                 <input type="checkbox" name="random_spells" id="random_spells" checked>
                 <span class="toggle-slider"></span>
@@ -278,7 +278,7 @@
             </div>
 
             <div class="toggle-row" id="read_magic_toggle" style="justify-content:flex-end;gap:10px;">
-              <span class="toggle-label" style="flex:unset;">Give Bonus Read Magic Spell <span class="help" title="Magic-Users, Elves (class), and Illusionists receive Read Magic as a free bonus spell at level 1.">?</span></span>
+              <span class="toggle-label" style="flex:unset;">Give Bonus Read Magic Spell <span class="help" data-tip="Magic-Users, Elves (class), and Illusionists receive Read Magic as a free bonus spell at level 1.">?</span></span>
               <label class="toggle">
                 <input type="checkbox" name="give_read_magic" id="give_read_magic">
                 <span class="toggle-slider"></span>
@@ -286,7 +286,7 @@
             </div>
 
             <div class="toggle-row">
-              <span class="toggle-label">Secondary Skill <span class="help" title="Grants a random non-adventuring background profession (d100 roll).">ⓘ</span></span>
+              <span class="toggle-label">Secondary Skill <span class="help" data-tip="Grants a random non-adventuring background profession (d100 roll).">ⓘ</span></span>
               <label class="toggle">
                 <input type="checkbox" name="secondary_skill" id="secondary_skill">
                 <span class="toggle-slider"></span>
@@ -294,7 +294,7 @@
             </div>
 
             <div class="toggle-row">
-              <span class="toggle-label">Weapon Proficiency <span class="help" title="Each character is proficient with a limited number of weapons. Non-proficient attacks suffer a penalty (Martial −2, Semi-Martial −3, Non-Martial −5).">ⓘ</span></span>
+              <span class="toggle-label">Weapon Proficiency <span class="help" data-tip="Each character is proficient with a limited number of weapons. Non-proficient attacks suffer a penalty (Martial −2, Semi-Martial −3, Non-Martial −5).">ⓘ</span></span>
               <label class="toggle">
                 <input type="checkbox" name="weapon_proficiency" id="weapon_proficiency">
                 <span class="toggle-slider"></span>
@@ -302,7 +302,7 @@
             </div>
 
             <div class="toggle-row">
-              <span class="toggle-label">Magic Item Chance <span class="help" title="Percentage chance that a generated character receives a magic item from the appropriate list (Classic Fantasy or Advanced Fantasy).">ⓘ</span></span>
+              <span class="toggle-label">Magic Item Chance <span class="help" data-tip="Percentage chance that a generated character receives a magic item from the appropriate list (Classic Fantasy or Advanced Fantasy).">ⓘ</span></span>
               <select name="magic_item_pct" id="magic_item_pct">
                 <option value="0" selected>0%</option>
                 <option value="10">10%</option>
