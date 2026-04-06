@@ -447,6 +447,26 @@ form.addEventListener("submit", async function(e) {
 // Previous characters
 // ---------------------------------------------------------------------------
 
+function countFittingPrevious() {
+  // Measure how many previous entries fit in the remaining left-pane height
+  const builderPane = document.querySelector(".builder-pane");
+  const previewPane = document.querySelector(".preview-pane");
+  if (!builderPane || !previewPane) return 5;
+
+  const builderHeight = builderPane.offsetHeight;
+  const previewHeight = previewPane.offsetHeight;
+  const remaining = builderHeight - previewHeight;
+
+  if (remaining <= 0) return 0;
+
+  // Each prev-item is roughly 56px (two lines + padding + border)
+  const itemHeight = 56;
+  // Header of the previous section is ~52px
+  const headerHeight = 52;
+  const count = Math.floor((remaining - headerHeight) / itemHeight);
+  return Math.max(1, count);
+}
+
 function renderPrevious() {
   const saved = getSavedCharacters();
   const section = document.getElementById("previous-section");
@@ -460,7 +480,8 @@ function renderPrevious() {
   section.classList.remove("hidden");
   list.innerHTML = "";
 
-  saved.slice(0, 5).forEach(entry => {
+  const limit = countFittingPrevious();
+  saved.slice(0, limit).forEach(entry => {
     const c = entry.character;
     const item = document.createElement("div");
     item.className = "prev-item";
@@ -511,6 +532,9 @@ document.getElementById("clear-btn").addEventListener("click", function() {
     renderPrevious();
   }
 });
+
+// Re-render on resize so count stays accurate
+window.addEventListener("resize", renderPrevious);
 
 // Init
 renderPrevious();
