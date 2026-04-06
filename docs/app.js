@@ -1,5 +1,9 @@
 // OSE Character Creator — Main App Logic
 
+// Always start at top of page on load
+window.history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
