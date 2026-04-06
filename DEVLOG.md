@@ -658,3 +658,43 @@ Compact header showing:
 - 8f5db87 fix: level filtering for random class/race selection
 - 312445c feat: previously generated single entries match party item style
 - f6f7d58 fix: party entry ZIP button right-justified
+
+---
+## 2026-04-05 (night) — Svirfneblin + Quick Equipment
+
+### Svirfneblin Added
+- **AF Basic (Race-as-Class):** `AF_Svirfneblin` class — HD d6, max level 8, CON 9 requirement, STR prime requisite
+  - Saves: L1–3 D8/W9/P10/B14/S11, L4–6 D6/W7/P8/B11/S9, L7–8 D4/W5/P6/B9/S7
+  - Abilities: blend into stone, construction tricks, stone murmurs, +2 save vs illusions, infravision 90', light sensitivity
+  - Level titles: Tunneller → Delver → Scout → Defender → Warrior → Champion → Warlord → Hero
+  - Weapon proficiency: martial
+- **AF Advanced (Race + Class):** `Svirfneblin` race — Fighter 6 / Thief 8 / Assassin 8 / Cleric 7 / Illusionist 7
+- **Names:** `svirfneblin` name set added to names.js
+- **Bug:** Svirfneblin was missing from `AF_DEMI_CLASSES` array in app.js — the HTML `<option>` is irrelevant because app.js rebuilds the class dropdown dynamically from its own arrays on every page load. Always add new classes to `AF_DEMI_CLASSES` (or `AF_HUMAN_CLASSES`) in app.js.
+
+### Quick Equipment (CC2 system)
+- Replaced Auto Buy with **Quick Equipment** based on the optional rule from *Carcass Crawler #2* by Gavin Norman
+- All classes receive basic kit: Backpack, Tinder box, Torches (d6), Waterskin, Rations (iron, d6 days), 3d6 gp
+- Armour: rolled by class (d6 full table / d4 light / d4+2 heavy / fixed leather / none)
+- Weapons: class-specific tables (standard d12 or class sub-table d4), rolled twice (duplicates skipped)
+- Extra items: class-specific (Holy symbol, Thieves' tools, Sprig of mistletoe)
+- Adventuring gear: 1d12 rolled twice, no duplicates
+- Torch and ration counts are random (d6) but each occupies a single item-based slot regardless of count
+  - e.g. "Torches (4)", "Rations (iron, 3 days)" — both = 1 slot
+- Manual Buy unchanged: 3d6×10 gp, player purchases own gear
+- Item-Based encumbrance is now the default
+
+### Tooltip / UI
+- Equipment label: "Auto Buy" → "Quick Equipment"
+- Tooltip: "Quick Equipment uses the class-based optional rule from Carcass Crawler #2 for determining starting equipment."
+- Item-Based encumbrance selected by default
+
+### Commits
+- ae1dbf2 feat: add Svirfneblin as AF Race-as-Class and AF Advanced race
+- 8baf844 fix: add AF_Svirfneblin to AF_DEMI_CLASSES array in app.js
+- 0ce3f35 fix: add Svirfneblin to AF Advanced race dropdown
+- 7539c2f feat: replace auto-buy with CC2 Quick Equipment system
+- 6f1e8d6 fix: update Quick Equipment tooltip text
+- 8080135 fix: Quick Equipment uses bundled rations and Torches (6)
+- 4c6d82e feat: default encumbrance to Item-Based
+- 8878339 fix: random d6 torch/ration counts with dynamic item names
