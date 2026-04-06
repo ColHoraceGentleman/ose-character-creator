@@ -27,7 +27,7 @@
           <h2 class="card-title">Ruleset & Class</h2>
           
           <div class="form-group">
-            <label class="form-label">Ruleset <span class="help" title="Classic Fantasy (B/X): the original 7 classes. Advanced Fantasy (Race as Class): 14 additional classes including demihumans from the Advanced Players Tome.">?</span></label>
+            <label class="form-label">Ruleset</label>
             <select name="ruleset" id="ruleset">
               <option value="classic" selected>Classic Fantasy (B/X)</option>
               <option value="advanced">Advanced Fantasy (Race as Class)</option>
@@ -52,7 +52,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Class <span class="help" title="Random: picks a class that earns an XP bonus from your rolled stats. Specific: assigns best die results to the class's prime requisites.">?</span></label>
+            <label class="form-label">Class <span class="help" title="Available valid classes based on selected ruleset, race, and level.">?</span></label>
             <select name="class_selection" id="class_selection">
               <option value="random">Random class</option>
               <optgroup label="Classic Fantasy" id="optgroup-classic">
@@ -86,7 +86,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Level <span class="help" title="Starting level (1–14, clamped to class maximum).">?</span></label>
+            <label class="form-label">Level <span class="help" title="Available valid levels based on selected race &amp; class.">?</span></label>
             <select name="level" id="level">
               <option value="1" selected>1</option>
               <option value="2">2</option>
@@ -111,7 +111,7 @@
           <h2 class="card-title">Dice & Options</h2>
 
           <div class="form-group">
-            <label class="form-label">Dice Method <span class="help" title="How ability scores are rolled. Optimised methods assign your best rolls to prime requisites.">?</span></label>
+            <label class="form-label">Dice Method for Ability Scores <span class="help" title="When Race or Class is selected, dice rolls are allocated to ensure the character race and class is allowed under the selected ruleset.">?</span></label>
             <select name="dice_method" id="dice_method">
               <option value="3d6_order">3d6 in order</option>
               <option value="4d6_order_drop_lowest">4d6 in order, drop lowest</option>
@@ -119,7 +119,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Armour Class <span class="help" title="AAC (Ascending): higher = better, uses Attack Bonus. DAC (Descending): lower = better, uses THAC0 matrix.">?</span></label>
+            <label class="form-label">Armor Class Method</label>
             <div class="radio-group">
               <label class="radio-option">
                 <input type="radio" name="ac_mode" value="aac" checked>
@@ -137,33 +137,33 @@
           <hr class="card-divider">
 
           <div class="form-group">
-            <label class="form-label">Encumbrance <span class="help" title="Item-Based (Carrion Crawler #2): movement from item count. Standard: movement from total coin weight.">?</span></label>
+            <label class="form-label">Encumbrance <span class="help" title="Choose between Standard (coin weight encumbrance per rulebook) and Item-Based (optional slot-based encumbrance from Carcass Crawler #2).">?</span></label>
             <div class="radio-group">
               <label class="radio-option">
-                <input type="radio" name="encumbrance_mode" value="item_based" checked>
+                <input type="radio" name="encumbrance_mode" value="standard" checked>
                 <span class="radio-custom"></span>
-                <span class="radio-label">Item-Based</span>
+                <span class="radio-label">Standard</span>
               </label>
               <label class="radio-option">
-                <input type="radio" name="encumbrance_mode" value="standard">
+                <input type="radio" name="encumbrance_mode" value="item_based">
                 <span class="radio-custom"></span>
-                <span class="radio-label">Standard (coin weight)</span>
+                <span class="radio-label">Item-Based</span>
               </label>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="form-label">Equipment <span class="help" title="Auto kit: automatically purchases sensible starting gear within class restrictions. Manual: generates starting gold only — purchase equipment yourself using the books.">?</span></label>
+            <label class="form-label">Equipment <span class="help" title="Manual Buy: player purchases equipment manually using starting gold. Auto Buy: automatically purchases sensible starting gear, subject to race and class restrictions.">?</span></label>
             <div class="radio-group">
-              <label class="radio-option">
-                <input type="radio" name="equipment_mode" value="auto">
-                <span class="radio-custom"></span>
-                <span class="radio-label">Auto kit</span>
-              </label>
               <label class="radio-option">
                 <input type="radio" name="equipment_mode" value="manual" checked>
                 <span class="radio-custom"></span>
-                <span class="radio-label">Manual (gold only)</span>
+                <span class="radio-label">Manual Buy</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="equipment_mode" value="auto">
+                <span class="radio-custom"></span>
+                <span class="radio-label">Auto Buy</span>
               </label>
             </div>
           </div>
@@ -174,18 +174,18 @@
           <h2 class="card-title">Name & Alignment</h2>
 
           <div class="form-group">
-            <label class="form-label">Name Style <span class="help" title="How to generate the character's name.">ⓘ</span></label>
+            <label class="form-label">Character Name Generation</label>
             <select name="name_style" id="name_style">
-              <option value="fantasy">Fantasy Name</option>
-              <option value="ikea">IKEA Name 🛋️</option>
               <option value="none" selected>No Name</option>
+              <option value="ikea">Random Ikea Name</option>
+              <option value="fantasy">Random Fantasy Name</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label class="form-label">Alignment <span class="help" title="Check all alignments allowed. Leave Blank fills no alignment on the sheet.">?</span></label>
+            <label class="form-label">Alignment</label>
             <div class="toggle-row">
-              <span class="toggle-label">Leave blank</span>
+              <span class="toggle-label">Leave Alignment Field Blank</span>
               <label class="toggle">
                 <input type="checkbox" id="alignment_blank" name="alignment_blank">
                 <span class="toggle-slider"></span>
@@ -224,13 +224,13 @@
           </div>
         </div>
 
-        <!-- Card 4: Advanced Toggles -->
+        <!-- Card 4: Advanced Options -->
         <div class="card">
-          <h2 class="card-title">Advanced Toggles</h2>
+          <h2 class="card-title">Advanced Options</h2>
 
           <div class="toggle-rows">
             <div class="toggle-row">
-              <span class="toggle-label">Max HP at 1st Level <span class="help" title="Roll maximum die value for 1st level HP (CON modifier still applied).">?</span></span>
+              <span class="toggle-label">Max HP at 1st Level <span class="help" title="HP at first level assigned as if a max roll was made with the appropriate hit die (adjusted for CON modifier). HP for levels above first are rolled per usual.">?</span></span>
               <label class="toggle">
                 <input type="checkbox" name="max_hp_at_level1" id="max_hp_at_level1">
                 <span class="toggle-slider"></span>
@@ -254,7 +254,7 @@
             </div>
 
             <div class="toggle-row">
-              <span class="toggle-label">Discard sub-par arrays <span class="help" title="Reroll entire stat array if no score exceeds 8.">?</span></span>
+              <span class="toggle-label">Discard Sub-Par Characters <span class="help" title="Optional rule from OSE rulebooks that discards stats and starts over if all rolled ability scores are 8 or lower.">?</span></span>
               <label class="toggle">
                 <input type="checkbox" name="reroll_subpar" id="reroll_subpar" checked>
                 <span class="toggle-slider"></span>
@@ -262,7 +262,7 @@
             </div>
 
             <div class="toggle-row">
-              <span class="toggle-label">Auto-adjust ability scores <span class="help" title="Automatically shift points from STR/INT/WIS into prime requisites to maximise XP bonus. Only lowers non-prime stats; never below 9.">ⓘ</span></span>
+              <span class="toggle-label">Auto-adjust ability scores <span class="help" title="Automatically shift points from STR/INT/WIS into prime requisites to maximize XP bonus. Only lowers non-prime stats; never below 9.">ⓘ</span></span>
               <label class="toggle">
                 <input type="checkbox" name="auto_adjust_scores" id="auto_adjust_scores">
                 <span class="toggle-slider"></span>
@@ -276,16 +276,14 @@
                 <span class="toggle-slider"></span>
               </label>
             </div>
-            <p class="form-help">Spellcasters only</p>
 
-            <div class="toggle-row" id="read_magic_toggle">
-              <span class="toggle-label">Give Read Magic to spellcasters <span class="help" title="Guarantees Read Magic in the starting spell (Magic-Users and Elves).">?</span></span>
+            <div class="toggle-row" id="read_magic_toggle" style="justify-content:flex-end;gap:10px;">
+              <span class="toggle-label" style="flex:unset;">Give Bonus Read Magic Spell <span class="help" title="Magic-Users, Elves (class), and Illusionists receive Read Magic as a free bonus spell at level 1.">?</span></span>
               <label class="toggle">
                 <input type="checkbox" name="give_read_magic" id="give_read_magic">
                 <span class="toggle-slider"></span>
               </label>
             </div>
-            <p class="form-help">Spellcasters only</p>
 
             <div class="toggle-row">
               <span class="toggle-label">Secondary Skill <span class="help" title="Grants a random non-adventuring background profession (d100 roll).">ⓘ</span></span>
@@ -304,20 +302,19 @@
             </div>
 
             <div class="toggle-row">
-              <span class="toggle-label">Magic Item Chance <span class="help" title="Percentage chance that a generated character receives a magic item from the appropriate list (CF or AF).">ⓘ</span></span>
-              <label class="toggle">
-                <input type="checkbox" name="magic_items" id="magic_items">
-                <span class="toggle-slider"></span>
-              </label>
+              <span class="toggle-label">Magic Item Chance <span class="help" title="Percentage chance that a generated character receives a magic item from the appropriate list (Classic Fantasy or Advanced Fantasy).">ⓘ</span></span>
               <select name="magic_item_pct" id="magic_item_pct">
-                <option value="5">5%</option>
-                <option value="10" selected>10%</option>
-                <option value="15">15%</option>
+                <option value="0" selected>0%</option>
+                <option value="10">10%</option>
                 <option value="20">20%</option>
-                <option value="25">25%</option>
                 <option value="30">30%</option>
                 <option value="40">40%</option>
                 <option value="50">50%</option>
+                <option value="60">60%</option>
+                <option value="70">70%</option>
+                <option value="80">80%</option>
+                <option value="90">90%</option>
+                <option value="100">100%</option>
               </select>
             </div>
           </div>
