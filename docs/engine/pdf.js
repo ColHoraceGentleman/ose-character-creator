@@ -94,7 +94,7 @@ async function fillPdf(character, pdfPath) {
     setText("Breath Save 2", String(character.save_breath || ""));
     setText("Spells Save 2", String(character.save_spells || ""));
     setText("Encounter Movement 2", character.encounter_movement || "40'");
-    setText("Exporation Movement 2", character.exploration_movement || "120'");
+    setText("Exploration Movement 2", character.exploration_movement || "120'");
     setText("Overland Movement 2", character.overland_movement || "24");
     setText("Find Room Trap 2", fmtSkill(character.find_room_trap));
     setText("Find Secret Door 2", fmtSkill(character.find_secret_door));
@@ -143,7 +143,7 @@ async function fillPdf(character, pdfPath) {
     setText("Breath Save", String(character.save_breath || ""));
     setText("Spells Save", String(character.save_spells || ""));
     setText("Encounter Movement", character.encounter_movement || "40'");
-    setText("Exporation Movement", character.exploration_movement || "120'");
+    setText("Exploration Movement", character.exploration_movement || "120'");
     setText("Overland Movement", character.overland_movement || "24");
     setText("Find Room Trap", fmtSkill(character.find_room_trap));
     setText("Find Secret Door", fmtSkill(character.find_secret_door));
