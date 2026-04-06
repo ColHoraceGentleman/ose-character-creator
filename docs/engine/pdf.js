@@ -237,6 +237,9 @@ async function fillPdf(character, pdfPath) {
     setText("Total Encumbrance", String(character.total_cn || ""));
   }
 
+  // Regenerate field appearances so font colour changes (e.g. grey "Slot Unavailable") take effect
+  try { form.updateFieldAppearances(); } catch(e) { /* best-effort */ }
+
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;
 }
