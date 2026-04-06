@@ -860,21 +860,23 @@ select:focus {
 }
 
 .prev-list {
-  padding: 8px 24px 20px;
+  padding: 8px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .prev-item {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
+  display: flex;
   align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px dashed var(--border);
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
 }
 
-.prev-item:last-child {
-  border-bottom: none;
-}
+
 
 .prev-meta {
   color: var(--text-muted);

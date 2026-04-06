@@ -573,9 +573,9 @@ function renderPrevious() {
         ? (c.race_field || c.character_class)
         : `${c.race_field} ${c.class_field || c.character_class}`;
       item.innerHTML = `
-        <div>
-          <strong>${label} ${c.level}</strong> — ${c.title}
-          <div class="prev-meta">${new Date(entry.timestamp).toLocaleString()}</div>
+        <div class="party-item-info">
+          <span class="party-item-name">${label}</span>
+          <span class="party-item-stats">Lvl ${c.level} &middot; HP ${c.hp} &middot; AC ${c.ac}</span>
         </div>
         <div class="prev-actions">
           <button data-id="${entry.id}" class="dl-single">⬇ PDF</button>
