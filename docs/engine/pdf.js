@@ -55,6 +55,16 @@ async function fillPdf(character, pdfPath) {
     } catch(e) { /* field not found */ }
   }
 
+  function setTextGrey(name, value) {
+    try {
+      const f = form.getTextField(name);
+      if (f) {
+        f.setText(String(value));
+        f.setFontColor(PDFLib.rgb(0.7, 0.7, 0.7));
+      }
+    } catch(e) { /* field not found */ }
+  }
+
   // Helper to set checkbox
   function setCheck(name, checked) {
     try {
@@ -171,9 +181,9 @@ async function fillPdf(character, pdfPath) {
     setText("Unencumbering Items", (character.unencumbering || []).join(", "));
 
     // STR thresholds
-    setText("Packed STR 13+", character.str >= 13 ? String(character.packed_str_threshold_13 || 10) : "Insufficient STR Score - Slot Unavailable");
-    setText("Packed STR 16+", character.str >= 16 ? String(character.packed_str_threshold_16 || 12) : "Insufficient STR Score - Slot Unavailable");
-    setText("Packed STR 18+", character.str >= 18 ? String(character.packed_str_threshold_18 || 14) : "Insufficient STR Score - Slot Unavailable");
+    character.str >= 13 ? setText("Packed STR 13+", String(character.packed_str_threshold_13 || 10)) : setTextGrey("Packed STR 13+", "Slot Unavailable");
+    character.str >= 16 ? setText("Packed STR 16+", String(character.packed_str_threshold_16 || 12)) : setTextGrey("Packed STR 16+", "Slot Unavailable");
+    character.str >= 18 ? setText("Packed STR 18+", String(character.packed_str_threshold_18 || 14)) : setTextGrey("Packed STR 18+", "Slot Unavailable");
 
     // Equipped slots 1-9
     const eq = character.equipped || [];
@@ -184,12 +194,12 @@ async function fillPdf(character, pdfPath) {
     // Packed slots 1-16
     const pk = character.packed || [];
     const PACKED_STR = {1:9, 2:6, 3:4};
-    const UNAVAIL = "Insufficient STR Score - Slot Unavailable";
+    const UNAVAIL = "Slot Unavailable";
     let pkIdx = 0;
     for (let slot = 1; slot <= 16; slot++) {
       const strReq = PACKED_STR[slot];
       if (strReq && character.str < strReq) {
-        setText(`Packed ${slot}`, UNAVAIL);
+        setTextGrey(`Packed ${slot}`, UNAVAIL);
       } else {
         setText(`Packed ${slot}`, pk[pkIdx] || "");
         pkIdx++;
