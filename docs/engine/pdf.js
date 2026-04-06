@@ -181,9 +181,9 @@ async function fillPdf(character, pdfPath) {
     setText("Unencumbering Items", (character.unencumbering || []).join(", "));
 
     // STR thresholds
-    character.str >= 13 ? setText("Packed STR 13+", String(character.packed_str_threshold_13 || 10)) : setTextGrey("Packed STR 13+", "Slot Unavailable");
-    character.str >= 16 ? setText("Packed STR 16+", String(character.packed_str_threshold_16 || 12)) : setTextGrey("Packed STR 16+", "Slot Unavailable");
-    character.str >= 18 ? setText("Packed STR 18+", String(character.packed_str_threshold_18 || 14)) : setTextGrey("Packed STR 18+", "Slot Unavailable");
+    if (character.str < 13) setTextGrey("Packed STR 13+", "Slot Unavailable");
+    if (character.str < 16) setTextGrey("Packed STR 16+", "Slot Unavailable");
+    if (character.str < 18) setTextGrey("Packed STR 18+", "Slot Unavailable");
 
     // Equipped slots 1-9
     const eq = character.equipped || [];
