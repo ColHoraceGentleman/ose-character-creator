@@ -262,6 +262,10 @@ select:focus {
   flex: 1;
 }
 
+.toggle-row--right .toggle-label {
+  text-align: right;
+}
+
 /* Toggle switch (slider style) */
 .toggle {
   position: relative;
