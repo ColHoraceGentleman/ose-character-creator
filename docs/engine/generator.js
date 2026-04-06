@@ -484,7 +484,7 @@ function generateCharacter(options) {
 
   // Equipment
   const startingGold = rollStartingGold();
-  const kit = (options.equipment_mode === "auto")
+  const kit = (options.equipment_mode === "quick")
     ? autoKit(charClass, startingGold)
     : {equipped:[],packed:[],unencumbering:[],gold_spent:0,gold_remaining:startingGold};
 

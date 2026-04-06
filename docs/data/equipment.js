@@ -269,51 +269,188 @@ function calculateStandardEncumbrance(equipped, packed, unencumbering=[]) {
   };
 }
 
+// ---------------------------------------------------------------------------
+// CC2 Quick Equipment (Carcass Crawler #2, by Gavin Norman)
+// ---------------------------------------------------------------------------
+
+// Armour table (d6) — used for classes that roll armour
+const CC2_ARMOUR_TABLE = [
+  "Leather",             // 1
+  "Leather + Shield",    // 2
+  "Chainmail",           // 3
+  "Chainmail + Shield",  // 4
+  "Plate mail",          // 5
+  "Plate mail + Shield", // 6
+];
+
+// Standard weapon table (d12)
+const CC2_WEAPONS_TABLE = [
+  "Battle axe",             // 1
+  "Crossbow + 20 bolts",    // 2
+  "Hand axe",               // 3
+  "Mace",                   // 4
+  "Polearm",                // 5
+  "Short bow + 20 arrows",  // 6
+  "Short sword",            // 7
+  "Silver dagger",          // 8
+  "Sling + 20 stones",      // 9
+  "Spear",                  // 10
+  "Sword",                  // 11
+  "Warhammer",              // 12
+];
+
+// Class-specific weapon sub-tables (d4)
+const CC2_ACROBAT_WEAPONS  = ["Polearm","Short bow + 20 arrows","Spear","Staff"];
+const CC2_BARD_WEAPONS     = ["Crossbow + 20 bolts","Short sword","Sling + 20 stones","Sword"];
+const CC2_CLERIC_WEAPONS   = ["Mace","Sling + 20 stones","Staff","Warhammer"];
+const CC2_DRUID_WEAPONS    = ["Club","Dagger","Sling + 20 stones","Staff"];
+const CC2_KNIGHT_WEAPONS   = ["Lance","Short sword","Sword","Warhammer"];
+
+// Adventuring gear table (d12)
+const CC2_GEAR_TABLE = [
+  "Crowbar",                     // 1
+  "Hammer (small) + 12 iron spikes", // 2
+  "Holy water (vial)",           // 3
+  "Lantern + 3 flasks of oil",   // 4
+  "Mirror (hand-sized, steel)",  // 5
+  "Pole (10' long, wooden)",     // 6
+  "Rope (50')",                  // 7
+  "Rope (50') + grappling hook", // 8
+  "Sack (large)",                // 9
+  "Sack (small)",                // 10
+  "Stakes (3) and mallet",       // 11
+  "Wolfsbane (1 bunch)",         // 12
+];
+
+// Per-class equipment config for CC2
+// armour: "d6" = roll on armour table, "leather" = fixed leather, "none" = no armour
+// weapons: array of table refs, each is rolled independently
+// extra: fixed items always added
+const CC2_CLASS_CONFIG = {
+  // Classic
+  "Cleric":         {armour:"d6",    weapons:[CC2_CLERIC_WEAPONS, CC2_CLERIC_WEAPONS], extra:["Holy symbol"]},
+  "Dwarf":          {armour:"d6",    weapons:[CC2_WEAPONS_TABLE,  CC2_WEAPONS_TABLE],  extra:[]},
+  "Elf":            {armour:"d6",    weapons:[CC2_WEAPONS_TABLE,  CC2_WEAPONS_TABLE],  extra:[]},
+  "Fighter":        {armour:"d6",    weapons:[CC2_WEAPONS_TABLE,  CC2_WEAPONS_TABLE],  extra:[]},
+  "Halfling":       {armour:"d6",    weapons:[CC2_WEAPONS_TABLE,  CC2_WEAPONS_TABLE],  extra:[]},
+  "Magic-User":     {armour:"none",  weapons:["Dagger"],                               extra:[]},
+  "Thief":          {armour:"leather",weapons:[CC2_WEAPONS_TABLE, CC2_WEAPONS_TABLE],  extra:["Thieves' tools"]},
+  // AF human
+  "AF_Acrobat":     {armour:"leather",weapons:[CC2_ACROBAT_WEAPONS, CC2_ACROBAT_WEAPONS], extra:[]},
+  "AF_Assassin":    {armour:"leather",weapons:[CC2_WEAPONS_TABLE,   CC2_WEAPONS_TABLE],   extra:[]},
+  "AF_Barbarian":   {armour:"d4",    weapons:[CC2_WEAPONS_TABLE,   CC2_WEAPONS_TABLE],   extra:[]},
+  "AF_Bard":        {armour:"d4",    weapons:[CC2_BARD_WEAPONS,    CC2_BARD_WEAPONS],    extra:[]},
+  "AF_Druid":       {armour:"leather",weapons:[CC2_DRUID_WEAPONS,  CC2_DRUID_WEAPONS],   extra:["Sprig of mistletoe"]},
+  "AF_Illusionist": {armour:"none",  weapons:["Dagger"],                                extra:[]},
+  "AF_Knight":      {armour:"d4+2",  weapons:[CC2_KNIGHT_WEAPONS, CC2_KNIGHT_WEAPONS],  extra:[]},
+  "AF_Paladin":     {armour:"d6",    weapons:[CC2_WEAPONS_TABLE,   CC2_WEAPONS_TABLE],   extra:["Holy symbol"]},
+  "AF_Ranger":      {armour:"d6",    weapons:[CC2_WEAPONS_TABLE,   CC2_WEAPONS_TABLE],   extra:[]},
+  // AF demihuman
+  "AF_Drow":        {armour:"leather",weapons:[CC2_WEAPONS_TABLE,  CC2_WEAPONS_TABLE],   extra:["Holy symbol"]},
+  "AF_Duergar":     {armour:"d6",    weapons:[CC2_WEAPONS_TABLE,   CC2_WEAPONS_TABLE],   extra:[]},
+  "AF_Gnome":       {armour:"leather",weapons:[CC2_WEAPONS_TABLE,  CC2_WEAPONS_TABLE],   extra:[]},
+  "AF_HalfElf":    {armour:"d6",    weapons:[CC2_WEAPONS_TABLE,   CC2_WEAPONS_TABLE],   extra:[]},
+  "AF_HalfOrc":    {armour:"d6",    weapons:[CC2_WEAPONS_TABLE,   CC2_WEAPONS_TABLE],   extra:[]},
+  "AF_Svirfneblin":{armour:"leather",weapons:[CC2_WEAPONS_TABLE,  CC2_WEAPONS_TABLE],   extra:[]},
+};
+
+function rollCC2Armour(armourCode) {
+  if (armourCode === "none")    return [];
+  if (armourCode === "leather") return ["Leather"];
+  if (armourCode === "d4") {
+    // d4: results 1-4 = Leather, Leather+Shield, Chainmail, Chainmail+Shield
+    const idx = Math.floor(Math.random() * 4);
+    return CC2_ARMOUR_TABLE[idx].split(" + ");
+  }
+  if (armourCode === "d4+2") {
+    // d4+2: results 3-6 = Chainmail, Chainmail+Shield, Plate mail, Plate mail+Shield
+    const idx = 2 + Math.floor(Math.random() * 4);
+    return CC2_ARMOUR_TABLE[idx].split(" + ");
+  }
+  // d6: full table
+  const idx = Math.floor(Math.random() * 6);
+  return CC2_ARMOUR_TABLE[idx].split(" + ");
+}
+
+function rollCC2Weapon(table) {
+  if (typeof table === "string") return table; // fixed item like "Dagger"
+  return table[Math.floor(Math.random() * table.length)];
+}
+
+function expandCC2Item(itemStr) {
+  // Expand compound items like "Crossbow + 20 bolts" or "Lantern + 3 flasks of oil"
+  // into individual items for the equipment list
+  const expansions = {
+    "Crossbow + 20 bolts":       ["Crossbow", "Crossbow bolts (20)"],
+    "Short bow + 20 arrows":     ["Short bow", "Arrows (20)"],
+    "Sling + 20 stones":         ["Sling", "Sling stones (20)"],
+    "Hammer (small) + 12 iron spikes": ["Hammer (small)", "Iron spikes (12)"],
+    "Lantern + 3 flasks of oil": ["Lantern", "Oil (1 flask)", "Oil (1 flask)", "Oil (1 flask)"],
+    "Rope (50') + grappling hook": ["Rope (50')", "Grappling hook"],
+    "Stakes (3) and mallet":     ["Stakes (3) and mallet"],
+    "Club":                      ["Club"],
+    "Lance":                     ["Lance"],
+    "Sprig of mistletoe":        ["Sprig of mistletoe"],
+  };
+  return expansions[itemStr] || [itemStr];
+}
+
 function autoKit(charClass, gold) {
   const equipped = [];
   const packed = [];
   const unencumbering = [];
-  let spent = 0;
-  let remaining = gold;
 
-  function buy(itemName, cost, location) {
-    spent += cost;
-    remaining = gold - spent;
+  function addItem(itemName, location) {
     const enc = itemEncumbrance(itemName, true);
-    if (enc === 0) unencumbering.push(itemName);
+    if (enc === 0) { if (!unencumbering.includes(itemName)) unencumbering.push(itemName); }
     else if (location === "equipped") equipped.push(itemName);
     else packed.push(itemName);
-    return remaining;
   }
 
-  // Essentials
-  for (const item of (CLASS_ESSENTIALS[charClass] || [])) {
-    const cost = ADVENTURING_GEAR[item]?.cost || 0;
-    if (remaining >= cost) buy(item, cost, "packed");
-  }
+  const cfg = CC2_CLASS_CONFIG[charClass] || CC2_CLASS_CONFIG["Fighter"];
 
-  // Armour
-  const [armourName, armourCost] = bestAffordableArmour(charClass, remaining);
-  if (armourName) remaining = buy(armourName, armourCost, "equipped");
+  // 1. Basic equipment (all characters)
+  addItem("Backpack", "packed");
+  addItem("Tinder box", "packed");
+  const torchCount = Math.floor(Math.random() * 6) + 1;
+  for (let i = 0; i < torchCount; i++) addItem("Torch", "packed");
+  addItem("Waterskin", "packed");
+  const rationCount = Math.floor(Math.random() * 6) + 1;
+  for (let i = 0; i < rationCount; i++) addItem("Rations (iron, 1 day)", "packed");
 
-  // Weapon
-  const [weaponName, weaponCost] = bestAffordableWeapon(charClass, remaining);
-  if (weaponName) remaining = buy(weaponName, weaponCost, "equipped");
+  // 2. Armour
+  const armourItems = rollCC2Armour(cfg.armour);
+  for (const a of armourItems) addItem(a, "equipped");
 
-  // Standard kit
-  for (const item of STANDARD_KIT_ITEMS) {
-    const cost = ADVENTURING_GEAR[item]?.cost || 0;
-    if (remaining >= cost && !packed.includes(item) && !equipped.includes(item) && !unencumbering.includes(item)) {
-      remaining = buy(item,cost,"packed");
+  // 3. Weapons (roll each table entry)
+  const weaponsRolled = [];
+  for (const table of cfg.weapons) {
+    const result = rollCC2Weapon(table);
+    if (!weaponsRolled.includes(result)) {
+      weaponsRolled.push(result);
+      for (const item of expandCC2Item(result)) addItem(item, "equipped");
     }
   }
 
-  // Shield (if class can use one and gold remains)
-  if (CLASS_ARMOUR_RULES[charClass].can_use_shield && remaining >= 10) {
-    remaining = buy("Shield", 10, "equipped");
+  // 4. Extra items
+  for (const item of cfg.extra) addItem(item, "packed");
+
+  // 5. Adventuring gear (roll 1d12 twice, no duplicates)
+  const gearRolled = [];
+  let attempts = 0;
+  while (gearRolled.length < 2 && attempts < 20) {
+    attempts++;
+    const result = CC2_GEAR_TABLE[Math.floor(Math.random() * 12)];
+    if (!gearRolled.includes(result)) {
+      gearRolled.push(result);
+      for (const item of expandCC2Item(result)) addItem(item, "packed");
+    }
   }
 
-  return {equipped, packed, unencumbering, gold_spent:spent, gold_remaining:remaining};
+  // Starting gold: 3d6 gp (CC2 rule)
+  const startingCash = (Math.floor(Math.random()*6)+1) + (Math.floor(Math.random()*6)+1) + (Math.floor(Math.random()*6)+1);
+
+  return {equipped, packed, unencumbering, gold_spent:0, gold_remaining:startingCash};
 }
 
 // Magic Item Lists
