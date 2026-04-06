@@ -589,3 +589,53 @@ Compact header showing:
 - d1fa59e fix: full preview, limit previous to 5
 - cb0ed78 fix: generate bar shadow
 - 00fbb0b fix: Level/HP/AC exact width matching STR box; no ellipsis
+
+---
+## 2026-04-05 (evening) — Preview & Previously Generated Improvements
+
+### Character Preview
+- Compact stat display: Name / Race+Class (wide boxes) + Level+HP+AC (ability-score-sized) / Ability scores
+- Demi-humans show single "Race/Class" box
+- Saves/equipment/notes hidden from preview (still in PDF)
+- Sticky Generate button with shadow masking scroll bleed
+- Always scrolls to top on page load (`scrollRestoration = 'manual'`)
+- Placeholder "Your character will appear here" shown only when right pane is empty
+
+### Multi-Character (Party) Generation
+- Party list view: compact rows showing Race/Class · Lvl · HP · AC per character
+- Individual PDF download per character + ZIP download for all
+- Party saved as single storage entry (not individual characters)
+
+### Previously Generated
+- Moved to right pane below character preview
+- Count fills remaining left-pane height dynamically (re-measures on resize)
+- Single entries: Race/Class Level — Title + ⬇ PDF button
+- Party entries: "8 Characters" + summary line (e.g. "5 Human Fighters, 1 Human Thief, 2 Dwarves") + ⬇ ZIP button
+- Active preview entry excluded from Previously Generated list
+- Reappears in list when next character is generated
+
+### Defaults
+- Equipment: Manual (gold only)
+- Name: No Name
+- Alignment: Lawful + Neutral
+- Discard sub-par arrays: ON
+
+### Commits
+- c00127c feat: move Generate button to top
+- 1014380 feat: reorder cards, update defaults
+- 5efea71 fix: restore toggle IDs
+- af6bc9e fix: remove CC#2 parenthetical
+- 786e6c5 feat: previous chars to right pane, right pane scrolls
+- f30fe81 feat: sticky generate, compact preview
+- d76dc2d feat: labeled stat boxes
+- cd15c0d fix: demi-human Race/Class box
+- d1fa59e fix: full preview, limit previous to 5
+- cb0ed78 fix: generate bar shadow
+- 00fbb0b fix: Level/HP/AC exact width
+- 7340b52 feat: dynamic previous list height
+- f8acaef fix: placeholder at top of right pane
+- 91dcff9 fix: scroll to top on load
+- 07f9574 fix: placeholder JS-controlled
+- 6bcfc35 feat: party list view
+- a424288 feat: party summary in previously generated
+- ad7283c feat: exclude active entry from previously generated
