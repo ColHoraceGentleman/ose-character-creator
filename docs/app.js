@@ -197,8 +197,9 @@ const AF_DEMI_CLASSES = [
   { value: "AF_Drow",    label: "Drow" },
   { value: "AF_Duergar", label: "Duergar" },
   { value: "AF_Gnome",   label: "Gnome" },
-  { value: "AF_HalfElf", label: "Half-Elf" },
-  { value: "AF_HalfOrc", label: "Half-Orc" },
+  { value: "AF_HalfElf",      label: "Half-Elf" },
+  { value: "AF_HalfOrc",      label: "Half-Orc" },
+  { value: "AF_Svirfneblin", label: "Svirfneblin" },
 ];
 
 // Rebuild the class dropdown from scratch based on ruleset
