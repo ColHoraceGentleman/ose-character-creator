@@ -27,7 +27,52 @@ function hideError() {
 
 function hideResult() {
   document.getElementById("result").classList.add("hidden");
+  document.getElementById("party-result").classList.add("hidden");
   document.getElementById("preview-placeholder").style.display = "";
+}
+
+function displayParty(characters, pdfBlobs) {
+  // Hide single result, show party panel
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("preview-placeholder").style.display = "none";
+
+  const panel = document.getElementById("party-result");
+  panel.classList.remove("hidden");
+
+  const list = document.getElementById("party-list");
+  list.innerHTML = '<div class="party-list-inner" id="party-list-inner"></div>';
+  const inner = document.getElementById("party-list-inner");
+
+  characters.forEach((c, i) => {
+    const isDemiHuman = !c.class_field;
+    const raceClass = isDemiHuman
+      ? (c.race_field || c.character_class)
+      : `${c.race_field} ${c.class_field || c.character_class}`;
+
+    const item = document.createElement("div");
+    item.className = "party-item";
+    item.innerHTML = `
+      <div class="party-item-info">
+        <span class="party-item-name">${raceClass}</span>
+        <span class="party-item-stats">Lvl ${c.level} &middot; HP ${c.hp} &middot; AC ${c.ac}</span>
+      </div>
+      <a class="btn-download party-dl" data-index="${i}" href="#" download>⬇ PDF</a>
+    `;
+    inner.appendChild(item);
+  });
+
+  // Bind individual PDF downloads
+  inner.querySelectorAll(".party-dl").forEach(btn => {
+    btn.addEventListener("click", function(e) {
+      e.preventDefault();
+      const i = parseInt(this.dataset.index);
+      const url = URL.createObjectURL(pdfBlobs[i]);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `character_${i+1}_${characters[i].character_class.toLowerCase()}.pdf`;
+      a.click();
+    });
+  });
 }
 
 function displayCharacter(char, options) {
@@ -410,26 +455,28 @@ form.addEventListener("submit", async function(e) {
       // Save to localStorage
       saveCharacter({ options, character: characters[0] });
     } else {
-      // Multiple — create ZIP
+      // Multiple — generate PDFs, create ZIP, show party list
+      const pdfBlobs = [];
       const files = {};
       for (let i = 0; i < characters.length; i++) {
         const c = characters[i];
         const blob = await generatePdfBlob(c);
+        pdfBlobs.push(blob);
         const bytes = new Uint8Array(await blob.arrayBuffer());
         files[`character_${i+1}_${c.character_class.toLowerCase()}.pdf`] = bytes;
       }
       const zipBytes = fflate.zipSync(files);
-      const blob = new Blob([zipBytes], {type:"application/zip"});
-      const url = URL.createObjectURL(blob);
-      const dlBtn = document.getElementById("dl-btn");
-      const zipBtn = document.getElementById("zip-btn");
-      dlBtn.classList.add("hidden");
-      zipBtn.href = url;
-      zipBtn.download = `party_${Date.now()}.zip`;
-      zipBtn.classList.remove("hidden");
+      const zipBlob = new Blob([zipBytes], {type:"application/zip"});
+      const zipUrl = URL.createObjectURL(zipBlob);
 
-      // Display first character as preview
-      displayCharacter(characters[0], options);
+      // Wire up ZIP button in party header
+      const zipBtn2 = document.getElementById("zip-btn2");
+      zipBtn2.href = zipUrl;
+      zipBtn2.download = `party_${Date.now()}.zip`;
+      zipBtn2.classList.remove("hidden");
+
+      // Display party list
+      displayParty(characters, pdfBlobs);
 
       // Save all to localStorage
       for (const c of characters) {
