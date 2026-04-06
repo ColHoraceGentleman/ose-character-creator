@@ -55,6 +55,24 @@ const RACES = {
     available_classes: {"Fighter": 6, "Thief": 8, "AF_Druid": 6},
     racial_abilities: ["Defensive bonus: +2 AC vs large opponents", "Initiative bonus: +1 to initiative", "Listening at doors 2-in-6", "Missile attack bonus: +1 to attack rolls with missile weapons", "Resilience: CON-based bonus to saves vs poison/spells/wands", "Small weapons only (no longbow or two-handed sword)"]
   },
+  "Svirfneblin": {
+    requirements: {CON: 9},
+    ability_modifiers: {},
+    languages: ["Alignment", "Common", "Deepcommon", "Gnomish", "Dwarvish", "Kobold", "Elemental Earth"],
+    available_classes: {"Fighter": 6, "Thief": 8, "AF_Assassin": 8, "Cleric": 7, "AF_Illusionist": 7},
+    racial_abilities: [
+      "Infravision 90'",
+      "Blend into stone: 4-in-6 (dim) or 2-in-6 (bright) chance to go unnoticed when motionless in stone",
+      "Detect construction tricks 2-in-6",
+      "Stone murmurs: 2-in-6 chance to divine secret doors, gems, creatures, or spaces through stone",
+      "Illusion resistance: +2 to saves vs illusions",
+      "Defensive bonus: +2 AC vs large opponents",
+      "Light sensitivity: -2 to attack rolls, -1 AC in bright light",
+      "Speak with earth elementals",
+      "Can use magic items for summoning or controlling earth elementals",
+      "Small weapons only (no longbow or two-handed sword)"
+    ]
+  },
   "Human": {
     requirements: {},
     ability_modifiers: {},

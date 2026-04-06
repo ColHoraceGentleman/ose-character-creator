@@ -225,7 +225,7 @@ function getNameSetKey(charClass) {
     "AF_Knight": "human", "AF_Paladin": "human", "AF_Ranger": "human",
     // AF demihuman
     "AF_Drow": "drow", "AF_Duergar": "duergar", "AF_Gnome": "gnome",
-    "AF_HalfElf": "half-elf", "AF_HalfOrc": "half-orc",
+    "AF_HalfElf": "half-elf", "AF_HalfOrc": "half-orc", "AF_Svirfneblin": "svirfneblin",
   };
   return map[charClass] || "human";
 }
@@ -692,12 +692,12 @@ function generateCharacter(options) {
   } else {
     // Classic or Advanced (Race as Class) rulesets
     const DEMI_HUMANS = new Set(["Dwarf","Elf","Halfling"]);
-    const AF_DEMI_HUMANS = new Set(["AF_Drow","AF_Duergar","AF_Gnome","AF_HalfElf","AF_HalfOrc"]);
+    const AF_DEMI_HUMANS = new Set(["AF_Drow","AF_Duergar","AF_Gnome","AF_HalfElf","AF_HalfOrc","AF_Svirfneblin"]);
     const isDemiHuman = DEMI_HUMANS.has(charClass) || AF_DEMI_HUMANS.has(charClass);
     // For AF demihumans, race = friendly name, class = blank
     const AF_DEMIHUMAN_RACE_NAMES = {
       "AF_Drow": "Drow", "AF_Duergar": "Duergar", "AF_Gnome": "Gnome",
-      "AF_HalfElf": "Half-Elf", "AF_HalfOrc": "Half-Orc",
+      "AF_HalfElf": "Half-Elf", "AF_HalfOrc": "Half-Orc", "AF_Svirfneblin": "Svirfneblin",
     };
     raceField = isDemiHuman
       ? (AF_DEMIHUMAN_RACE_NAMES[charClass] || charClass)

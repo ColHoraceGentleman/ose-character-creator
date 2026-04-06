@@ -11,6 +11,7 @@ const HD_CAP = {
   // Advanced Fantasy -- Race as Class (demihuman)
   "AF_Drow": 9, "AF_Duergar": 9, "AF_Gnome": 8,
   "AF_HalfElf": 9, "AF_HalfOrc": 8,
+  "AF_Svirfneblin": 8,
 };
 
 const FLAT_HP_PER_LEVEL = {
@@ -24,6 +25,7 @@ const FLAT_HP_PER_LEVEL = {
   // Advanced Fantasy -- Race as Class (demihuman)
   "AF_Drow": 2, "AF_Duergar": 3, "AF_Gnome": 1,
   "AF_HalfElf": 2, "AF_HalfOrc": 2,
+  "AF_Svirfneblin": 2,
 };
 
 const LEVEL_PROGRESSION = {
@@ -325,6 +327,16 @@ const LEVEL_PROGRESSION = {
     11: {xp:600000,  thac0:12, aac_ab:7, saves:{D:6, W:7, P:8, B:8, S:8}},
     12: {xp:750000,  thac0:12, aac_ab:7, saves:{D:6, W:7, P:8, B:8, S:8}},
   },
+  "AF_Svirfneblin": {
+    1:  {xp:0,       thac0:19, aac_ab:0, saves:{D:8, W:9, P:10,B:14,S:11}},
+    2:  {xp:2400,    thac0:19, aac_ab:0, saves:{D:8, W:9, P:10,B:14,S:11}},
+    3:  {xp:4800,    thac0:19, aac_ab:0, saves:{D:8, W:9, P:10,B:14,S:11}},
+    4:  {xp:10000,   thac0:17, aac_ab:2, saves:{D:6, W:7, P:8, B:11,S:9}},
+    5:  {xp:20000,   thac0:17, aac_ab:2, saves:{D:6, W:7, P:8, B:11,S:9}},
+    6:  {xp:40000,   thac0:17, aac_ab:2, saves:{D:6, W:7, P:8, B:11,S:9}},
+    7:  {xp:80000,   thac0:14, aac_ab:5, saves:{D:4, W:5, P:6, B:9, S:7}},
+    8:  {xp:160000,  thac0:14, aac_ab:5, saves:{D:4, W:5, P:6, B:9, S:7}},
+  },
   "AF_HalfOrc": {
     1:  {xp:0,       thac0:19, aac_ab:0, saves:{D:13,W:14,P:13,B:16,S:15}},
     2:  {xp:1800,    thac0:19, aac_ab:0, saves:{D:13,W:14,P:13,B:16,S:15}},
@@ -535,6 +547,30 @@ const CLASSES = {
     spellcaster: true,
     spell_list: "magic_user",
     spells_start_level: 2,
+    af_class: true,
+    af_demihuman: true,
+  },
+  "AF_Svirfneblin": {
+    requirements: {CON:9},
+    prime_requisites: ["STR"],
+    hit_die: 6,
+    max_level: 8,
+    languages: ["Alignment","Common","Deepcommon","Gnomish","Dwarvish","Kobold","Elemental Earth"],
+    title_lvl1: "Svirfneblin Tunneller",
+    xp_next_level: 2400,
+    special_abilities: [
+      "Infravision 90'",
+      "Blend into stone: 4-in-6 (dim) or 2-in-6 (bright) chance to go unnoticed in stone environments",
+      "Detect construction tricks 2-in-6",
+      "Stone murmurs: 2-in-6 chance to divine info from stone (secret doors, gems, creatures, spaces)",
+      "Illusion resistance: +2 to saves vs illusions",
+      "Defensive bonus: +2 AC vs large opponents",
+      "Light sensitivity: -2 to attack and -1 AC in bright light",
+      "Speak with earth elementals",
+      "Can use magic items for summoning/controlling earth elementals",
+      "Cannot use longbows or two-handed swords",
+    ],
+    spellcaster: false,
     af_class: true,
     af_demihuman: true,
   },
@@ -768,6 +804,7 @@ const LEVEL_TITLES = {
   "AF_Gnome":   ["Gnome Prestidigitator","Minor Gnome Trickster","Gnome Trickster","Master Gnome Trickster","Gnome Cabalist","Gnome Visionist","Gnome Phantasmist","Gnome Apparitionist"],
   "AF_HalfElf": ["Half-Elf Veteran","Half-Elf Warrior","Half-Elf Swordmaster","Half-Elf Hero","Half-Elf Swashbuckler","Half-Elf Myrmidon","Half-Elf Champion","Half-Elf Superhero","Half-Elf Lord","Half-Elf Lord","Half-Elf Lord","Half-Elf Lord"],
   "AF_HalfOrc": ["Outlaw","Pickpocket","Brigand","Bandit","Raider","Pillager","Marauder","Plunderer"],
+  "AF_Svirfneblin": ["Svirfneblin Tunneller","Svirfneblin Delver","Svirfneblin Scout","Svirfneblin Defender","Svirfneblin Warrior","Svirfneblin Champion","Svirfneblin Warlord","Svirfneblin Hero"],
 };
 
 // -- Half-Orc skills by level ---------------------------------------------
@@ -847,6 +884,7 @@ const MARTIAL_CATEGORY = {
   "AF_Acrobat": "semi-martial", "AF_Assassin": "semi-martial", "AF_Bard": "semi-martial",
   "AF_Druid": "semi-martial", "AF_Drow": "semi-martial", "AF_HalfElf": "semi-martial",
   "AF_HalfOrc": "semi-martial",
+  "AF_Svirfneblin": "martial",
   "Magic-User": "non-martial", "AF_Illusionist": "non-martial", "AF_Gnome": "non-martial",
 };
 const MARTIAL_STARTING_PROFS = { "martial": 4, "semi-martial": 3, "non-martial": 1 };

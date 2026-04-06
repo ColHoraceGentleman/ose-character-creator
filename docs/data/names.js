@@ -74,6 +74,14 @@ name_set["half-orc"] = [
   "Wargash","Yargash","Zargash","Araga","Braga","Draga","Ferga","Graga","Harga","Iraga",
   "Karga","Larga","Marga","Narga","Orga","Praga","Raga","Skarga","Thraga","Urga"
 ];
+// Svirfneblin (deep gnome) — gritty, harsh, stone-flavoured
+name_set["svirfneblin"] = [
+  "Brug","Drib","Flink","Greb","Griv","Hruk","Krig","Krul","Meld","Nib",
+  "Prik","Reb","Rok","Skiv","Snik","Thrib","Trug","Ulf","Veld","Vruk",
+  "Brega","Driba","Flinka","Greba","Griva","Hruka","Kriga","Krula","Melda","Niba",
+  "Prika","Reba","Roka","Skiva","Snika","Thriba","Truga","Ulfa","Velda","Vruka"
+];
+
 // IKEA product names — for the IKEA Name Generator option
 const IKEA_NAMES = [
   "Adde","Adils","Agam","Agen","Alefjäll","Algot","Alseda","Alvaret","Angersby","Antilop",
