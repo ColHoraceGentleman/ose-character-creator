@@ -478,10 +478,8 @@ form.addEventListener("submit", async function(e) {
       // Display party list
       displayParty(characters, pdfBlobs);
 
-      // Save all to localStorage
-      for (const c of characters) {
-        saveCharacter({ options, character: c });
-      }
+      // Save as a single party entry
+      saveParty(characters, options);
     }
 
     // Refresh previous list
@@ -535,23 +533,55 @@ function renderPrevious() {
 
   const limit = countFittingPrevious();
   saved.slice(0, limit).forEach(entry => {
-    const c = entry.character;
     const item = document.createElement("div");
     item.className = "prev-item";
-    item.innerHTML = `
-      <div>
-        <strong>${c.character_class} ${c.level}</strong> — ${c.title}
-        <div class="prev-meta">${new Date(entry.timestamp).toLocaleString()}</div>
-      </div>
-      <div class="prev-actions">
-        <button data-id="${entry.id}" class="dl-single">Download</button>
-        <button data-id="${entry.id}" class="del-single">✕</button>
-      </div>
-    `;
+
+    if (entry.type === 'party') {
+      // Summarise party: count identical race/class combos
+      const counts = {};
+      entry.characters.forEach(c => {
+        const isDemi = !c.class_field;
+        const label = isDemi
+          ? (c.race_field || c.character_class)
+          : `${c.race_field} ${c.class_field || c.character_class}`;
+        counts[label] = (counts[label] || 0) + 1;
+      });
+      const summary = Object.entries(counts)
+        .map(([label, n]) => n > 1 ? `${n} ${label}s` : label)
+        .join(", ");
+
+      item.innerHTML = `
+        <div>
+          <strong>${entry.characters.length} Characters</strong>
+          <div class="prev-meta">${summary}</div>
+          <div class="prev-meta">${new Date(entry.timestamp).toLocaleString()}</div>
+        </div>
+        <div class="prev-actions">
+          <button data-id="${entry.id}" class="dl-party">⬇ ZIP</button>
+          <button data-id="${entry.id}" class="del-single">✕</button>
+        </div>
+      `;
+    } else {
+      const c = entry.character;
+      const isDemi = !c.class_field;
+      const label = isDemi
+        ? (c.race_field || c.character_class)
+        : `${c.race_field} ${c.class_field || c.character_class}`;
+      item.innerHTML = `
+        <div>
+          <strong>${label} ${c.level}</strong> — ${c.title}
+          <div class="prev-meta">${new Date(entry.timestamp).toLocaleString()}</div>
+        </div>
+        <div class="prev-actions">
+          <button data-id="${entry.id}" class="dl-single">⬇ PDF</button>
+          <button data-id="${entry.id}" class="del-single">✕</button>
+        </div>
+      `;
+    }
     list.appendChild(item);
   });
 
-  // Bind events
+  // Single PDF download
   list.querySelectorAll(".dl-single").forEach(btn => {
     btn.addEventListener("click", async function() {
       const id = this.dataset.id;
@@ -563,6 +593,33 @@ function renderPrevious() {
         const a = document.createElement("a");
         a.href = url;
         a.download = `character_${entry.character.character_class.toLowerCase()}.pdf`;
+        a.click();
+      } catch(e) {
+        showError("Error: " + e.message);
+      }
+    });
+  });
+
+  // Party ZIP download
+  list.querySelectorAll(".dl-party").forEach(btn => {
+    btn.addEventListener("click", async function() {
+      const id = this.dataset.id;
+      const entry = getCharacterById(id);
+      if (!entry || entry.type !== 'party') return;
+      try {
+        const files = {};
+        for (let i = 0; i < entry.characters.length; i++) {
+          const c = entry.characters[i];
+          const blob = await generatePdfBlob(c);
+          const bytes = new Uint8Array(await blob.arrayBuffer());
+          files[`character_${i+1}_${c.character_class.toLowerCase()}.pdf`] = bytes;
+        }
+        const zipBytes = fflate.zipSync(files);
+        const zipBlob = new Blob([zipBytes], {type: "application/zip"});
+        const url = URL.createObjectURL(zipBlob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `party_${Date.now()}.zip`;
         a.click();
       } catch(e) {
         showError("Error: " + e.message);

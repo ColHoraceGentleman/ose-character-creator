@@ -12,15 +12,29 @@ function getSavedCharacters() {
 
 function saveCharacter(charData) {
   const saved = getSavedCharacters();
-  // Keep full options + character + timestamp
   const entry = {
     id: Date.now().toString(36) + Math.random().toString(36).substr(2,5),
     timestamp: new Date().toISOString(),
+    type: 'single',
     options: charData.options,
     character: charData.character,
   };
   saved.unshift(entry);
-  // Trim to max
+  while (saved.length > MAX_SAVED) saved.pop();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+  return entry.id;
+}
+
+function saveParty(characters, options) {
+  const saved = getSavedCharacters();
+  const entry = {
+    id: Date.now().toString(36) + Math.random().toString(36).substr(2,5),
+    timestamp: new Date().toISOString(),
+    type: 'party',
+    options,
+    characters,
+  };
+  saved.unshift(entry);
   while (saved.length > MAX_SAVED) saved.pop();
   localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
   return entry.id;
