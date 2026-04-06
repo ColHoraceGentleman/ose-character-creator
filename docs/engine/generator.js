@@ -790,6 +790,6 @@ function generateCharacter(options) {
     unencumbering: kit.unencumbering || [],
     gold_remaining: kit.gold_remaining,
     spells_known: spellsKnown,
-    starting_gold: startingGold,
+    starting_gold: (options.equipment_mode === "quick") ? kit.gold_remaining : startingGold,
   };
 }

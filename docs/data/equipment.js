@@ -189,6 +189,11 @@ function bestAffordableWeapon(charClass, gold) {
 }
 
 function itemEncumbrance(itemName, inUse=true) {
+  // CC2 Quick Equipment dynamic names: always check these first (before ADVENTURING_GEAR lookup)
+  // Any torch bundle (including "Torches (6)" which exists in ADVENTURING_GEAR as enc:2) = 1 slot
+  if (/^Torches \(\d+\)$/.test(itemName)) return 1;
+  // Up to 7 days of rations = 1 slot
+  if (/^Rations \(iron, \d+ days?\)$/.test(itemName)) return 1;
   if (WEAPONS[itemName]) return WEAPONS[itemName].encumbrance || 1;
   if (ARMOUR[itemName]) return ARMOUR[itemName].encumbrance || 1;
   if (ADVENTURING_GEAR[itemName]) {
@@ -196,10 +201,6 @@ function itemEncumbrance(itemName, inUse=true) {
     if (enc === "storage") return inUse ? 0 : 1;
     return enc;
   }
-  // Dynamic names from Quick Equipment (e.g. "Rations (iron, 3 days)", "Torches (4)")
-  // Up to 7 days of rations = 1 slot; any torch bundle = 1 slot
-  if (/^Rations \(iron, \d+ days?\)$/.test(itemName)) return 1;
-  if (/^Torches \(\d+\)$/.test(itemName)) return 1;
   return 1;
 }
 
@@ -347,7 +348,7 @@ const CC2_CLASS_CONFIG = {
   "Thief":          {armour:"leather",weapons:[CC2_WEAPONS_TABLE, CC2_WEAPONS_TABLE],  extra:["Thieves' tools"]},
   // AF human
   "AF_Acrobat":     {armour:"leather",weapons:[CC2_ACROBAT_WEAPONS, CC2_ACROBAT_WEAPONS], extra:[]},
-  "AF_Assassin":    {armour:"leather",weapons:[CC2_WEAPONS_TABLE,   CC2_WEAPONS_TABLE],   extra:[]},
+  "AF_Assassin":    {armour:"leather",weapons:[CC2_WEAPONS_TABLE,   CC2_WEAPONS_TABLE],   extra:["Thieves' tools"]},
   "AF_Barbarian":   {armour:"d4",    weapons:[CC2_WEAPONS_TABLE,   CC2_WEAPONS_TABLE],   extra:[]},
   "AF_Bard":        {armour:"d4",    weapons:[CC2_BARD_WEAPONS,    CC2_BARD_WEAPONS],    extra:[]},
   "AF_Druid":       {armour:"leather",weapons:[CC2_DRUID_WEAPONS,  CC2_DRUID_WEAPONS],   extra:["Sprig of mistletoe"]},
@@ -445,15 +446,22 @@ function autoKit(charClass, gold) {
   // 4. Extra items
   for (const item of cfg.extra) addItem(item, "packed");
 
-  // 5. Adventuring gear (roll 1d12 twice, no duplicates)
+  // 5. Adventuring gear (roll 1d12 twice, no duplicates by expanded item)
   const gearRolled = [];
+  const gearItemsAdded = [];
   let attempts = 0;
   while (gearRolled.length < 2 && attempts < 20) {
     attempts++;
     const result = CC2_GEAR_TABLE[Math.floor(Math.random() * 12)];
     if (!gearRolled.includes(result)) {
+      const expanded = expandCC2Item(result);
+      // Skip if any expanded item is already in packed (e.g. Rope from entries 7+8)
+      if (expanded.some(item => gearItemsAdded.includes(item))) continue;
       gearRolled.push(result);
-      for (const item of expandCC2Item(result)) addItem(item, "packed");
+      for (const item of expanded) {
+        gearItemsAdded.push(item);
+        addItem(item, "packed");
+      }
     }
   }
 
