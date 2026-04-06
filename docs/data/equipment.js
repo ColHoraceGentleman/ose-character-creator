@@ -196,6 +196,10 @@ function itemEncumbrance(itemName, inUse=true) {
     if (enc === "storage") return inUse ? 0 : 1;
     return enc;
   }
+  // Dynamic names from Quick Equipment (e.g. "Rations (iron, 3 days)", "Torches (4)")
+  // Up to 7 days of rations = 1 slot; any torch bundle = 1 slot
+  if (/^Rations \(iron, \d+ days?\)$/.test(itemName)) return 1;
+  if (/^Torches \(\d+\)$/.test(itemName)) return 1;
   return 1;
 }
 
@@ -249,7 +253,13 @@ function calculateStandardEncumbrance(equipped, packed, unencumbering=[]) {
   const allItems = equipped.concat(packed).concat(unencumbering);
   let totalCn = 0;
   for (const item of allItems) {
-    totalCn += STANDARD_ENCUMBRANCE_WEIGHTS[item] || 0;
+    if (STANDARD_ENCUMBRANCE_WEIGHTS[item] !== undefined) {
+      totalCn += STANDARD_ENCUMBRANCE_WEIGHTS[item];
+    } else if (/^Rations \(iron, \d+ days?\)$/.test(item)) {
+      totalCn += 100; // same as Rations (iron, 7 days)
+    } else if (/^Torches \(\d+\)$/.test(item)) {
+      totalCn += 60;  // same as Torches (6)
+    }
   }
 
   let exploration, encounter, overland;
@@ -412,9 +422,11 @@ function autoKit(charClass, gold) {
   // 1. Basic equipment (all characters)
   addItem("Backpack", "packed");
   addItem("Tinder box", "packed");
-  addItem("Torches (6)", "packed");
+  const torchCount = Math.floor(Math.random() * 6) + 1;
+  addItem(torchCount === 6 ? "Torches (6)" : `Torches (${torchCount})`, "packed");
   addItem("Waterskin", "packed");
-  addItem("Rations (iron, 7 days)", "packed"); // up to 7 days = 1 slot (item-based rule)
+  const rationCount = Math.floor(Math.random() * 6) + 1;
+  addItem(`Rations (iron, ${rationCount} day${rationCount === 1 ? "" : "s"})`, "packed"); // up to 7 days = 1 slot (item-based rule)
 
   // 2. Armour
   const armourItems = rollCC2Armour(cfg.armour);
