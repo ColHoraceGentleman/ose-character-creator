@@ -807,9 +807,8 @@ select:focus {
   color: var(--accent);
 }
 
-/* Custom instant tooltip — replaces sluggish browser title */
-.help::after {
-  content: attr(data-tip);
+/* Custom instant tooltip — real DOM element injected by JS */
+.help-tooltip {
   position: absolute;
   bottom: calc(100% + 6px);
   left: 50%;
@@ -829,9 +828,10 @@ select:focus {
   transition: opacity 0.08s;
   z-index: 100;
   box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  display: block;
 }
 
-.help:hover::after {
+.help:hover .help-tooltip {
   opacity: 1;
 }
 

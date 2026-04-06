@@ -652,3 +652,12 @@ window.addEventListener("resize", renderPrevious);
 
 // Init
 renderPrevious();
+
+// Inject real DOM tooltip spans so newlines render correctly
+document.querySelectorAll('.help[data-tip]').forEach(el => {
+  const tip = document.createElement('span');
+  tip.className = 'help-tooltip';
+  tip.textContent = el.getAttribute('data-tip');
+  el.removeAttribute('data-tip');
+  el.appendChild(tip);
+});
