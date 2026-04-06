@@ -556,10 +556,9 @@ function renderPrevious() {
         .join(", ");
 
       item.innerHTML = `
-        <div>
-          <strong>${entry.characters.length} Characters</strong>
-          <div class="prev-meta">${summary}</div>
-          <div class="prev-meta">${new Date(entry.timestamp).toLocaleString()}</div>
+        <div class="party-item-info" style="flex-direction:column; align-items:flex-start; gap:2px;">
+          <span class="party-item-name">${entry.characters.length} Characters</span>
+          <span class="party-item-stats">${summary}</span>
         </div>
         <div class="prev-actions">
           <button data-id="${entry.id}" class="dl-party">⬇ ZIP</button>
