@@ -821,7 +821,7 @@ select:focus {
   line-height: 1.4;
   padding: 6px 10px;
   border-radius: 6px;
-  white-space: normal;
+  white-space: pre-wrap;
   width: 220px;
   text-align: left;
   pointer-events: none;

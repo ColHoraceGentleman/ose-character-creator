@@ -153,7 +153,8 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Equipment <span class="help" data-tip="Manual Buy: player purchases equipment manually using starting gold. Auto Buy: automatically purchases sensible starting gear, subject to race and class restrictions.">?</span></label>
+            <label class="form-label">Equipment <span class="help" data-tip="Manual Buy: player purchases equipment manually using starting gold.
+Auto Buy: automatically purchases sensible starting gear, subject to race and class restrictions.">?</span></label>
             <div class="radio-group">
               <label class="radio-option">
                 <input type="radio" name="equipment_mode" value="manual" checked>
@@ -174,7 +175,7 @@
           <h2 class="card-title">Name & Alignment</h2>
 
           <div class="form-group">
-            <label class="form-label">Character Name Generation</label>
+            <label class="form-label">Character Name</label>
             <select name="name_style" id="name_style">
               <option value="none" selected>No Name</option>
               <option value="ikea">Random Ikea Name</option>
@@ -277,8 +278,8 @@
               </label>
             </div>
 
-            <div class="toggle-row" id="read_magic_toggle" style="justify-content:flex-end;gap:10px;">
-              <span class="toggle-label" style="flex:unset;">Give Bonus Read Magic Spell <span class="help" data-tip="Magic-Users, Elves (class), and Illusionists receive Read Magic as a free bonus spell at level 1.">?</span></span>
+            <div class="toggle-row" id="read_magic_toggle">
+              <span class="toggle-label" style="margin-left:auto;">Give Bonus Read Magic Spell <span class="help" data-tip="Magic-Users, Elves (class), and Illusionists receive Read Magic as a free bonus spell at level 1.">?</span></span>
               <label class="toggle">
                 <input type="checkbox" name="give_read_magic" id="give_read_magic">
                 <span class="toggle-slider"></span>
