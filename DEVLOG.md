@@ -639,3 +639,22 @@ Compact header showing:
 - 6bcfc35 feat: party list view
 - a424288 feat: party summary in previously generated
 - ad7283c feat: exclude active entry from previously generated
+
+---
+## 2026-04-05 (late evening) — Bug Fixes & Party Polish
+
+### Bug Fixes
+- **AF Advanced random race respects chosen class** — race pool filtered to only races that have the chosen class available
+- **Level filtering for random class/race** — random class only picks classes whose max_level >= chosen level; random race only picks races whose level cap for the chosen class >= chosen level; random class in RC mode filtered by race level cap
+- **Party ZIP button right-justified** — fixed party entries in Previously Generated to use same flex layout as single entries
+
+### Previously Generated polish
+- Single entries now match party item card style exactly (Race/Class · Lvl · HP · AC)
+- Party entries: "N Characters" title + summary line, ZIP button right-justified
+- Both use same card style: surface-alt background, border, border-radius, gap
+
+### Commits
+- 9a03364 fix: random race respects chosen class in advanced_rc mode
+- 8f5db87 fix: level filtering for random class/race selection
+- 312445c feat: previously generated single entries match party item style
+- f6f7d58 fix: party entry ZIP button right-justified
