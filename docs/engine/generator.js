@@ -25,12 +25,18 @@ function calcPrXpBonus(scores, charClass) {
   return prXpMod(minScore);
 }
 
-function pickRandomClassByXp(scores, ruleset="classic") {
+function pickRandomClassByXp(scores, ruleset="classic", minLevel=1) {
   // Filter by ruleset: classic excludes AF classes, advanced includes only AF classes
   const valid = Object.keys(CLASSES).filter(c => {
     const isAF = !!CLASSES[c].af_class;
-    if (ruleset === "advanced") return isAF && isValidClass(c, scores);
-    return !isAF && isValidClass(c, scores);
+    if (ruleset === "advanced") {
+      if (!isAF || !isValidClass(c, scores)) return false;
+    } else {
+      if (isAF || !isValidClass(c, scores)) return false;
+    }
+    // Filter out classes that can't reach the requested level
+    if (minLevel > 1 && CLASSES[c].max_level < minLevel) return false;
+    return true;
   });
   // Note: AF_Fighter does not exist; fallback is unused but kept for reference clarity
   // const fallback = ruleset === "advanced" ? "AF_Barbarian" : "Fighter";
@@ -353,14 +359,16 @@ function generateCharacter(options) {
       race = options.chosen_race;
     } else {
       // Random race: pick one whose requirements the scores meet
-      // If a class is chosen, also require the race supports that class
+      // If a class is chosen, also require the race supports that class at the chosen level
       const allRaces = Object.keys(RACES);
       const eligible = allRaces.filter(r => {
         const reqs = RACES[r].requirements || {};
         const meetsReqs = Object.entries(reqs).every(([stat, min]) => scores[stat] >= min);
         if (!meetsReqs) return false;
         if (classSelection === "choose" && chosenClass) {
-          return chosenClass in RACES[r].available_classes;
+          const raceLevelCap = RACES[r].available_classes[chosenClass];
+          if (raceLevelCap === undefined) return false; // race can't take this class
+          if (raceLevelCap !== 999 && raceLevelCap < targetLevelRaw) return false; // race cap too low
         }
         return true;
       });
@@ -379,14 +387,19 @@ function generateCharacter(options) {
     if (classSelection === "choose" && chosenClass && raceClasses.includes(chosenClass)) {
       charClass = chosenClass;
     } else {
-      // Pick random valid class for this race
-      const eligible = raceClasses.filter(c => CLASSES[c] && isValidClass(c, scores));
+      // Pick random valid class for this race, filtered by level cap
+      const eligible = raceClasses.filter(c => {
+        if (!CLASSES[c] || !isValidClass(c, scores)) return false;
+        const cap = RACES[race].available_classes[c];
+        if (cap !== 999 && cap < targetLevelRaw) return false;
+        return true;
+      });
       charClass = eligible.length > 0 ? randomChoice(eligible) : raceClasses[0];
     }
   } else {
     charClass = (classSelection === "choose" && chosenClass)
       ? chosenClass
-      : pickRandomClassByXp(scores, options.ruleset || "classic");
+      : pickRandomClassByXp(scores, options.ruleset || "classic", targetLevelRaw);
   }
 
   // Auto-adjust ability scores to maximise XP bonus (optional)
