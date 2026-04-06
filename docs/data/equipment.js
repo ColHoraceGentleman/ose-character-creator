@@ -412,11 +412,9 @@ function autoKit(charClass, gold) {
   // 1. Basic equipment (all characters)
   addItem("Backpack", "packed");
   addItem("Tinder box", "packed");
-  const torchCount = Math.floor(Math.random() * 6) + 1;
-  for (let i = 0; i < torchCount; i++) addItem("Torch", "packed");
+  addItem("Torches (6)", "packed");
   addItem("Waterskin", "packed");
-  const rationCount = Math.floor(Math.random() * 6) + 1;
-  for (let i = 0; i < rationCount; i++) addItem("Rations (iron, 1 day)", "packed");
+  addItem("Rations (iron, 7 days)", "packed"); // up to 7 days = 1 slot (item-based rule)
 
   // 2. Armour
   const armourItems = rollCC2Armour(cfg.armour);
