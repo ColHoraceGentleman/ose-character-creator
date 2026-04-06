@@ -27,11 +27,13 @@ function hideError() {
 
 function hideResult() {
   document.getElementById("result").classList.add("hidden");
+  document.getElementById("preview-placeholder").style.display = "";
 }
 
 function displayCharacter(char, options) {
   const r = document.getElementById("result");
   r.classList.remove("hidden");
+  document.getElementById("preview-placeholder").style.display = "none";
   hideError();
 
   // Header info

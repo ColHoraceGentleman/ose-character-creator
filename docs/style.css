@@ -384,13 +384,8 @@ select:focus {
   opacity: 0.4;
 }
 
-/* Show placeholder only when result is hidden */
 #preview-placeholder {
   display: block;
-}
-
-#result:not(.hidden) ~ #preview-placeholder {
-  display: none;
 }
 
 /* Result panel */
