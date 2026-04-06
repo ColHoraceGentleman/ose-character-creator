@@ -262,7 +262,12 @@ select:focus {
   flex: 1;
 }
 
+.toggle-row--right {
+  justify-content: flex-end;
+}
+
 .toggle-row--right .toggle-label {
+  flex: 0 1 auto;
   text-align: right;
 }
 
