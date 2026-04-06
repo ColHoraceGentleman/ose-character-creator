@@ -4,6 +4,9 @@
 window.history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 
+// Track the currently displayed entry so it's excluded from "previously generated"
+let activeEntryId = null;
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -29,6 +32,7 @@ function hideResult() {
   document.getElementById("result").classList.add("hidden");
   document.getElementById("party-result").classList.add("hidden");
   document.getElementById("preview-placeholder").style.display = "";
+  activeEntryId = null;
 }
 
 function displayParty(characters, pdfBlobs) {
@@ -453,7 +457,7 @@ form.addEventListener("submit", async function(e) {
       displayCharacter(characters[0], options);
 
       // Save to localStorage
-      saveCharacter({ options, character: characters[0] });
+      activeEntryId = saveCharacter({ options, character: characters[0] });
     } else {
       // Multiple — generate PDFs, create ZIP, show party list
       const pdfBlobs = [];
@@ -479,7 +483,7 @@ form.addEventListener("submit", async function(e) {
       displayParty(characters, pdfBlobs);
 
       // Save as a single party entry
-      saveParty(characters, options);
+      activeEntryId = saveParty(characters, options);
     }
 
     // Refresh previous list
@@ -531,8 +535,9 @@ function renderPrevious() {
   section.classList.remove("hidden");
   list.innerHTML = "";
 
+  const filtered = saved.filter(e => e.id !== activeEntryId);
   const limit = countFittingPrevious();
-  saved.slice(0, limit).forEach(entry => {
+  filtered.slice(0, limit).forEach(entry => {
     const item = document.createElement("div");
     item.className = "prev-item";
 
