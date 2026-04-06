@@ -368,7 +368,7 @@ function updateReadMagicToggle() {
   const isRandom = classSelect.value === "random";
   const toggle = document.getElementById("read_magic_toggle");
   // Show always for now (simplified)
-  toggle.style.display = "block";
+  toggle.style.display = "flex";
 }
 classSelect.addEventListener("change", updateReadMagicToggle);
 updateReadMagicToggle();
