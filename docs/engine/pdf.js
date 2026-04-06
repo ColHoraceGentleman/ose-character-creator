@@ -43,6 +43,7 @@ async function fillPdf(character, pdfPath) {
   const bytes = await loadPdfBytes(pdfPath);
   const pdfDoc = await PDFLib.PDFDocument.load(bytes);
   const form = pdfDoc.getForm();
+  const helvetica = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
 
   const acMode = character.ac_mode || "aac";
   const encMode = character.encumbrance_mode || "item_based";
@@ -61,6 +62,7 @@ async function fillPdf(character, pdfPath) {
       if (f) {
         f.setText(String(value));
         f.setFontColor(PDFLib.rgb(0.7, 0.7, 0.7));
+        f.updateAppearances(helvetica);
       }
     } catch(e) { /* field not found */ }
   }
@@ -237,8 +239,8 @@ async function fillPdf(character, pdfPath) {
     setText("Total Encumbrance", String(character.total_cn || ""));
   }
 
-  // Regenerate field appearances so font colour changes (e.g. grey "Slot Unavailable") take effect
-  try { form.updateFieldAppearances(); } catch(e) { /* best-effort */ }
+  // Regenerate remaining field appearances
+  try { form.updateFieldAppearances(helvetica); } catch(e) { /* best-effort */ }
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;
