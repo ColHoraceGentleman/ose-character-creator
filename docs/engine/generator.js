@@ -496,26 +496,47 @@ function generateCharacter(options) {
     const spellsStartLevel = classData.spells_start_level || 1;
     const hasSpellsAtLevel = targetLevel >= spellsStartLevel;
 
+    // Helper: pick N unique random spells from a list, excluding already-known ones
+    function pickSpells(list, n, exclude=[]) {
+      const pool = list.filter(s => !exclude.includes(s));
+      const picked = [];
+      for (let i = 0; i < n && pool.length > 0; i++) {
+        const idx = Math.floor(Math.random() * pool.length);
+        picked.push(pool.splice(idx, 1)[0]);
+      }
+      return picked;
+    }
+
     if (charClass === "Cleric" || charClass === "AF_Paladin" || charClass === "AF_Drow" || !hasSpellsAtLevel) {
-      // Clerics, Paladins, and Drow don't start with a spell book
+      // Clerics, Paladins, and Drow pray for spells — no spell book
     } else if (charClass === "AF_Druid" || charClass === "AF_Bard" || charClass === "AF_Ranger") {
-      // Druid-list casters: pick one random 1st-level druid spell as known
-      spellsKnown.push(randomChoice(DRUID_SPELLS_L1));
+      // Druid-list casters: 1 known spell per spell level available
+      const druidLists = [DRUID_SPELLS_L1, DRUID_SPELLS_L2, DRUID_SPELLS_L3, DRUID_SPELLS_L4, DRUID_SPELLS_L5];
+      const slots = AF_SPELL_SLOTS[charClass]?.[targetLevel] || [];
+      slots.forEach((_, i) => {
+        if (druidLists[i]) spellsKnown.push(...pickSpells(druidLists[i], 1, spellsKnown));
+      });
     } else if (charClass === "AF_Illusionist" || charClass === "AF_Gnome") {
-      let list = [...ILLUSIONIST_SPELLS_L1];
-      if (options.give_read_magic) {
-        spellsKnown.push("Read Magic");
-        list = list.filter(s => s !== "Read Magic");
-      }
-      spellsKnown.push(randomChoice(list));
+      const illLists = [ILLUSIONIST_SPELLS_L1, ILLUSIONIST_SPELLS_L2, ILLUSIONIST_SPELLS_L3,
+                        ILLUSIONIST_SPELLS_L4, ILLUSIONIST_SPELLS_L5, ILLUSIONIST_SPELLS_L6];
+      const slots = AF_SPELL_SLOTS[charClass]?.[targetLevel] || [];
+      if (options.give_read_magic) spellsKnown.push("Read Magic");
+      slots.forEach((_, i) => {
+        if (illLists[i]) spellsKnown.push(...pickSpells(illLists[i], 1, spellsKnown));
+      });
     } else {
-      // MU / Elf / Half-Elf
-      let spellList = [...MU_ELF_SPELLS_L1];
-      if (options.give_read_magic) {
-        spellsKnown.push("Read Magic");
-        spellList = spellList.filter(s => s !== "Read Magic");
-      }
-      spellsKnown.push(randomChoice(spellList));
+      // MU / Elf / AF_HalfElf — pick 1 spell per spell level in the book
+      const muLists = [MU_ELF_SPELLS_L1, MU_ELF_SPELLS_L2, MU_ELF_SPELLS_L3,
+                       MU_ELF_SPELLS_L4, MU_ELF_SPELLS_L5, MU_ELF_SPELLS_L6];
+      let slotTable;
+      if (charClass === "Elf") slotTable = CF_ELF_SPELL_SLOTS;
+      else if (charClass === "AF_HalfElf") slotTable = AF_SPELL_SLOTS["AF_HalfElf"];
+      else slotTable = CF_MU_SPELL_SLOTS; // Magic-User
+      const slots = slotTable?.[targetLevel] || [1]; // fallback: at least L1
+      if (options.give_read_magic) spellsKnown.push("Read Magic");
+      slots.forEach((_, i) => {
+        if (muLists[i]) spellsKnown.push(...pickSpells(muLists[i], 1, spellsKnown));
+      });
     }
   }
 
@@ -527,9 +548,12 @@ function generateCharacter(options) {
       notes.push(ability);
     }
   }
-  for (const spell of spellsKnown) {
-    const page = SPELL_PAGE_NUMBERS[spell];
-    notes.push(`Spell: ${spell}${page ? ` (p. ${page})` : ""}`);
+  if (spellsKnown.length > 0) {
+    notes.push(`Spell book (${spellsKnown.length} spell${spellsKnown.length > 1 ? 's' : ''})`);
+    for (const spell of spellsKnown) {
+      const page = SPELL_PAGE_NUMBERS[spell];
+      notes.push(`  Spell: ${spell}${page ? ` (p. ${page})` : ""}`);
+    }
   }
   if (charClass === "Thief") {
     const ts = CLASSES["Thief"].thief_skills_lvl1;

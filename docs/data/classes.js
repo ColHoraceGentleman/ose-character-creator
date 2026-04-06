@@ -395,7 +395,7 @@ const CLASSES = {
       "Listen at doors 2-in-6",
       "Detect secret doors 2-in-6 (when searching)",
       "Immune to ghoul paralysis",
-      "Arcane spell book (1 spell at 1st level)",
+      "Arcane spell book",
     ],
     spellcaster: true,
     spell_list: "magic_user",
@@ -437,7 +437,7 @@ const CLASSES = {
     title_lvl1: "Medium",
     xp_next_level: 2500,
     special_abilities: [
-      "Arcane spell book (1 spell at 1st level)",
+      "Arcane spell book",
     ],
     spellcaster: true,
     spell_list: "magic_user",
@@ -706,7 +706,7 @@ const CLASSES = {
     title_lvl1: "Prestidigitator",
     xp_next_level: 2500,
     special_abilities: [
-      "Illusionist spell book (1 spell at 1st level)",
+      "Arcane spell book",
     ],
     spellcaster: true,
     spell_list: "illusionist",

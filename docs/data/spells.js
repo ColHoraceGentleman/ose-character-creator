@@ -17,8 +17,87 @@ const MU_ELF_SPELLS_L1 = [
   "Ventriloquism",
 ];
 
+const MU_ELF_SPELLS_L2 = [
+  "Continual Light","Detect Evil","Detect Invisible","ESP",
+  "Invisibility","Knock","Levitate","Locate Object",
+  "Mirror Image","Phantasmal Force","Web","Wizard Lock",
+];
+const MU_ELF_SPELLS_L3 = [
+  "Clairvoyance","Dispel Magic","Fire Ball","Fly",
+  "Haste","Hold Person","Infravision","Invisibility 10' Radius",
+  "Lightning Bolt","Protection from Evil 10' Radius","Protection from Normal Missiles","Water Breathing",
+];
+const MU_ELF_SPELLS_L4 = [
+  "Charm Monster","Confusion","Dimension Door","Growth of Plants",
+  "Hallucinatory Terrain","Massmorph","Polymorph Others","Polymorph Self",
+  "Remove Curse","Wall of Fire","Wall of Ice","Wizard Eye",
+];
+const MU_ELF_SPELLS_L5 = [
+  "Animate Dead","Cloudkill","Conjure Elemental","Contact Higher Plane",
+  "Feeblemind","Hold Monster","Magic Jar","Pass-Wall",
+  "Telekinesis","Teleport","Transmute Rock to Mud","Wall of Stone",
+];
+const MU_ELF_SPELLS_L6 = [
+  "Anti-Magic Shell","Control Weather","Death Spell","Disintegrate",
+  "Geas","Invisible Stalker","Lower Water","Move Earth",
+  "Part Water","Projected Image","Reincarnation","Stone to Flesh",
+];
+
+// MU spell slots per character level [L1, L2, L3, L4, L5, L6]
+const CF_MU_SPELL_SLOTS = [
+  null,
+  [1],             // 1
+  [2],             // 2
+  [2,1],           // 3
+  [2,2],           // 4
+  [2,2,1],         // 5
+  [2,2,2],         // 6
+  [3,2,2,1],       // 7
+  [3,3,2,2],       // 8
+  [3,3,3,2,1],     // 9
+  [3,3,3,3,2],     // 10
+  [4,3,3,3,2,1],   // 11
+  [4,4,3,3,3,2],   // 12
+  [4,4,4,3,3,3],   // 13
+  [4,4,4,4,3,3],   // 14
+];
+
+// Elf spell slots per character level (max L5, max char level 10)
+const CF_ELF_SPELL_SLOTS = [
+  null,
+  [1],             // 1
+  [2],             // 2
+  [2,1],           // 3
+  [2,2],           // 4
+  [2,2,1],         // 5
+  [2,2,2],         // 6
+  [3,2,2,1],       // 7
+  [3,3,2,2],       // 8
+  [3,3,3,2,1],     // 9
+  [3,3,3,3,2],     // 10
+];
+
+// Cleric spell slots per character level (max L5)
+const CF_CLERIC_SPELL_SLOTS = [
+  null,
+  [1],             // 1
+  [2],             // 2
+  [2,1],           // 3
+  [2,2],           // 4
+  [2,2,1],         // 5
+  [2,2,2],         // 6
+  [3,2,2,1],       // 7
+  [3,3,2,2],       // 8
+  [3,3,3,2,1],     // 9
+  [4,4,3,2,2],     // 10
+  [4,4,4,3,2],     // 11
+  [5,5,4,3,2],     // 12
+  [5,5,5,4,3],     // 13
+  [6,5,5,4,4],     // 14
+];
+
 const SPELL_PAGE_NUMBERS = {
-  // Classic Fantasy (OSE Players Rules Tome)
+  // Classic Fantasy MU/Elf spells (OSE Players Rules Tome)
   "Charm Person":          65,
   "Detect Magic":          64,
   "Floating Disc":         65,
@@ -31,6 +110,71 @@ const SPELL_PAGE_NUMBERS = {
   "Shield":                46,
   "Sleep":                 65,
   "Ventriloquism":         65,
+  // L2
+  "Continual Light":       66,
+  "Detect Evil":           66,
+  "Detect Invisible":      66,
+  "ESP":                   66,
+  "Invisibility":          66,
+  "Knock":                 66,
+  "Levitate":              66,
+  "Locate Object":         66,
+  "Mirror Image":          66,
+  "Phantasmal Force":      66,
+  "Web":                   66,
+  "Wizard Lock":           66,
+  // L3
+  "Clairvoyance":          67,
+  "Dispel Magic":          67,
+  "Fire Ball":             67,
+  "Fly":                   67,
+  "Haste":                 67,
+  "Hold Person":           67,
+  "Infravision":           67,
+  "Invisibility 10' Radius": 67,
+  "Lightning Bolt":        67,
+  "Protection from Evil 10' Radius": 67,
+  "Protection from Normal Missiles": 67,
+  "Water Breathing":       67,
+  // L4
+  "Charm Monster":         68,
+  "Confusion":             68,
+  "Dimension Door":        68,
+  "Growth of Plants":      68,
+  "Hallucinatory Terrain": 68,
+  "Massmorph":             68,
+  "Polymorph Others":      68,
+  "Polymorph Self":        68,
+  "Remove Curse":          68,
+  "Wall of Fire":          68,
+  "Wall of Ice":           68,
+  "Wizard Eye":            68,
+  // L5
+  "Animate Dead":          69,
+  "Cloudkill":             69,
+  "Conjure Elemental":     69,
+  "Contact Higher Plane":  69,
+  "Feeblemind":            69,
+  "Hold Monster":          69,
+  "Magic Jar":             69,
+  "Pass-Wall":             69,
+  "Telekinesis":           69,
+  "Teleport":              69,
+  "Transmute Rock to Mud": 69,
+  "Wall of Stone":         69,
+  // L6
+  "Anti-Magic Shell":      70,
+  "Control Weather":       70,
+  "Death Spell":           70,
+  "Disintegrate":          70,
+  "Geas":                  70,
+  "Invisible Stalker":     70,
+  "Lower Water":           70,
+  "Move Earth":            70,
+  "Part Water":            70,
+  "Projected Image":       70,
+  "Reincarnation":         70,
+  "Stone to Flesh":        70,
   // Cleric spells (CPRT)
   "Cure Light Wounds":     46,
   "Detect Evil":           44,
