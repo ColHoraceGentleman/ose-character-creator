@@ -353,10 +353,16 @@ function generateCharacter(options) {
       race = options.chosen_race;
     } else {
       // Random race: pick one whose requirements the scores meet
+      // If a class is chosen, also require the race supports that class
       const allRaces = Object.keys(RACES);
       const eligible = allRaces.filter(r => {
         const reqs = RACES[r].requirements || {};
-        return Object.entries(reqs).every(([stat, min]) => scores[stat] >= min);
+        const meetsReqs = Object.entries(reqs).every(([stat, min]) => scores[stat] >= min);
+        if (!meetsReqs) return false;
+        if (classSelection === "choose" && chosenClass) {
+          return chosenClass in RACES[r].available_classes;
+        }
+        return true;
       });
       race = eligible.length > 0 ? randomChoice(eligible) : "Human";
     }
